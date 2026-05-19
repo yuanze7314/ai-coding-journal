@@ -14,6 +14,15 @@ import {
   ShieldCheck,
   Eye,
   EyeOff,
+  Phone,
+  Mail,
+  GraduationCap,
+  Trophy,
+  BriefcaseBusiness,
+  UserRound,
+  Maximize2,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 
 // ========================
@@ -47,7 +56,7 @@ const defaultProjects = [
 // localStorage 工具函数
 // ========================
 const STORAGE_KEY = 'ai-coding-projects'
-const PASSWORD_KEY = 'ai-coding-password'
+const OWNER_PASSWORD = '123456'
 
 function loadProjects() {
   try {
@@ -72,32 +81,6 @@ function saveProjects(projects) {
   }
 }
 
-// 简易密码哈希（不可逆，仅用于本地校验）
-async function hashPassword(password) {
-  const encoder = new TextEncoder()
-  const data = encoder.encode('aicj-' + password)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
-}
-
-function getStoredHash() {
-  try {
-    return localStorage.getItem(PASSWORD_KEY)
-  } catch {
-    return null
-  }
-}
-
-function setStoredHash(hash) {
-  try {
-    localStorage.setItem(PASSWORD_KEY, hash)
-  } catch {
-    // ignore
-  }
-}
-
 // ========================
 // 主 App 组件
 // ========================
@@ -105,22 +88,11 @@ export default function App() {
   const [projects, setProjects] = useState(() => loadProjects())
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
-  const [ownerChecked, setOwnerChecked] = useState(false)
   const [showUnlockModal, setShowUnlockModal] = useState(false)
 
   const nextIdRef = useRef(
     Math.max(...loadProjects().map((p) => p.id), 0) + 1
   )
-
-  // 首次加载时检查是否已保存密码（如有则默认只读）
-  useEffect(() => {
-    const hash = getStoredHash()
-    if (!hash) {
-      // 未设置密码 → 任何人都可以编辑（首次使用）
-      setIsOwner(true)
-    }
-    setOwnerChecked(true)
-  }, [])
 
   // 每次 projects 变化自动保存
   useEffect(() => {
@@ -131,18 +103,8 @@ export default function App() {
 
   // ---- owner 相关 ----
 
-  const handleUnlock = useCallback(async (password) => {
-    const storedHash = getStoredHash()
-    if (!storedHash) {
-      // 首次设置密码
-      const hash = await hashPassword(password)
-      setStoredHash(hash)
-      setIsOwner(true)
-      setShowUnlockModal(false)
-      return { success: true }
-    }
-    const hash = await hashPassword(password)
-    if (hash === storedHash) {
+  const handleUnlock = useCallback((password) => {
+    if (password === OWNER_PASSWORD) {
       setIsOwner(true)
       setShowUnlockModal(false)
       // 重新加载最新数据
@@ -207,8 +169,6 @@ export default function App() {
     setMobileMenuOpen(false)
   }
 
-  if (!ownerChecked) return null
-
   return (
     <div className="bg-glow relative min-h-screen bg-gray-950 text-white/90 overflow-x-hidden">
       {/* ========== 顶部导航栏 ========== */}
@@ -249,7 +209,6 @@ export default function App() {
         <UnlockModal
           onUnlock={handleUnlock}
           onClose={() => setShowUnlockModal(false)}
-          isFirstSetup={!getStoredHash()}
         />
       )}
     </div>
@@ -369,7 +328,7 @@ function HeroSection({ scrollTo, addProject, isOwner }) {
 
         <p className="mb-10 max-w-lg text-base leading-relaxed text-white/50 md:text-lg">
           这是一个用于展示 AI Coding
-          练习成果的个人项目页，重点呈现项目名称、项目简介、最终效果截图和主观星级评分。页面支持在本地上传图片、编辑文字介绍并记录评分，不需要上传到云端。
+          练习成果的个人项目页，重点呈现项目名称、项目简介、最终效果截图和主观星级评分。
         </p>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row md:justify-start">
@@ -393,32 +352,94 @@ function HeroSection({ scrollTo, addProject, isOwner }) {
         </div>
       </div>
 
-      {/* 右侧预览卡片 */}
+      {/* 右侧个人简历 */}
       <div className="mt-14 flex-1 md:mt-0 flex justify-center">
-        <div className="glass-card w-full max-w-sm rounded-2xl p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-shadow duration-500 hover:shadow-[0_32px_100px_rgba(59,130,246,0.15)]">
-          <div className="mb-4 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20">
-              <Sparkles size={16} className="text-blue-400" />
+        <div className="glass-card w-full max-w-md rounded-2xl p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-shadow duration-500 hover:shadow-[0_32px_100px_rgba(59,130,246,0.15)]">
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wider text-white/30">
+                Personal Resume
+              </span>
+              <h3 className="mt-2 text-2xl font-semibold text-white">
+                袁泽
+              </h3>
+              <p className="mt-1 text-xs leading-relaxed text-white/45">
+                立刻到岗｜出勤五天｜六个月以上
+              </p>
             </div>
-            <span className="text-xs font-medium uppercase tracking-wider text-white/30">
-              Project Snapshot
-            </span>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-500/20">
+              <UserRound size={18} className="text-blue-400" />
+            </div>
           </div>
 
-          <h3 className="mb-3 text-xl font-semibold text-white">
-            AI Coding Dashboard
-          </h3>
+          <div className="grid gap-5 text-sm">
+            <section>
+              <div className="mb-2 flex items-center gap-2 text-white/75">
+                <Phone size={15} className="text-blue-300" />
+                <h4 className="font-medium">个人联系方式</h4>
+              </div>
+              <div className="grid gap-1.5 text-white/50 sm:grid-cols-2">
+                <span>电话：18732865855</span>
+                <span className="flex items-center gap-1.5">
+                  <Mail size={13} />
+                  yzz7314@163.com
+                </span>
+              </div>
+            </section>
 
-          <p className="mb-5 text-sm leading-relaxed text-white/45">
-            适合放置项目最终页面截图、App 原型图或 AI Coding
-            生成结果，用一张图快速传达项目完成效果。
-          </p>
+            <section>
+              <div className="mb-2 flex items-center gap-2 text-white/75">
+                <GraduationCap size={15} className="text-blue-300" />
+                <h4 className="font-medium">教育背景</h4>
+              </div>
+              <div className="space-y-2 text-white/50">
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between">
+                  <span>中国石油大学（北京）｜经济学</span>
+                  <span className="text-xs text-white/35">2021.09-2025.06</span>
+                </div>
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between">
+                  <span>中国海洋大学｜区域经济学</span>
+                  <span className="text-xs text-white/35">2025.09-2028.06</span>
+                </div>
+              </div>
+            </section>
 
-          <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed border-white/10 bg-white/[0.02]">
-            <div className="flex flex-col items-center gap-2 text-white/20">
-              <Image size={36} />
-              <span className="text-xs">预览占位</span>
-            </div>
+            <section>
+              <div className="mb-2 flex items-center gap-2 text-white/75">
+                <BriefcaseBusiness size={15} className="text-blue-300" />
+                <h4 className="font-medium">经历亮点</h4>
+              </div>
+              <ul className="space-y-1.5 text-white/50">
+                <li>快手主站-热点运营中心策略产品经理，负责热词挖掘策略与热点 push 看板。</li>
+                <li>搭建多 Agent 长文本播客自动化生产系统，覆盖 PDF 解析、脚本生成、质检与 TTS 合成。</li>
+                <li>完成评论数据分析、问卷建模、动态定价补货等数据分析与建模项目。</li>
+              </ul>
+            </section>
+
+            <section>
+              <div className="mb-2 flex items-center gap-2 text-white/75">
+                <Trophy size={15} className="text-blue-300" />
+                <h4 className="font-medium">竞赛经历</h4>
+              </div>
+              <ul className="space-y-1.5 text-white/50">
+                <li>美国大学生数学建模竞赛国家级一等奖</li>
+                <li>“正大杯”第十三届全国大学生市场调查与分析大赛国家级三等奖</li>
+                <li>中国国际大学生创新大赛（2024）国家级三等奖</li>
+                <li>全国大学生数学建模竞赛省级特等奖</li>
+              </ul>
+            </section>
+
+            <section>
+              <div className="mb-2 flex items-center gap-2 text-white/75">
+                <Sparkles size={15} className="text-blue-300" />
+                <h4 className="font-medium">个人总结</h4>
+              </div>
+              <ul className="space-y-1.5 text-white/50">
+                <li>数据分析：熟悉 Python、SQL，能够完成数据清洗、建模分析与结果解读。</li>
+                <li>AI 应用：持续使用 ChatGPT、Gemini、DeepSeek 等工具提升信息处理和方案产出效率。</li>
+                <li>AI 编程：熟悉 Claude Code、Codex、Cursor、Trae、Coze，具备将想法快速落地为原型的能力。</li>
+              </ul>
+            </section>
           </div>
         </div>
       </div>
@@ -541,6 +562,9 @@ function ProjectsSection({
   deleteProject,
   isOwner,
 }) {
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [zoomImage, setZoomImage] = useState(null)
+
   return (
     <section id="projects" className="relative z-10 py-24 px-6">
       <div className="mx-auto max-w-7xl">
@@ -575,10 +599,26 @@ function ProjectsSection({
               handleImageUpload={handleImageUpload}
               deleteProject={deleteProject}
               isOwner={isOwner}
+              onOpen={() => setSelectedProject(project)}
             />
           ))}
         </div>
       </div>
+
+      {selectedProject && (
+        <ProjectDetailModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+          onZoom={setZoomImage}
+        />
+      )}
+
+      {zoomImage && (
+        <ImageZoomModal
+          image={zoomImage}
+          onClose={() => setZoomImage(null)}
+        />
+      )}
     </section>
   )
 }
@@ -586,7 +626,7 @@ function ProjectsSection({
 // ========================
 // 单张项目卡片组件
 // ========================
-function ProjectCard({ project, updateProject, handleImageUpload, deleteProject, isOwner }) {
+function ProjectCard({ project, updateProject, handleImageUpload, deleteProject, isOwner, onOpen }) {
   const fileInputRef = useRef(null)
 
   const handleFileChange = (e) => {
@@ -597,11 +637,17 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
   }
 
   return (
-    <div className="glass-card group flex flex-col rounded-2xl overflow-hidden relative shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_100px_rgba(59,130,246,0.20)]">
+    <article
+      onClick={onOpen}
+      className="glass-card group flex cursor-pointer flex-col rounded-2xl overflow-hidden relative shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_100px_rgba(59,130,246,0.20)]"
+    >
       {/* ---- 删除按钮 ---- */}
       {isOwner && (
         <button
-          onClick={() => deleteProject(project.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            deleteProject(project.id)
+          }}
           className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white/40 backdrop-blur-sm transition-all hover:bg-red-500/30 hover:text-red-300"
           title="删除此卡片"
         >
@@ -623,7 +669,11 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
       {project.image ? (
         <div
           className={`relative overflow-hidden ${isOwner ? 'cursor-pointer' : ''}`}
-          onClick={() => isOwner && fileInputRef.current?.click()}
+          onClick={(e) => {
+            if (!isOwner) return
+            e.stopPropagation()
+            fileInputRef.current?.click()
+          }}
         >
           <img
             src={project.image}
@@ -639,7 +689,10 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
       ) : (
         isOwner ? (
           <button
-            onClick={() => fileInputRef.current?.click()}
+            onClick={(e) => {
+              e.stopPropagation()
+              fileInputRef.current?.click()
+            }}
             className="flex h-48 w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/25 transition-colors hover:text-white/45"
           >
             <Upload size={28} strokeWidth={1.5} />
@@ -662,6 +715,7 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
           <input
             type="text"
             value={project.title}
+            onClick={(e) => e.stopPropagation()}
             onChange={(e) => updateProject(project.id, 'title', e.target.value)}
             className="w-full bg-transparent text-lg font-semibold text-white placeholder-white/20 outline-none"
             placeholder="输入项目标题"
@@ -673,6 +727,7 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
         {isOwner ? (
           <textarea
             value={project.desc}
+            onClick={(e) => e.stopPropagation()}
             onChange={(e) => updateProject(project.id, 'desc', e.target.value)}
             rows={3}
             className="w-full resize-none bg-transparent text-sm leading-relaxed text-white/50 placeholder-white/15 outline-none"
@@ -687,7 +742,188 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
           onChange={(val) => updateProject(project.id, 'rating', val)}
           interactive={isOwner}
         />
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            onOpen()
+          }}
+          className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/45 transition-colors hover:border-white/25 hover:text-white/80"
+        >
+          查看详情
+          <ArrowRight size={13} />
+        </button>
       </div>
+    </article>
+  )
+}
+
+function getProjectDetail(project) {
+  return {
+    overview: project.desc || '这是一个 AI Coding 练习项目，用于记录从需求拆解、页面实现到结果复盘的完整过程。',
+    points: [
+      '围绕目标场景拆解页面信息架构，明确核心展示内容、交互路径和最终呈现效果。',
+      '通过组件化方式组织页面结构，保留项目截图、文字说明和评分记录，便于后续迭代复盘。',
+      '适合继续补充项目背景、实现过程、关键难点、最终成果和个人反思，让每张卡片都能沉淀为完整作品说明。',
+    ],
+  }
+}
+
+function ProjectDetailModal({ project, onClose, onZoom }) {
+  const detail = getProjectDetail(project)
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const panels = [
+    { id: 'main', image: project.image, label: '主展示图' },
+    { id: 'flow', image: '', label: '流程展示图' },
+    { id: 'result', image: '', label: '结果展示图' },
+  ]
+  const activePanel = panels[activeImageIndex]
+
+  const showPrevImage = () => {
+    setActiveImageIndex((index) => (index === 0 ? panels.length - 1 : index - 1))
+  }
+
+  const showNextImage = () => {
+    setActiveImageIndex((index) => (index === panels.length - 1 ? 0 : index + 1))
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[90] flex items-center justify-center overflow-y-auto bg-black/70 px-4 py-8 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="glass-card relative w-full max-w-6xl rounded-2xl p-5 shadow-[0_24px_80px_rgba(0,0,0,0.55)] md:p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white/45 transition-colors hover:bg-white/10 hover:text-white"
+          aria-label="关闭项目详情"
+        >
+          <X size={18} />
+        </button>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+          <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black/20">
+            <button
+              type="button"
+              onClick={() => activePanel.image && onZoom({ src: activePanel.image, alt: `${project.title} ${activePanel.label}` })}
+              className="group relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden md:aspect-[5/4] lg:aspect-[4/5]"
+            >
+              {activePanel.image ? (
+                <>
+                  <img
+                    src={activePanel.image}
+                    alt={`${project.title} ${activePanel.label}`}
+                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                  />
+                  <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/45 text-white/75 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+                    <Maximize2 size={16} />
+                  </span>
+                </>
+              ) : (
+                <span className="flex h-full w-full flex-col items-center justify-center gap-3 text-white/18">
+                  <Image size={36} strokeWidth={1.4} />
+                  <span className="text-sm">{activePanel.label}占位</span>
+                </span>
+              )}
+            </button>
+
+            <span className="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1 text-sm font-medium text-white/80 backdrop-blur-sm">
+              {activeImageIndex + 1}/{panels.length}
+            </span>
+
+            <button
+              type="button"
+              onClick={showPrevImage}
+              className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white/70 backdrop-blur-sm transition-colors hover:bg-black/55 hover:text-white"
+              aria-label="上一张展示图"
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <button
+              type="button"
+              onClick={showNextImage}
+              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white/70 backdrop-blur-sm transition-colors hover:bg-black/55 hover:text-white"
+              aria-label="下一张展示图"
+            >
+              <ChevronRight size={22} />
+            </button>
+
+            <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm">
+              {panels.map((panel, index) => (
+                <button
+                  key={panel.id}
+                  type="button"
+                  onClick={() => setActiveImageIndex(index)}
+                  className={`h-2 rounded-full transition-all ${
+                    index === activeImageIndex
+                      ? 'w-5 bg-white'
+                      : 'w-2 bg-white/45 hover:bg-white/75'
+                  }`}
+                  aria-label={`查看第 ${index + 1} 张展示图`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between gap-6 pr-0 md:pr-8">
+            <div>
+              <span className="text-xs font-medium uppercase tracking-wider text-white/30">
+                Project Detail
+              </span>
+              <h3 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
+                {project.title}
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed text-white/55">
+                {detail.overview}
+              </p>
+
+              <div className="mt-6 grid gap-3">
+                <h4 className="text-sm font-medium text-white/80">详细说明</h4>
+                <ul className="space-y-2 text-sm leading-relaxed text-white/50">
+                  {detail.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5">
+              <StarRating rating={project.rating} onChange={() => {}} interactive={false} />
+              <span className="text-xs text-white/30">
+                点击左侧展示图可放大查看
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ImageZoomModal({ image, onClose }) {
+  return (
+    <div
+      className="fixed inset-0 z-[110] flex items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
+        aria-label="关闭图片预览"
+      >
+        <X size={20} />
+      </button>
+      <img
+        src={image.src}
+        alt={image.alt}
+        className="max-h-[88vh] max-w-[94vw] rounded-xl object-contain shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
+        onClick={(e) => e.stopPropagation()}
+      />
     </div>
   )
 }
@@ -704,7 +940,10 @@ function StarRating({ rating, onChange, interactive = true }) {
           interactive ? (
             <button
               key={star}
-              onClick={() => onChange(star)}
+              onClick={(e) => {
+                e.stopPropagation()
+                onChange(star)
+              }}
               className="star-btn p-0.5"
               title={`${star} 星`}
             >
@@ -764,7 +1003,7 @@ function Footer({ isOwner, onUnlock, onLock }) {
 // ========================
 // 解锁弹窗
 // ========================
-function UnlockModal({ onUnlock, onClose, isFirstSetup }) {
+function UnlockModal({ onUnlock, onClose }) {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
@@ -776,8 +1015,8 @@ function UnlockModal({ onUnlock, onClose, isFirstSetup }) {
       setError('请输入密码')
       return
     }
-    if (password.length < 4 && !isFirstSetup) {
-      setError('密码长度至少 4 位')
+    if (password.length < 6) {
+      setError('密码长度至少 6 位')
       return
     }
     setLoading(true)
@@ -798,7 +1037,7 @@ function UnlockModal({ onUnlock, onClose, isFirstSetup }) {
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center px-4"
-      onClick={!isFirstSetup ? onClose : undefined}
+      onClick={onClose}
     >
       {/* 遮罩 */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
@@ -810,19 +1049,13 @@ function UnlockModal({ onUnlock, onClose, isFirstSetup }) {
       >
         <div className="mb-6 flex flex-col items-center text-center">
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15">
-            {isFirstSetup ? (
-              <ShieldCheck size={28} className="text-blue-400" />
-            ) : (
-              <Lock size={28} className="text-blue-400" />
-            )}
+            <Lock size={28} className="text-blue-400" />
           </div>
           <h3 className="text-lg font-semibold text-white">
-            {isFirstSetup ? '设置访问密码' : '输入密码解锁'}
+            输入密码解锁
           </h3>
           <p className="mt-1 text-sm text-white/40">
-            {isFirstSetup
-              ? '设置密码后，只有你能编辑内容'
-              : '解锁后可编辑项目内容'}
+            解锁后可编辑项目内容
           </p>
         </div>
 
@@ -835,7 +1068,7 @@ function UnlockModal({ onUnlock, onClose, isFirstSetup }) {
                 setPassword(e.target.value)
                 setError('')
               }}
-              placeholder={isFirstSetup ? '设置一个密码（至少4位）' : '输入密码'}
+              placeholder="输入密码"
               className="w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-white/20 outline-none transition-colors focus:border-white/25"
               autoFocus
             />
@@ -857,18 +1090,16 @@ function UnlockModal({ onUnlock, onClose, isFirstSetup }) {
             disabled={loading}
             className="w-full rounded-xl bg-white py-3 text-sm font-medium text-gray-900 transition-all hover:bg-white/90 disabled:opacity-50"
           >
-            {loading ? '验证中...' : isFirstSetup ? '设置密码' : '解锁'}
+            {loading ? '验证中...' : '解锁'}
           </button>
 
-          {!isFirstSetup && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-xs text-white/25 transition-colors hover:text-white/50"
-            >
-              取消
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-xs text-white/25 transition-colors hover:text-white/50"
+          >
+            取消
+          </button>
         </form>
       </div>
     </div>
