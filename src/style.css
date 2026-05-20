@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 /* ---- 自定义基础样式 ---- */
 
@@ -7,9 +7,13 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Aptos Display", "Aptos", "Segoe UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #0f0f0d;
 }
 
 /* ---- 背景光效 ---- */
@@ -84,4 +88,2906 @@ body {
 }
 .img-hover:hover {
   transform: scale(1.03);
+}
+
+/* Taste-skill visual pass: preserve content and behavior, upgrade the art direction. */
+.taste-shell {
+  color: rgba(250, 247, 239, 0.9);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(180, 120, 66, 0.16), transparent 26rem),
+    radial-gradient(circle at 78% 18%, rgba(80, 116, 98, 0.14), transparent 30rem),
+    linear-gradient(135deg, #11110f 0%, #171511 48%, #0d0f0d 100%);
+}
+
+.taste-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.34;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 78%);
+}
+
+.taste-shell::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.11;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.7) 0 1px, transparent 1px),
+    radial-gradient(circle at 70% 65%, rgba(255, 255, 255, 0.5) 0 1px, transparent 1px);
+  background-size: 18px 18px, 27px 27px;
+  mix-blend-mode: soft-light;
+}
+
+.taste-shell .bg-glow::before,
+.taste-shell .bg-glow::after {
+  display: none;
+}
+
+.taste-shell .glass {
+  background: rgba(18, 18, 15, 0.76);
+  border-color: rgba(232, 220, 196, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 50px rgba(0, 0, 0, 0.24);
+}
+
+.taste-shell .glass-card {
+  position: relative;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.035)),
+    rgba(23, 22, 18, 0.68);
+  border-color: rgba(232, 220, 196, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 24px 70px rgba(0, 0, 0, 0.34);
+}
+
+.taste-shell .glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(221, 174, 112, 0.12), transparent 38%, rgba(92, 124, 105, 0.1));
+  opacity: 0.65;
+}
+
+.taste-shell .glass-card > :not(.absolute) {
+  position: relative;
+}
+
+.taste-shell .glass-card > .absolute {
+  position: absolute;
+}
+
+.taste-shell nav button:first-child {
+  letter-spacing: -0.03em;
+}
+
+.taste-shell section[id="hero"] {
+  min-height: 100dvh;
+}
+
+.taste-shell h1 {
+  max-width: 9ch;
+  letter-spacing: -0.065em;
+  line-height: 0.94;
+}
+
+.taste-shell h1 .bg-gradient-to-r {
+  background-image: none;
+}
+
+.taste-shell h1 .text-transparent {
+  color: #eadcc3;
+  text-shadow: 0 18px 48px rgba(221, 174, 112, 0.16);
+}
+
+.taste-shell h2,
+.taste-shell h3 {
+  letter-spacing: -0.045em;
+}
+
+.taste-shell .text-blue-400,
+.taste-shell .text-blue-300 {
+  color: #d5ad78 !important;
+}
+
+.taste-shell [class*="bg-blue-500"] {
+  background-color: rgba(213, 173, 120, 0.14) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.taste-shell button {
+  transition:
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.taste-shell button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.taste-shell .rounded-2xl {
+  border-radius: 1.25rem;
+}
+
+.taste-shell .rounded-xl {
+  border-radius: 1rem;
+}
+
+.taste-shell [class*="shadow-"] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.3) !important;
+}
+
+.taste-shell .star-btn:hover {
+  transform: translateY(-1px) scale(1.08);
+}
+
+.taste-shell img {
+  filter: saturate(0.92) contrast(1.03);
+}
+
+@media (min-width: 768px) {
+  .taste-shell section[id="hero"] {
+    align-items: center;
+    gap: clamp(3rem, 8vw, 7rem);
+  }
+
+  .taste-shell section[id="hero"] > div:first-child {
+    transform: translateY(-1rem);
+  }
+
+  .taste-shell section[id="hero"] > div:last-child {
+    transform: translateY(1.25rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .taste-shell h1 {
+    max-width: 11ch;
+    margin-inline: auto;
+  }
+
+  .taste-shell::before {
+    background-size: 48px 48px;
+  }
+}
+
+/* Final parity overrides: these sit last so older redesign passes cannot leak through. */
+.mission-shell .projects-section h2::before,
+.mission-shell .showcase-section h2::before {
+  content: none !important;
+  display: none !important;
+}
+
+.mission-shell section[id="hero"] {
+  min-height: 85vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  padding: 2.5rem 1.5rem !important;
+}
+
+.mission-shell section[id="hero"] > div:first-child {
+  min-height: auto !important;
+  display: block !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  max-width: none !important;
+  margin-bottom: 2rem !important;
+  font-size: clamp(3.75rem, 7.55vw, 5.5rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.mission-shell section[id="hero"] p {
+  max-width: 42rem !important;
+  color: rgb(156, 163, 175) !important;
+  font-size: clamp(1.25rem, 2vw, 1.5rem) !important;
+  line-height: 1.6 !important;
+}
+
+.mission-shell .projects-section {
+  margin-top: 20vh !important;
+}
+
+.mission-shell .project-grid {
+  grid-template-columns: 1fr !important;
+  gap: 1.5rem !important;
+}
+
+@media (min-width: 1280px) {
+  .mission-shell .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .mission-shell section[id="hero"],
+  .mission-shell .projects-section,
+  .mission-shell .timeline-section,
+  .mission-shell .dossier-section {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+  }
+}
+
+/* Layout fit pass: final overrides for the current background crop. */
+.mission-shell .scroll-panel {
+  border-right: 1px solid rgba(147, 197, 253, 0.14) !important;
+  box-shadow: 28px 0 80px rgba(0, 0, 0, 0.34) !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar-thumb {
+  background: rgba(147, 197, 253, 0.42) !important;
+}
+
+.mission-shell section[id="hero"] {
+  padding-top: clamp(5.75rem, 10vh, 7.5rem) !important;
+  padding-bottom: clamp(3rem, 7vh, 5rem) !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  max-width: 20ch !important;
+  width: min(100%, 48rem) !important;
+  font-size: clamp(3.35rem, 5.9vw, 4.9rem) !important;
+  line-height: 1.08 !important;
+}
+
+.mission-shell section[id="hero"] p {
+  max-width: 34rem !important;
+  font-size: clamp(1.05rem, 1.45vw, 1.35rem) !important;
+}
+
+@media (min-width: 1024px) {
+  .mission-shell .scroll-panel {
+    width: min(46vw, 42rem) !important;
+  }
+
+  .mission-shell .game-bg {
+    width: 82% !important;
+    background-position: 58% 84% !important;
+  }
+
+  .mission-shell .bg-overlay-left {
+    background:
+      linear-gradient(90deg, #000 0%, #000 18%, rgba(0, 0, 0, 0.92) 25%, rgba(0, 0, 0, 0.68) 42%, rgba(0, 0, 0, 0.24) 61%, transparent 78%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.32)) !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .mission-shell .scroll-panel {
+    width: 43.5rem !important;
+  }
+}
+
+/* Absolute final hero composition override. */
+.mission-shell .game-bg {
+  inset: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  filter: saturate(0.92) contrast(1.05) brightness(0.82) !important;
+}
+
+.mission-shell .bg-overlay-left {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 18%, rgba(0, 0, 0, 0.62) 38%, rgba(0, 0, 0, 0.18) 68%, transparent 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.08) 28%, rgba(0, 0, 0, 0.38) 100%) !important;
+}
+
+.mission-shell .scroll-panel {
+  width: 100% !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.mission-shell nav.glass {
+  width: 100% !important;
+  background: rgba(4, 6, 10, 0.46) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035) !important;
+}
+
+.mission-shell nav.glass > div {
+  padding: 1rem clamp(1.5rem, 3vw, 3rem) !important;
+}
+
+.mission-shell nav .hidden.items-center {
+  gap: clamp(1.5rem, 2.3vw, 2.4rem) !important;
+}
+
+.mission-shell nav .hidden.items-center > button {
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  color: rgba(255, 255, 255, 0.56) !important;
+}
+
+.mission-shell section[id="hero"] {
+  min-height: calc(100vh - 3.75rem) !important;
+  justify-content: center !important;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.75rem, 3.3vw, 3.2rem) clamp(4rem, 8vh, 6rem) !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  width: min(56rem, 58vw) !important;
+  max-width: none !important;
+  margin-bottom: clamp(1.75rem, 2.4vw, 2.4rem) !important;
+  font-size: clamp(4rem, 5.1vw, 5.7rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.mission-shell section[id="hero"] p {
+  width: min(42rem, 46vw) !important;
+  max-width: none !important;
+  font-size: clamp(1.1rem, 1.35vw, 1.45rem) !important;
+  line-height: 1.6 !important;
+  font-weight: 400 !important;
+  color: rgba(229, 231, 235, 0.62) !important;
+}
+
+@media (max-width: 767px) {
+  .mission-shell section[id="hero"] h1,
+  .mission-shell section[id="hero"] p {
+    width: 100% !important;
+  }
+
+  .mission-shell section[id="hero"] h1 {
+    font-size: clamp(3.2rem, 15vw, 4.5rem) !important;
+  }
+}
+
+/* Project/archive layout and motion borrowed from the supplied Gemini reference. */
+.mission-shell .reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mission-shell .reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mission-shell .projects-section,
+.mission-shell .timeline-section,
+.mission-shell .dossier-section {
+  width: min(100% - 5.2rem, 70rem) !important;
+  max-width: 70rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mission-shell .projects-section {
+  margin-top: clamp(5rem, 14vh, 10rem) !important;
+}
+
+.mission-shell .projects-section h2,
+.mission-shell .timeline-section h2,
+.mission-shell .dossier-section h2 {
+  width: fit-content;
+  border-left: 4px solid #3b82f6 !important;
+  padding-left: 1rem !important;
+  font-size: clamp(2rem, 3.2vw, 2.6rem) !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.02em !important;
+}
+
+.mission-shell .timeline-section h2 {
+  border-left-color: rgb(107, 114, 128) !important;
+}
+
+.mission-shell .project-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1.5rem !important;
+}
+
+.mission-shell .project-card {
+  min-height: 0 !important;
+  border-radius: 1rem !important;
+  background: rgba(25, 25, 30, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.mission-shell .project-card.active:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow:
+    0 10px 30px rgba(59, 130, 246, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.02) !important;
+  background: rgba(30, 30, 35, 0.6) !important;
+}
+
+.mission-shell .project-card > div:first-of-type,
+.mission-shell .project-card > button:first-of-type:not(.absolute) {
+  height: 10rem !important;
+  min-height: 10rem !important;
+}
+
+.mission-shell .project-card > div:last-child {
+  gap: 1rem !important;
+  padding: 1.5rem !important;
+  background: transparent !important;
+  border-top-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.mission-shell .project-card h3,
+.mission-shell .project-card input[type="text"] {
+  font-size: 1.18rem !important;
+  font-weight: 520 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.mission-shell .project-card p,
+.mission-shell .project-card textarea {
+  color: rgb(156, 163, 175) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.7 !important;
+}
+
+.mission-shell .project-card .star-btn svg,
+.mission-shell .project-card .flex.gap-1 svg {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.mission-shell .project-card .tabular-nums {
+  font-size: 0.78rem !important;
+}
+
+.mission-shell .add-mission-card {
+  min-height: 25rem !important;
+  border: 2px dashed rgba(255, 255, 255, 0.2) !important;
+  background: rgba(25, 25, 30, 0.4) !important;
+  box-shadow: none !important;
+}
+
+.mission-shell .add-mission-card.active:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(59, 130, 246, 0.8) !important;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.2) !important;
+  background: rgba(59, 130, 246, 0.05) !important;
+}
+
+.mission-shell .timeline-section .glass-card,
+.mission-shell .resume-panel {
+  background: rgba(25, 25, 30, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.mission-shell .timeline-section .glass-card {
+  border-radius: 0.5rem !important;
+}
+
+.mission-shell .resume-panel.active:hover {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+@media (max-width: 900px) {
+  .mission-shell .projects-section,
+  .mission-shell .timeline-section,
+  .mission-shell .dossier-section {
+    width: min(100% - 2.6rem, 70rem) !important;
+  }
+
+  .mission-shell .project-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Final editing and dossier polish. */
+.mission-shell .detail-edit-field,
+.mission-shell .timeline-edit-field {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(248, 250, 252, 0.9);
+  outline: none;
+  padding: 0.72rem 0.85rem;
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.mission-shell .detail-edit-field:focus,
+.mission-shell .timeline-edit-field:focus {
+  border-color: rgba(147, 197, 253, 0.46);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.08);
+}
+
+.mission-shell .detail-edit-field--title {
+  font-size: clamp(1.65rem, 2.4vw, 2.25rem);
+  font-weight: 650;
+  line-height: 1.12;
+}
+
+.mission-shell .timeline-edit-field--phase {
+  max-width: 12rem;
+  padding: 0.45rem 0.6rem;
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.mission-shell .detail-edit-field::placeholder,
+.mission-shell .timeline-edit-field::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.mission-shell .project-detail-shell textarea,
+.mission-shell .timeline-section textarea {
+  min-height: 7.5rem;
+}
+
+.mission-shell .resume-panel {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)) !important;
+  color: rgba(238, 242, 247, 0.78) !important;
+}
+
+.mission-shell .resume-panel h3 {
+  color: rgba(255, 255, 255, 0.98) !important;
+  font-size: clamp(2.4rem, 4vw, 3.6rem) !important;
+  line-height: 1 !important;
+  letter-spacing: 0.16em !important;
+}
+
+.mission-shell .resume-panel h4 {
+  color: rgba(226, 232, 240, 0.76) !important;
+  letter-spacing: 0.16em !important;
+}
+
+.mission-shell .resume-panel p,
+.mission-shell .resume-panel li,
+.mission-shell .resume-panel span {
+  color: rgba(226, 232, 240, 0.72);
+}
+
+.mission-shell .resume-panel .text-white,
+.mission-shell .resume-panel .font-medium {
+  color: rgba(255, 255, 255, 0.94) !important;
+}
+
+.mission-shell .resume-panel .text-white\/35 {
+  color: rgba(203, 213, 225, 0.58) !important;
+}
+
+.mission-shell .resume-panel .text-white\/45,
+.mission-shell .resume-panel .text-white\/60,
+.mission-shell .resume-panel .text-white\/65,
+.mission-shell .resume-panel .text-white\/70 {
+  color: rgba(226, 232, 240, 0.76) !important;
+}
+
+.mission-shell .resume-panel [class*="border-white/5"],
+.mission-shell .resume-panel [class*="border-white/10"] {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.mission-shell section[id="hero"] p {
+  font-weight: 400 !important;
+}
+
+.mission-shell section[id="hero"] p {
+  font-weight: 400 !important;
+}
+
+/* Final content hierarchy pass requested by user. */
+.mission-shell section[id="hero"] p {
+  font-weight: 400 !important;
+}
+
+.mission-shell .projects-section,
+.mission-shell .timeline-section,
+.mission-shell .dossier-section {
+  width: min(100% - 4rem, 74rem) !important;
+  max-width: 74rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mission-shell .projects-section {
+  margin-top: clamp(3rem, 10vh, 7rem) !important;
+  padding-top: 3.5rem !important;
+}
+
+.mission-shell .projects-section h2,
+.mission-shell .timeline-section h2,
+.mission-shell .dossier-section h2 {
+  font-size: clamp(1.9rem, 3vw, 2.55rem) !important;
+  line-height: 1.2 !important;
+  margin-bottom: 3rem !important;
+}
+
+.mission-shell .project-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1.5rem !important;
+}
+
+.mission-shell .project-card {
+  min-height: 0 !important;
+  border-radius: 0.8rem !important;
+  overflow: hidden !important;
+}
+
+.mission-shell .project-card > div:first-of-type,
+.mission-shell .project-card > button:first-of-type:not(.absolute) {
+  height: 10rem !important;
+  min-height: 10rem !important;
+}
+
+.mission-shell .project-card > div:last-child {
+  gap: 1.05rem !important;
+  padding: 1.45rem !important;
+}
+
+.mission-shell .project-card h3,
+.mission-shell .project-card input[type="text"] {
+  font-size: 1.12rem !important;
+  font-weight: 650 !important;
+}
+
+.mission-shell .project-card p,
+.mission-shell .project-card textarea {
+  font-size: 0.9rem !important;
+  line-height: 1.7 !important;
+}
+
+.mission-shell .project-card .star-btn svg,
+.mission-shell .project-card .star-btn + span svg,
+.mission-shell .project-card .flex.gap-1 svg {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.mission-shell .project-card .tabular-nums {
+  font-size: 0.78rem !important;
+}
+
+.mission-shell .add-mission-card {
+  min-height: 18rem !important;
+  border-radius: 0.8rem !important;
+}
+
+@media (max-width: 900px) {
+  .mission-shell .projects-section,
+  .mission-shell .timeline-section,
+  .mission-shell .dossier-section {
+    width: min(100% - 2rem, 74rem) !important;
+  }
+
+  .mission-shell .project-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.mission-shell section[id="hero"] p {
+  font-weight: 400 !important;
+}
+
+/* Absolute final hero composition override. */
+.mission-shell .game-bg {
+  inset: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  filter: saturate(0.92) contrast(1.05) brightness(0.82) !important;
+}
+
+.mission-shell .bg-overlay-left {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 18%, rgba(0, 0, 0, 0.62) 38%, rgba(0, 0, 0, 0.18) 68%, transparent 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.08) 28%, rgba(0, 0, 0, 0.38) 100%) !important;
+}
+
+.mission-shell .scroll-panel {
+  width: 100% !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.mission-shell nav.glass {
+  width: 100% !important;
+  background: rgba(4, 6, 10, 0.46) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035) !important;
+}
+
+.mission-shell nav.glass > div {
+  padding: 1rem clamp(1.5rem, 3vw, 3rem) !important;
+}
+
+.mission-shell nav .hidden.items-center {
+  gap: clamp(1.5rem, 2.3vw, 2.4rem) !important;
+}
+
+.mission-shell nav .hidden.items-center > button {
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  color: rgba(255, 255, 255, 0.56) !important;
+}
+
+.mission-shell section[id="hero"] {
+  min-height: calc(100vh - 3.75rem) !important;
+  justify-content: center !important;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.75rem, 3.3vw, 3.2rem) clamp(4rem, 8vh, 6rem) !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  width: min(56rem, 58vw) !important;
+  max-width: none !important;
+  margin-bottom: clamp(1.75rem, 2.4vw, 2.4rem) !important;
+  font-size: clamp(4rem, 5.1vw, 5.7rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.mission-shell section[id="hero"] p {
+  width: min(42rem, 46vw) !important;
+  max-width: none !important;
+  font-size: clamp(1.1rem, 1.35vw, 1.45rem) !important;
+  line-height: 1.6 !important;
+  font-weight: 400 !important;
+  color: rgba(229, 231, 235, 0.62) !important;
+}
+
+@media (max-width: 767px) {
+  .mission-shell section[id="hero"] h1,
+  .mission-shell section[id="hero"] p {
+    width: 100% !important;
+  }
+
+  .mission-shell section[id="hero"] h1 {
+    font-size: clamp(3.2rem, 15vw, 4.5rem) !important;
+  }
+}
+
+/* Absolute final hero composition override. */
+.mission-shell .game-bg {
+  inset: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  filter: saturate(0.92) contrast(1.05) brightness(0.82) !important;
+}
+
+.mission-shell .bg-overlay-left {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 18%, rgba(0, 0, 0, 0.62) 38%, rgba(0, 0, 0, 0.18) 68%, transparent 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.08) 28%, rgba(0, 0, 0, 0.38) 100%) !important;
+}
+
+.mission-shell .scroll-panel {
+  width: 100% !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.mission-shell nav.glass {
+  width: 100% !important;
+  background: rgba(4, 6, 10, 0.46) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035) !important;
+}
+
+.mission-shell nav.glass > div {
+  padding: 1rem clamp(1.5rem, 3vw, 3rem) !important;
+}
+
+.mission-shell nav .hidden.items-center {
+  gap: clamp(1.5rem, 2.3vw, 2.4rem) !important;
+}
+
+.mission-shell nav .hidden.items-center > button {
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  color: rgba(255, 255, 255, 0.56) !important;
+}
+
+.mission-shell section[id="hero"] {
+  min-height: calc(100vh - 3.75rem) !important;
+  justify-content: center !important;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.75rem, 3.3vw, 3.2rem) clamp(4rem, 8vh, 6rem) !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  width: min(56rem, 58vw) !important;
+  max-width: none !important;
+  margin-bottom: clamp(1.75rem, 2.4vw, 2.4rem) !important;
+  font-size: clamp(4rem, 5.1vw, 5.7rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.mission-shell section[id="hero"] p {
+  width: min(42rem, 46vw) !important;
+  max-width: none !important;
+  font-size: clamp(1.1rem, 1.35vw, 1.45rem) !important;
+  line-height: 1.6 !important;
+  font-weight: 400 !important;
+  color: rgba(229, 231, 235, 0.62) !important;
+}
+
+@media (max-width: 767px) {
+  .mission-shell section[id="hero"] h1,
+  .mission-shell section[id="hero"] p {
+    width: 100% !important;
+  }
+
+  .mission-shell section[id="hero"] h1 {
+    font-size: clamp(3.2rem, 15vw, 4.5rem) !important;
+  }
+}
+
+/* Full-bleed hero fit: match the reference with one uninterrupted background image. */
+.mission-shell .game-bg {
+  inset: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  filter: saturate(0.92) contrast(1.05) brightness(0.82) !important;
+}
+
+.mission-shell .bg-overlay-left {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 18%, rgba(0, 0, 0, 0.62) 38%, rgba(0, 0, 0, 0.18) 68%, transparent 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.08) 28%, rgba(0, 0, 0, 0.38) 100%) !important;
+}
+
+.mission-shell .scroll-panel {
+  width: 100% !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.mission-shell nav.glass {
+  width: 100% !important;
+  background: rgba(4, 6, 10, 0.46) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035) !important;
+}
+
+.mission-shell nav.glass > div {
+  padding: 1rem clamp(1.5rem, 3vw, 3rem) !important;
+}
+
+.mission-shell nav .hidden.items-center {
+  gap: clamp(1.5rem, 2.3vw, 2.4rem) !important;
+}
+
+.mission-shell nav .hidden.items-center > button {
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  color: rgba(255, 255, 255, 0.56) !important;
+}
+
+.mission-shell section[id="hero"] {
+  min-height: calc(100vh - 3.75rem) !important;
+  justify-content: center !important;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.75rem, 3.3vw, 3.2rem) clamp(4rem, 8vh, 6rem) !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  width: min(56rem, 58vw) !important;
+  max-width: none !important;
+  margin-bottom: clamp(1.75rem, 2.4vw, 2.4rem) !important;
+  font-size: clamp(4rem, 5.1vw, 5.7rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.mission-shell section[id="hero"] p {
+  width: min(42rem, 46vw) !important;
+  max-width: none !important;
+  font-size: clamp(1.1rem, 1.35vw, 1.45rem) !important;
+  line-height: 1.6 !important;
+  font-weight: 400 !important;
+  color: rgba(229, 231, 235, 0.62) !important;
+}
+
+.mission-shell .projects-section,
+.mission-shell .timeline-section,
+.mission-shell .dossier-section {
+  width: min(100%, 76rem) !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+@media (max-width: 767px) {
+  .mission-shell section[id="hero"] h1,
+  .mission-shell section[id="hero"] p {
+    width: 100% !important;
+  }
+
+  .mission-shell section[id="hero"] h1 {
+    font-size: clamp(3.2rem, 15vw, 4.5rem) !important;
+  }
+}
+
+/* Layout fit pass: tune the interface scale so the supplied background and UI read as one composition. */
+.mission-shell .scroll-panel {
+  border-right: 1px solid rgba(147, 197, 253, 0.16);
+  box-shadow: 28px 0 80px rgba(0, 0, 0, 0.34);
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar-thumb {
+  background: rgba(147, 197, 253, 0.42) !important;
+}
+
+.mission-shell section[id="hero"] {
+  padding-top: clamp(5.75rem, 10vh, 7.5rem) !important;
+  padding-bottom: clamp(3rem, 7vh, 5rem) !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  max-width: 11.7ch !important;
+  font-size: clamp(3.35rem, 5.9vw, 4.9rem) !important;
+  line-height: 1.08 !important;
+}
+
+.mission-shell section[id="hero"] p {
+  max-width: 34rem !important;
+  font-size: clamp(1.05rem, 1.45vw, 1.35rem) !important;
+}
+
+@media (min-width: 1024px) {
+  .mission-shell .scroll-panel {
+    width: min(46vw, 42rem) !important;
+  }
+
+  .mission-shell .game-bg {
+    width: 82% !important;
+    background-position: 58% 84% !important;
+  }
+
+  .mission-shell .bg-overlay-left {
+    background:
+      linear-gradient(90deg, #000 0%, #000 18%, rgba(0, 0, 0, 0.92) 25%, rgba(0, 0, 0, 0.68) 42%, rgba(0, 0, 0, 0.24) 61%, transparent 78%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.32));
+  }
+}
+
+@media (min-width: 1440px) {
+  .mission-shell .scroll-panel {
+    width: 43.5rem !important;
+  }
+}
+
+/* HTML parity pass: keep React behavior, mirror gemini-code-1779180061734.html layout. */
+.mission-shell .glass,
+.mission-shell .glass-card {
+  background: rgba(25, 25, 30, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.mission-shell nav.glass {
+  width: 100%;
+  border-bottom: 0;
+  background: rgba(25, 25, 30, 0.4);
+}
+
+.mission-shell section[id="hero"] {
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding: 2.5rem 1.5rem;
+}
+
+.mission-shell section[id="hero"] h1 {
+  max-width: none;
+  margin-bottom: 2rem;
+  font-size: clamp(3.75rem, 7.55vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.mission-shell section[id="hero"] p {
+  max-width: 42rem;
+  margin: 0;
+  color: rgb(156, 163, 175);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  line-height: 1.6;
+}
+
+.mission-shell .projects-section {
+  margin-top: 20vh;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.mission-shell .projects-section h2,
+.mission-shell .timeline-section h2,
+.mission-shell .dossier-section h2 {
+  border-left: 4px solid var(--mission-blue-strong);
+  padding-left: 1rem;
+  font-weight: 300;
+  letter-spacing: 0.025em;
+}
+
+.mission-shell .timeline-section h2 {
+  border-color: rgb(107, 114, 128);
+}
+
+.mission-shell .projects-section h2::before,
+.mission-shell .showcase-section h2::before {
+  display: none !important;
+  content: none !important;
+}
+
+.mission-shell .project-grid {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.mission-shell .project-card {
+  min-height: 25rem;
+  border-radius: 1rem;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mission-shell .project-card:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(30, 30, 35, 0.6);
+  box-shadow:
+    0 10px 30px rgba(59, 130, 246, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.mission-shell .project-card > div:first-of-type,
+.mission-shell .project-card > button:first-of-type:not(.absolute) {
+  height: 10rem;
+  border-bottom: 0;
+}
+
+.mission-shell .project-card > div:last-child {
+  gap: 1rem;
+  padding: 1.5rem;
+  background: transparent;
+  border-top: 0;
+}
+
+.mission-shell .project-card h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.mission-shell .project-card p,
+.mission-shell .project-card textarea {
+  color: rgb(156, 163, 175);
+  line-height: 1.625;
+}
+
+.mission-shell .add-mission-card {
+  min-height: 25rem;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  background: rgba(25, 25, 30, 0.4);
+}
+
+.mission-shell .add-mission-card:hover {
+  border-color: rgba(59, 130, 246, 0.8);
+  background: rgba(59, 130, 246, 0.05);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
+}
+
+.mission-shell .timeline-section,
+.mission-shell .dossier-section {
+  width: 100%;
+  max-width: 56rem;
+  margin-inline: auto;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.mission-shell .timeline-section .glass-card {
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.mission-shell .resume-panel {
+  border-radius: 1rem;
+  padding: clamp(2rem, 4vw, 2.5rem);
+  background: rgba(25, 25, 30, 0.4);
+}
+
+.mission-shell footer {
+  margin-top: 1rem;
+  padding-block: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace;
+  font-size: 0.75rem;
+  color: rgb(75, 85, 99);
+}
+
+@media (min-width: 768px) {
+  .mission-shell section[id="hero"],
+  .mission-shell .projects-section,
+  .mission-shell .timeline-section,
+  .mission-shell .dossier-section {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mission-shell .scroll-panel {
+    width: 50%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .mission-shell .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Taste-skill regeneration v2: asymmetric portfolio system. */
+.taste-shell {
+  --paper: #f5efe2;
+  --paper-muted: rgba(245, 239, 226, 0.58);
+  --paper-dim: rgba(245, 239, 226, 0.34);
+  --ink: #11110e;
+  --charcoal: #12120f;
+  --panel: rgba(31, 30, 25, 0.72);
+  --panel-strong: rgba(38, 36, 30, 0.86);
+  --line: rgba(245, 239, 226, 0.13);
+  --accent: #cda56c;
+  --accent-soft: rgba(205, 165, 108, 0.15);
+  background:
+    radial-gradient(circle at 18% 20%, rgba(205, 165, 108, 0.18), transparent 24rem),
+    radial-gradient(circle at 82% 12%, rgba(112, 132, 111, 0.18), transparent 28rem),
+    linear-gradient(115deg, #15140f 0%, #0f100d 45%, #171610 100%);
+}
+
+.taste-shell > * {
+  position: relative;
+  z-index: 3;
+}
+
+.taste-shell::before {
+  opacity: 0.3;
+  background-image:
+    linear-gradient(rgba(245, 239, 226, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 239, 226, 0.035) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: radial-gradient(circle at 45% 18%, black, transparent 72%);
+}
+
+.taste-shell::after {
+  opacity: 0.09;
+  background-image:
+    radial-gradient(circle at 25% 35%, rgba(245, 239, 226, 0.7) 0 1px, transparent 1px),
+    radial-gradient(circle at 75% 60%, rgba(245, 239, 226, 0.4) 0 1px, transparent 1px);
+  background-size: 22px 22px, 31px 31px;
+}
+
+.taste-shell .glass {
+  background: rgba(15, 15, 12, 0.78);
+  border-color: var(--line);
+  box-shadow: inset 0 -1px 0 rgba(245, 239, 226, 0.04);
+}
+
+.taste-shell nav {
+  border-inline: 0;
+  border-top: 0;
+}
+
+.taste-shell nav > div {
+  max-width: 1400px;
+}
+
+.taste-shell nav button {
+  color: var(--paper-muted);
+}
+
+.taste-shell nav button:hover {
+  color: var(--paper);
+}
+
+.taste-shell section[id="hero"] {
+  max-width: 1400px;
+  min-height: 100dvh;
+  padding-top: 8rem;
+  padding-bottom: 6rem;
+}
+
+.taste-shell section[id="hero"] > div:first-child {
+  position: relative;
+}
+
+.taste-shell section[id="hero"] > div:first-child::before {
+  content: "PORTFOLIO / AI CODING";
+  display: block;
+  margin-bottom: 1.4rem;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.taste-shell h1 {
+  max-width: 10ch;
+  color: var(--paper);
+  font-weight: 760;
+  line-height: 0.9;
+  letter-spacing: -0.075em;
+}
+
+.taste-shell h1 .text-transparent {
+  color: var(--accent);
+  text-shadow: none;
+}
+
+.taste-shell h1 + p {
+  max-width: 34rem;
+  margin-top: 2rem;
+  color: var(--paper-muted);
+  font-size: 1.02rem;
+}
+
+.taste-shell section[id="hero"] .bg-white {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
+}
+
+.taste-shell .resume-panel {
+  max-width: 34rem;
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+  background:
+    linear-gradient(145deg, rgba(245, 239, 226, 0.1), rgba(245, 239, 226, 0.03)),
+    rgba(29, 29, 24, 0.82);
+  border: 1px solid rgba(245, 239, 226, 0.16);
+  border-radius: 1.8rem;
+}
+
+.taste-shell .resume-panel section {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(245, 239, 226, 0.1);
+}
+
+.taste-shell .resume-panel section:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.taste-shell .resume-panel h4,
+.taste-shell .resume-panel h3 {
+  color: var(--paper);
+}
+
+.taste-shell .resume-panel ul,
+.taste-shell .resume-panel p,
+.taste-shell .resume-panel span {
+  color: var(--paper-muted);
+}
+
+.taste-shell .showcase-section,
+.taste-shell .projects-section {
+  padding-top: clamp(6rem, 10vw, 9rem);
+  padding-bottom: clamp(6rem, 10vw, 9rem);
+}
+
+.taste-shell .showcase-section > div,
+.taste-shell .projects-section > div {
+  max-width: 1400px;
+}
+
+.taste-shell .showcase-section .text-center {
+  text-align: left;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: end;
+}
+
+.taste-shell .showcase-section h2,
+.taste-shell .projects-section h2 {
+  color: var(--paper);
+  font-size: clamp(2.6rem, 6vw, 5.8rem);
+  line-height: 0.92;
+  letter-spacing: -0.075em;
+}
+
+.taste-shell .showcase-section p,
+.taste-shell .projects-section p {
+  color: var(--paper-dim);
+}
+
+.taste-shell .showcase-frame {
+  border-radius: 2rem;
+  border-color: rgba(245, 239, 226, 0.16);
+  background:
+    linear-gradient(135deg, rgba(245, 239, 226, 0.08), transparent),
+    rgba(22, 22, 18, 0.7);
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.36);
+}
+
+.taste-shell .project-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.taste-shell .project-card {
+  min-height: 23rem;
+  border-radius: 1.7rem;
+  background:
+    linear-gradient(145deg, rgba(245, 239, 226, 0.08), rgba(245, 239, 226, 0.025)),
+    rgba(30, 30, 25, 0.78);
+  border-color: rgba(245, 239, 226, 0.14);
+  transform: translateZ(0);
+}
+
+.taste-shell .project-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(205, 165, 108, 0.38);
+}
+
+.taste-shell .project-card > div:first-of-type,
+.taste-shell .project-card > button:first-of-type:not(.absolute) {
+  min-height: 14rem;
+}
+
+.taste-shell .project-card .bg-white\/\[0\.05\] {
+  background: rgba(16, 16, 13, 0.34);
+}
+
+.taste-shell .project-card h3 {
+  color: var(--paper);
+}
+
+.taste-shell .project-card p,
+.taste-shell .project-card textarea {
+  color: var(--paper-muted);
+}
+
+.taste-shell .project-card button[class*="rounded-full"]:last-child {
+  background: rgba(245, 239, 226, 0.055);
+  border-color: rgba(245, 239, 226, 0.12);
+}
+
+.taste-shell .project-card button[class*="rounded-full"]:last-child:hover {
+  color: var(--paper);
+  border-color: rgba(205, 165, 108, 0.42);
+  background: rgba(205, 165, 108, 0.1);
+}
+
+.taste-shell .project-detail-shell {
+  max-width: min(1180px, calc(100vw - 2rem));
+  max-height: calc(100dvh - 3rem);
+  overflow: auto;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  border-radius: 2rem;
+  background:
+    linear-gradient(140deg, rgba(245, 239, 226, 0.09), rgba(245, 239, 226, 0.025)),
+    rgba(21, 21, 17, 0.94);
+}
+
+.taste-shell .project-detail-shell > .grid {
+  min-height: min(70dvh, 760px);
+}
+
+.taste-shell .project-carousel {
+  min-height: 100%;
+  border-radius: 1.6rem;
+  border-color: rgba(245, 239, 226, 0.12);
+  background:
+    radial-gradient(circle at 50% 40%, rgba(245, 239, 226, 0.08), transparent 18rem),
+    #11110e;
+}
+
+.taste-shell .project-carousel > button:first-child {
+  min-height: min(70dvh, 720px);
+}
+
+.taste-shell .project-carousel [aria-label^="查看第"] {
+  box-shadow: none !important;
+}
+
+.taste-shell .fixed.inset-0 {
+  background-color: rgba(7, 8, 7, 0.78);
+}
+
+.taste-shell input,
+.taste-shell textarea {
+  caret-color: var(--accent);
+}
+
+.taste-shell input:focus,
+.taste-shell textarea:focus {
+  color: var(--paper);
+}
+
+.taste-shell .text-red-400 {
+  color: #e8a09a !important;
+}
+
+@media (min-width: 768px) {
+  .taste-shell .project-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: stretch;
+  }
+
+  .taste-shell .project-card:first-child {
+    grid-row: span 2;
+    min-height: 34rem;
+  }
+
+  .taste-shell .project-card:first-child > div:first-of-type,
+  .taste-shell .project-card:first-child > button:first-of-type:not(.absolute) {
+    min-height: 22rem;
+  }
+
+  .taste-shell .project-card:nth-child(2),
+  .taste-shell .project-card:nth-child(3) {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.86fr) minmax(0, 1fr);
+    min-height: 16rem;
+  }
+
+  .taste-shell .project-card:nth-child(2) > div:first-of-type,
+  .taste-shell .project-card:nth-child(3) > div:first-of-type,
+  .taste-shell .project-card:nth-child(2) > button:first-of-type:not(.absolute),
+  .taste-shell .project-card:nth-child(3) > button:first-of-type:not(.absolute) {
+    height: 100%;
+    min-height: 100%;
+    border-bottom: 0;
+    border-right: 1px solid rgba(245, 239, 226, 0.1);
+  }
+}
+
+@media (min-width: 1180px) {
+  .taste-shell section[id="hero"] {
+    grid-template-columns: minmax(0, 1.12fr) minmax(28rem, 0.88fr);
+  }
+
+  .taste-shell .project-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .taste-shell section[id="hero"] {
+    padding-top: 6.5rem;
+    padding-bottom: 4rem;
+  }
+
+  .taste-shell section[id="hero"] > div:first-child::before {
+    text-align: center;
+  }
+
+  .taste-shell h1 {
+    max-width: 12ch;
+    text-align: center;
+    font-size: clamp(3.35rem, 16vw, 4.8rem);
+  }
+
+  .taste-shell h1 + p {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .taste-shell .showcase-section .text-center {
+    display: block;
+    text-align: left;
+  }
+
+  .taste-shell .project-detail-shell {
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .taste-shell .project-carousel > button:first-child {
+    min-height: 27rem;
+  }
+}
+
+/* high-end-visual-design pass: soft structuralism + editorial split. */
+.taste-shell {
+  --cream: #f6efe2;
+  --cream-strong: #fff9ec;
+  --cream-soft: rgba(246, 239, 226, 0.72);
+  --cream-faint: rgba(246, 239, 226, 0.42);
+  --soft-line: rgba(246, 239, 226, 0.16);
+  --espresso: #12110e;
+  --espresso-2: #1a1813;
+  --tray: rgba(246, 239, 226, 0.055);
+  --core: rgba(24, 23, 18, 0.94);
+  --agency-accent: #d1aa74;
+  color: var(--cream-soft);
+  background:
+    radial-gradient(circle at 8% 16%, rgba(209, 170, 116, 0.22), transparent 28rem),
+    radial-gradient(circle at 86% 22%, rgba(184, 199, 174, 0.12), transparent 30rem),
+    linear-gradient(118deg, #17140f 0%, #0e100d 50%, #191711 100%);
+}
+
+body {
+  font-family: "Plus Jakarta Sans", "Geist", "Satoshi", "Aptos", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.taste-shell::before {
+  opacity: 0.18;
+  background-size: 112px 112px;
+}
+
+.taste-shell nav.glass {
+  top: 1.25rem;
+  left: 50%;
+  right: auto;
+  width: min(calc(100% - 2rem), 1080px);
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(14, 14, 11, 0.62);
+  border: 1px solid rgba(246, 239, 226, 0.14);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 22px 70px rgba(0, 0, 0, 0.26);
+}
+
+.taste-shell nav.glass > div {
+  padding: 0.72rem 1rem;
+}
+
+.taste-shell nav .hidden.items-center {
+  gap: 0.55rem;
+}
+
+.taste-shell nav .hidden.items-center > button {
+  border-radius: 999px;
+  padding: 0.52rem 0.9rem;
+  color: rgba(246, 239, 226, 0.58);
+}
+
+.taste-shell nav .hidden.items-center > button:hover {
+  background: rgba(246, 239, 226, 0.075);
+  color: var(--cream);
+}
+
+.taste-shell section[id="hero"] {
+  padding-top: 10rem;
+  padding-bottom: 8rem;
+}
+
+.taste-shell section[id="hero"] > div:first-child::before {
+  width: fit-content;
+  border: 1px solid rgba(209, 170, 116, 0.28);
+  border-radius: 999px;
+  padding: 0.42rem 0.7rem;
+  background: rgba(209, 170, 116, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.taste-shell h1 {
+  color: var(--cream-strong);
+  text-wrap: balance;
+}
+
+.taste-shell h1 .text-transparent {
+  color: var(--agency-accent);
+}
+
+.taste-shell .cta-primary {
+  padding: 0.5rem 0.58rem 0.5rem 1.35rem;
+  background: var(--cream-strong) !important;
+  color: #14120e !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
+.taste-shell .cta-primary:hover .cta-icon,
+.taste-shell .detail-link:hover .detail-icon {
+  transform: translateX(0.18rem) translateY(-1px) scale(1.05);
+}
+
+.taste-shell .glass-card {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: var(--tray);
+  border: 1px solid rgba(246, 239, 226, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 28px 90px rgba(0, 0, 0, 0.28) !important;
+}
+
+.taste-shell .glass-card::before {
+  inset: 0.42rem;
+  border-radius: calc(inherit - 0.42rem);
+  background:
+    linear-gradient(145deg, rgba(246, 239, 226, 0.095), rgba(246, 239, 226, 0.025)),
+    var(--core);
+  border: 1px solid rgba(246, 239, 226, 0.1);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.11);
+}
+
+.taste-shell .resume-panel {
+  padding: clamp(1.8rem, 3vw, 2.5rem);
+  border-radius: 2.35rem;
+  transform: translateY(1.2rem) rotate(0.45deg);
+}
+
+.taste-shell .resume-panel:hover {
+  transform: translateY(0.7rem) rotate(0deg);
+}
+
+.taste-shell .showcase-section,
+.taste-shell .projects-section {
+  padding-top: clamp(8rem, 14vw, 12rem);
+  padding-bottom: clamp(8rem, 14vw, 13rem);
+}
+
+.taste-shell .showcase-section h2,
+.taste-shell .projects-section h2 {
+  text-wrap: balance;
+  font-size: clamp(3rem, 8vw, 7rem);
+}
+
+.taste-shell .showcase-frame {
+  padding: 0.5rem;
+  border-radius: 2.4rem;
+  background: rgba(246, 239, 226, 0.055);
+}
+
+.taste-shell .showcase-frame > div,
+.taste-shell .showcase-frame > button {
+  border-radius: 1.95rem;
+}
+
+.taste-shell .project-grid {
+  gap: 1.4rem;
+}
+
+.taste-shell .project-card {
+  padding: 0.42rem;
+  border-radius: 2.25rem;
+  min-height: 24rem;
+}
+
+.taste-shell .project-card::before {
+  inset: 0.42rem;
+}
+
+.taste-shell .project-card > div:first-of-type,
+.taste-shell .project-card > button:first-of-type:not(.absolute) {
+  border-radius: 1.82rem 1.82rem 0.72rem 0.72rem;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(246, 239, 226, 0.12), transparent 12rem),
+    rgba(14, 14, 11, 0.55);
+}
+
+.taste-shell .project-card > div:last-child {
+  border-radius: 0.72rem 0.72rem 1.82rem 1.82rem;
+  margin-top: 0.42rem;
+  background: rgba(14, 14, 11, 0.42);
+}
+
+.taste-shell .project-card:hover {
+  transform: translateY(-8px) rotate(-0.25deg);
+}
+
+.taste-shell .project-card:nth-child(2):hover,
+.taste-shell .project-card:nth-child(3):hover {
+  transform: translateY(-5px) rotate(0.25deg);
+}
+
+.taste-shell .project-detail-shell {
+  border-radius: 2.4rem;
+  background: rgba(246, 239, 226, 0.06);
+}
+
+.taste-shell .project-detail-shell::before {
+  inset: 0.48rem;
+  border-radius: 1.95rem;
+}
+
+.taste-shell .project-carousel {
+  border-radius: 1.8rem;
+  background:
+    radial-gradient(circle at 50% 52%, rgba(246, 239, 226, 0.11), transparent 15rem),
+    #11110e;
+}
+
+.taste-shell .project-carousel > button:first-child {
+  border-radius: 1.7rem;
+}
+
+.taste-shell input,
+.taste-shell textarea {
+  border-radius: 1rem;
+}
+
+.taste-shell button,
+.taste-shell .project-card,
+.taste-shell .resume-panel,
+.taste-shell .project-detail-shell {
+  transition:
+    transform 700ms cubic-bezier(0.32, 0.72, 0, 1),
+    border-color 700ms cubic-bezier(0.32, 0.72, 0, 1),
+    background-color 700ms cubic-bezier(0.32, 0.72, 0, 1),
+    color 700ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 700ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (min-width: 768px) {
+  .taste-shell section[id="hero"] {
+    gap: clamp(4rem, 10vw, 9rem);
+  }
+
+  .taste-shell .project-card:first-child {
+    min-height: 38rem;
+  }
+
+  .taste-shell .project-card:first-child > div:first-of-type,
+  .taste-shell .project-card:first-child > button:first-of-type:not(.absolute) {
+    min-height: 25rem;
+  }
+
+  .taste-shell .project-card:nth-child(2),
+  .taste-shell .project-card:nth-child(3) {
+    grid-template-columns: minmax(10rem, 0.9fr) minmax(0, 1fr);
+  }
+
+  .taste-shell .project-card:nth-child(2) > div:first-of-type,
+  .taste-shell .project-card:nth-child(3) > div:first-of-type,
+  .taste-shell .project-card:nth-child(2) > button:first-of-type:not(.absolute),
+  .taste-shell .project-card:nth-child(3) > button:first-of-type:not(.absolute) {
+    border-radius: 1.82rem 0.72rem 0.72rem 1.82rem;
+  }
+
+  .taste-shell .project-card:nth-child(2) > div:last-child,
+  .taste-shell .project-card:nth-child(3) > div:last-child {
+    margin-top: 0;
+    margin-left: 0.42rem;
+    border-radius: 0.72rem 1.82rem 1.82rem 0.72rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .taste-shell nav.glass {
+    top: 0.8rem;
+    width: calc(100% - 1rem);
+  }
+
+  .taste-shell nav.glass > div {
+    padding-inline: 1rem;
+  }
+
+  .taste-shell .resume-panel {
+    transform: none;
+    border-radius: 1.8rem;
+  }
+
+  .taste-shell .project-card,
+  .taste-shell .project-detail-shell {
+    border-radius: 1.7rem;
+  }
+}
+
+/* Tesla-inspired product showcase pass: monochrome, spacious, technical. */
+.taste-shell {
+  --tesla-black: #070707;
+  --tesla-ink: #0f1011;
+  --tesla-panel: rgba(18, 19, 21, 0.72);
+  --tesla-panel-soft: rgba(255, 255, 255, 0.055);
+  --tesla-line: rgba(255, 255, 255, 0.12);
+  --tesla-line-strong: rgba(255, 255, 255, 0.2);
+  --tesla-white: #f5f7f8;
+  --tesla-muted: rgba(245, 247, 248, 0.68);
+  --tesla-faint: rgba(245, 247, 248, 0.42);
+  --tesla-silver: #b8c0c8;
+  --tesla-bluegray: #8fa3b8;
+  color: var(--tesla-muted);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(143, 163, 184, 0.16), transparent 38rem),
+    linear-gradient(180deg, #121416 0%, #070707 44%, #0c0d0e 100%);
+}
+
+.taste-shell::before {
+  opacity: 0.14;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: linear-gradient(to bottom, black, transparent 74%);
+}
+
+.taste-shell::after {
+  opacity: 0.06;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.65) 0 1px, transparent 1px);
+  background-size: 28px 28px;
+  mix-blend-mode: normal;
+}
+
+body {
+  font-family: "Aptos Display", "Segoe UI Variable Display", "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--tesla-black);
+}
+
+.taste-shell nav.glass {
+  top: 1.5rem;
+  width: min(calc(100% - 3rem), 1180px);
+  background: rgba(12, 13, 14, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.taste-shell nav.glass > div {
+  padding: 0.68rem 1.15rem;
+}
+
+.taste-shell nav button:first-child {
+  color: var(--tesla-white);
+  font-weight: 520;
+  letter-spacing: -0.02em;
+}
+
+.taste-shell nav .hidden.items-center > button {
+  color: var(--tesla-faint);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.taste-shell nav .hidden.items-center > button:hover {
+  background: rgba(255, 255, 255, 0.075);
+  color: var(--tesla-white);
+}
+
+.taste-shell section[id="hero"] {
+  max-width: 1440px;
+  min-height: 100dvh;
+  padding-top: clamp(8rem, 13vh, 10rem);
+  padding-bottom: clamp(6rem, 12vh, 9rem);
+  align-items: center;
+}
+
+.taste-shell section[id="hero"] > div:first-child {
+  transform: none;
+}
+
+.taste-shell section[id="hero"] > div:first-child::before {
+  content: "AI CODING GROWTH ARCHIVE";
+  margin-bottom: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--tesla-silver);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.36em;
+  box-shadow: none;
+}
+
+.taste-shell h1 {
+  max-width: 11.8ch;
+  color: var(--tesla-white);
+  font-size: clamp(4.2rem, 8.2vw, 8.7rem);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: 0.035em;
+  text-wrap: balance;
+}
+
+.taste-shell h1 .text-transparent {
+  color: var(--tesla-white);
+  font-weight: 360;
+  letter-spacing: 0.018em;
+}
+
+.taste-shell h1 + p {
+  max-width: 42rem;
+  margin-top: 2.4rem;
+  color: var(--tesla-muted);
+  font-size: clamp(1rem, 1.28vw, 1.2rem);
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+}
+
+.taste-shell .cta-primary {
+  margin-top: 0.4rem;
+  background: var(--tesla-white) !important;
+  color: #111315 !important;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+}
+
+.taste-shell .cta-primary:hover {
+  background: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+.taste-shell .cta-primary .cta-icon {
+  background: rgba(17, 19, 21, 0.08);
+}
+
+.taste-shell .glass-card {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--tesla-line);
+  box-shadow: none !important;
+}
+
+.taste-shell .glass-card::before {
+  inset: 1px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+    rgba(12, 13, 14, 0.7);
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+}
+
+.taste-shell .resume-panel {
+  max-width: 35rem;
+  padding: clamp(1.8rem, 2.6vw, 2.35rem);
+  border-radius: 1.5rem;
+  transform: none;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.taste-shell .resume-panel:hover {
+  transform: translateY(-4px);
+  border-color: var(--tesla-line-strong);
+}
+
+.taste-shell .resume-panel h3,
+.taste-shell .resume-panel h4,
+.taste-shell .project-card h3,
+.taste-shell .project-detail-shell h3 {
+  color: var(--tesla-white);
+  font-weight: 520;
+  letter-spacing: -0.01em;
+}
+
+.taste-shell .resume-panel section {
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.taste-shell .resume-panel ul,
+.taste-shell .resume-panel p,
+.taste-shell .resume-panel span {
+  color: var(--tesla-muted);
+}
+
+.taste-shell .text-blue-400,
+.taste-shell .text-blue-300 {
+  color: var(--tesla-silver) !important;
+}
+
+.taste-shell [class*="bg-blue-500"] {
+  background-color: rgba(184, 192, 200, 0.12) !important;
+}
+
+.taste-shell .showcase-section,
+.taste-shell .projects-section {
+  padding-top: clamp(7rem, 12vw, 11rem);
+  padding-bottom: clamp(7rem, 12vw, 11rem);
+}
+
+.taste-shell .showcase-section .text-center {
+  grid-template-columns: minmax(0, 0.95fr) minmax(24rem, 0.75fr);
+  align-items: center;
+}
+
+.taste-shell .showcase-section h2,
+.taste-shell .projects-section h2 {
+  color: var(--tesla-white);
+  font-size: clamp(2.8rem, 5.2vw, 5.9rem);
+  font-weight: 320;
+  line-height: 1.02;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.taste-shell .showcase-section p,
+.taste-shell .projects-section p {
+  max-width: 42rem;
+  color: var(--tesla-faint);
+  line-height: 1.8;
+}
+
+.taste-shell .showcase-frame {
+  border-radius: 1.6rem;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.035);
+  border-color: var(--tesla-line);
+  box-shadow: none;
+}
+
+.taste-shell .project-grid {
+  gap: 1.25rem;
+}
+
+.taste-shell .project-card {
+  border-radius: 1.45rem;
+  padding: 0;
+  min-height: 23rem;
+  background: rgba(255, 255, 255, 0.045);
+  border-color: var(--tesla-line);
+}
+
+.taste-shell .project-card::before {
+  display: none;
+}
+
+.taste-shell .project-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(184, 192, 200, 0.38);
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.taste-shell .project-card > div:first-of-type,
+.taste-shell .project-card > button:first-of-type:not(.absolute) {
+  border-radius: 1.45rem 1.45rem 0 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(8, 9, 10, 0.58);
+}
+
+.taste-shell .project-card > div:last-child {
+  margin: 0;
+  border-radius: 0 0 1.45rem 1.45rem;
+  background: rgba(9, 10, 11, 0.32);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.taste-shell .project-card p,
+.taste-shell .project-card textarea,
+.taste-shell .project-detail-shell p,
+.taste-shell .project-detail-shell li {
+  color: var(--tesla-muted);
+  line-height: 1.75;
+}
+
+.taste-shell .detail-link {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--tesla-faint);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.taste-shell .detail-link:hover {
+  color: var(--tesla-white);
+  border-color: rgba(184, 192, 200, 0.42);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.taste-shell .star-btn:hover {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.taste-shell .project-detail-shell {
+  border-radius: 1.55rem;
+  background: rgba(255, 255, 255, 0.052);
+  border-color: var(--tesla-line);
+}
+
+.taste-shell .project-detail-shell::before {
+  display: none;
+}
+
+.taste-shell .project-carousel {
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(184, 192, 200, 0.1), transparent 18rem),
+    #08090a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.taste-shell .project-carousel > button:first-child {
+  border-radius: 1.2rem;
+}
+
+.taste-shell .fixed.inset-0 {
+  background-color: rgba(6, 7, 8, 0.74);
+}
+
+.taste-shell button,
+.taste-shell .project-card,
+.taste-shell .resume-panel,
+.taste-shell .project-detail-shell {
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (min-width: 768px) {
+  .taste-shell section[id="hero"] {
+    gap: clamp(4rem, 9vw, 8rem);
+  }
+
+  .taste-shell .project-grid {
+    grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr);
+  }
+
+  .taste-shell .project-card:first-child {
+    min-height: 36rem;
+  }
+
+  .taste-shell .project-card:first-child > div:first-of-type,
+  .taste-shell .project-card:first-child > button:first-of-type:not(.absolute) {
+    min-height: 24rem;
+  }
+
+  .taste-shell .project-card:nth-child(2),
+  .taste-shell .project-card:nth-child(3) {
+    grid-template-columns: minmax(11rem, 0.9fr) minmax(0, 1fr);
+  }
+
+  .taste-shell .project-card:nth-child(2) > div:first-of-type,
+  .taste-shell .project-card:nth-child(3) > div:first-of-type,
+  .taste-shell .project-card:nth-child(2) > button:first-of-type:not(.absolute),
+  .taste-shell .project-card:nth-child(3) > button:first-of-type:not(.absolute) {
+    border-radius: 1.45rem 0 0 1.45rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .taste-shell .project-card:nth-child(2) > div:last-child,
+  .taste-shell .project-card:nth-child(3) > div:last-child {
+    margin-left: 0;
+    border-radius: 0 1.45rem 1.45rem 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .taste-shell nav.glass {
+    top: 0.75rem;
+    width: calc(100% - 1rem);
+  }
+
+  .taste-shell section[id="hero"] {
+    padding-top: 7rem;
+  }
+
+  .taste-shell section[id="hero"] > div:first-child::before {
+    margin-inline: auto;
+    text-align: center;
+    letter-spacing: 0.22em;
+  }
+
+  .taste-shell h1 {
+    max-width: 9.8ch;
+    font-size: clamp(3rem, 13vw, 4.6rem);
+    line-height: 1.08;
+    letter-spacing: 0.02em;
+  }
+
+  .taste-shell .showcase-section h2,
+  .taste-shell .projects-section h2 {
+    white-space: normal;
+    font-size: clamp(2.5rem, 11vw, 4rem);
+  }
+
+  .taste-shell .showcase-section .text-center {
+    display: block;
+  }
+
+  .taste-shell .project-card,
+  .taste-shell .project-detail-shell,
+  .taste-shell .resume-panel {
+    border-radius: 1.25rem;
+  }
+}
+
+/* Gemini HTML reconstruction: left-side archive panel + cinematic aerospace backdrop. */
+:root {
+  --mission-blue: #93c5fd;
+  --mission-blue-strong: #3b82f6;
+  --mission-white: #f8fafc;
+  --mission-muted: rgba(226, 232, 240, 0.62);
+  --mission-faint: rgba(226, 232, 240, 0.36);
+  --mission-line: rgba(255, 255, 255, 0.09);
+  --mission-line-strong: rgba(147, 197, 253, 0.38);
+  --mission-panel: rgba(15, 18, 24, 0.54);
+}
+
+body {
+  overflow: hidden;
+  background: #000;
+}
+
+.mission-shell {
+  font-family: "Inter", "Segoe UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--mission-white);
+}
+
+.mission-shell .game-bg {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-image: url("/space-bg.png");
+  background-position: center bottom;
+  background-size: cover;
+  filter: saturate(0.88) contrast(1.04) brightness(0.76);
+  transform: translateZ(0);
+}
+
+.mission-shell .bg-overlay-left {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 80% 15%, rgba(147, 197, 253, 0.13), transparent 26rem),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.64));
+}
+
+.mission-shell .scroll-panel {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 4rem;
+  scroll-behavior: smooth;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(147, 197, 253, 0.68);
+}
+
+.mission-shell .glass,
+.mission-shell .glass-card {
+  border: 1px solid var(--mission-line);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+    var(--mission-panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 70px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.mission-shell nav.glass {
+  border-width: 0 0 1px;
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(8, 10, 14, 0.58);
+  box-shadow: none;
+}
+
+.mission-shell .brand-mark {
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace;
+}
+
+.mission-shell .brand-mark span:first-child,
+.mission-shell .section-kicker,
+.mission-shell .text-blue-400,
+.mission-shell .text-blue-300 {
+  color: var(--mission-blue) !important;
+}
+
+.mission-shell section {
+  max-width: none;
+}
+
+.mission-shell section[id="hero"] {
+  display: flex;
+  min-height: 85vh;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6rem, 12vw, 9rem) clamp(1.5rem, 5vw, 3rem) 4rem;
+}
+
+.mission-shell section[id="hero"] h1 {
+  max-width: 12ch;
+  font-size: clamp(3.35rem, 6.4vw, 4.75rem);
+  font-weight: 620;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.mission-shell section[id="hero"] h1 span {
+  background-image: linear-gradient(90deg, #f8fafc 0%, #8b97a5 100%);
+  text-shadow: none;
+}
+
+.mission-shell section[id="hero"] p {
+  max-width: 36rem;
+  color: var(--mission-muted);
+  font-weight: 300;
+  line-height: 1.85;
+}
+
+.mission-shell .cta-primary,
+.mission-shell .mission-button {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.055)),
+    rgba(12, 15, 20, 0.62);
+  color: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 16px 38px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.mission-shell .cta-primary:hover,
+.mission-shell .mission-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(147, 197, 253, 0.46);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
+    rgba(18, 24, 32, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 18px 44px rgba(59, 130, 246, 0.13);
+}
+
+.mission-shell .cta-icon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mission-shell .cta-primary:hover .cta-icon,
+.mission-shell .detail-link:hover .detail-icon {
+  transform: translateX(3px);
+}
+
+.mission-shell .resume-panel {
+  max-width: 100%;
+  border-radius: 1rem;
+  background: rgba(18, 22, 30, 0.5);
+  box-shadow: none;
+}
+
+.mission-shell .showcase-section,
+.mission-shell .projects-section,
+.mission-shell .timeline-section {
+  padding: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem);
+}
+
+.mission-shell .showcase-section > div,
+.mission-shell .projects-section > div,
+.mission-shell .timeline-section {
+  max-width: 100%;
+}
+
+.mission-shell .showcase-section h2,
+.mission-shell .projects-section h2,
+.mission-shell .timeline-section h2 {
+  color: var(--mission-white);
+  font-weight: 330;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.mission-shell .showcase-section h2::before,
+.mission-shell .projects-section h2::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 0.9em;
+  margin-right: 0.55em;
+  vertical-align: -0.08em;
+  border-radius: 999px;
+  background: var(--mission-blue-strong);
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+}
+
+.mission-shell .showcase-section .text-center {
+  text-align: left;
+}
+
+.mission-shell .showcase-section p,
+.mission-shell .projects-section p,
+.mission-shell .timeline-section p {
+  color: var(--mission-faint);
+}
+
+.mission-shell .showcase-frame,
+.mission-shell .project-card,
+.mission-shell .project-detail-shell,
+.mission-shell .add-mission-card {
+  border-radius: 1rem;
+  border-color: var(--mission-line);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+    rgba(17, 20, 27, 0.55);
+  box-shadow: none;
+}
+
+.mission-shell .project-grid {
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.mission-shell .project-card {
+  min-height: 25rem;
+}
+
+.mission-shell .project-card:hover,
+.mission-shell .add-mission-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--mission-line-strong);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.035)),
+    rgba(20, 25, 34, 0.66);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 18px 50px rgba(59, 130, 246, 0.12);
+}
+
+.mission-shell .project-card img {
+  height: 100%;
+}
+
+.mission-shell .project-card > div:first-of-type,
+.mission-shell .project-card > button:first-of-type:not(.absolute) {
+  height: 10.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.mission-shell .project-card h3,
+.mission-shell .project-detail-shell h3,
+.mission-shell .resume-panel h3,
+.mission-shell .timeline-section h3 {
+  letter-spacing: -0.02em;
+}
+
+.mission-shell .project-card p,
+.mission-shell .project-card textarea,
+.mission-shell .resume-panel li,
+.mission-shell .resume-panel span,
+.mission-shell .project-detail-shell p,
+.mission-shell .project-detail-shell li {
+  color: var(--mission-muted);
+  line-height: 1.7;
+}
+
+.mission-shell .detail-link,
+.mission-shell footer button {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.mission-shell .detail-link:hover,
+.mission-shell footer button:hover {
+  border-color: var(--mission-line-strong);
+  color: #fff;
+}
+
+.mission-shell .project-carousel {
+  border-radius: 0.9rem;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(147, 197, 253, 0.11), transparent 18rem),
+    #05070a;
+}
+
+.mission-shell input,
+.mission-shell textarea {
+  border-radius: 0.75rem;
+}
+
+.mission-shell input:focus,
+.mission-shell textarea:focus {
+  box-shadow: 0 0 0 1px rgba(147, 197, 253, 0.34);
+}
+
+.mission-shell footer {
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.28);
+}
+
+@media (min-width: 768px) {
+  .mission-shell .project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mission-shell .game-bg {
+    left: auto;
+    width: 80%;
+    background-position: center 85%;
+  }
+
+  .mission-shell .bg-overlay-left {
+    background:
+      radial-gradient(circle at 70% 12%, rgba(147, 197, 253, 0.11), transparent 22rem),
+      linear-gradient(90deg, #000 0%, #000 20.5%, rgba(0, 0, 0, 0.9) 25%, rgba(0, 0, 0, 0.6) 45%, transparent 75%);
+  }
+
+  .mission-shell .scroll-panel {
+    width: 50%;
+  }
+
+  .mission-shell section[id="hero"] {
+    display: block;
+    padding-top: clamp(7rem, 14vw, 10rem);
+  }
+
+  .mission-shell section[id="hero"] > div:first-child {
+    min-height: 58vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mission-shell section[id="hero"] > div:last-child {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    overflow: auto;
+  }
+
+  .mission-shell .scroll-panel {
+    position: relative;
+    min-height: 100vh;
+  }
+
+  .mission-shell nav.glass {
+    background: rgba(5, 7, 10, 0.72);
+  }
+
+  .mission-shell section[id="hero"] {
+    min-height: auto;
+    padding-top: 6.5rem;
+  }
+
+  .mission-shell section[id="hero"] h1 {
+    max-width: 10ch;
+    font-size: clamp(3.2rem, 15vw, 4.35rem);
+  }
+
+  .mission-shell .showcase-section h2,
+  .mission-shell .projects-section h2,
+  .mission-shell .timeline-section h2 {
+    white-space: normal;
+  }
+}
+
+/* Final parity overrides: these sit last so older redesign passes cannot leak through. */
+.mission-shell .projects-section h2::before,
+.mission-shell .showcase-section h2::before {
+  content: none !important;
+  display: none !important;
+}
+
+.mission-shell section[id="hero"] {
+  min-height: 85vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+  padding: clamp(5.75rem, 10vh, 7.5rem) 1.5rem clamp(3rem, 7vh, 5rem) !important;
+}
+
+.mission-shell section[id="hero"] > div:first-child {
+  min-height: auto !important;
+  display: block !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  max-width: 11.7ch !important;
+  margin-bottom: 2rem !important;
+  font-size: clamp(3.35rem, 5.9vw, 4.9rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.mission-shell section[id="hero"] p {
+  max-width: 34rem !important;
+  color: rgb(156, 163, 175) !important;
+  font-size: clamp(1.05rem, 1.45vw, 1.35rem) !important;
+  line-height: 1.6 !important;
+}
+
+.mission-shell .projects-section {
+  margin-top: 20vh !important;
+}
+
+.mission-shell .project-grid {
+  grid-template-columns: 1fr !important;
+  gap: 1.5rem !important;
+}
+
+@media (min-width: 1280px) {
+  .mission-shell .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .mission-shell section[id="hero"],
+  .mission-shell .projects-section,
+  .mission-shell .timeline-section,
+  .mission-shell .dossier-section {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+  }
+}
+
+.mission-shell .scroll-panel {
+  border-right: 1px solid rgba(147, 197, 253, 0.14) !important;
+  box-shadow: 28px 0 80px rgba(0, 0, 0, 0.34) !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar-thumb {
+  background: rgba(147, 197, 253, 0.42) !important;
+}
+
+@media (min-width: 1024px) {
+  .mission-shell .scroll-panel {
+    width: min(46vw, 42rem) !important;
+  }
+
+  .mission-shell .game-bg {
+    width: 82% !important;
+    background-position: 58% 84% !important;
+  }
+
+  .mission-shell .bg-overlay-left {
+    background:
+      linear-gradient(90deg, #000 0%, #000 18%, rgba(0, 0, 0, 0.92) 25%, rgba(0, 0, 0, 0.68) 42%, rgba(0, 0, 0, 0.24) 61%, transparent 78%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.32)) !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .mission-shell .scroll-panel {
+    width: 43.5rem !important;
+  }
+}
+
+/* Absolute final hero composition override. */
+.mission-shell .game-bg {
+  inset: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  filter: saturate(0.92) contrast(1.05) brightness(0.82) !important;
+}
+
+.mission-shell .bg-overlay-left {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.9) 18%, rgba(0, 0, 0, 0.62) 38%, rgba(0, 0, 0, 0.18) 68%, transparent 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.08) 28%, rgba(0, 0, 0, 0.38) 100%) !important;
+}
+
+.mission-shell .scroll-panel {
+  width: 100% !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
+
+.mission-shell .scroll-panel::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.mission-shell nav.glass {
+  width: 100% !important;
+  background: rgba(4, 6, 10, 0.46) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035) !important;
+}
+
+.mission-shell nav.glass > div {
+  padding: 1rem clamp(1.5rem, 3vw, 3rem) !important;
+}
+
+.mission-shell nav .hidden.items-center {
+  gap: clamp(1.5rem, 2.3vw, 2.4rem) !important;
+}
+
+.mission-shell nav .hidden.items-center > button {
+  font-family: "Space Mono", "Cascadia Mono", Consolas, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  color: rgba(255, 255, 255, 0.56) !important;
+}
+
+.mission-shell section[id="hero"] {
+  min-height: calc(100vh - 3.75rem) !important;
+  justify-content: center !important;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.75rem, 3.3vw, 3.2rem) clamp(4rem, 8vh, 6rem) !important;
+}
+
+.mission-shell section[id="hero"] h1 {
+  width: min(56rem, 58vw) !important;
+  max-width: none !important;
+  margin-bottom: clamp(1.75rem, 2.4vw, 2.4rem) !important;
+  font-size: clamp(4rem, 5.1vw, 5.7rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.mission-shell section[id="hero"] p {
+  width: min(42rem, 46vw) !important;
+  max-width: none !important;
+  font-size: clamp(1.1rem, 1.35vw, 1.45rem) !important;
+  line-height: 1.6 !important;
+  font-weight: 400 !important;
+  color: rgba(229, 231, 235, 0.62) !important;
+}
+
+@media (max-width: 767px) {
+  .mission-shell section[id="hero"] h1,
+  .mission-shell section[id="hero"] p {
+    width: 100% !important;
+  }
+
+  .mission-shell section[id="hero"] h1 {
+    font-size: clamp(3.2rem, 15vw, 4.5rem) !important;
+  }
+}
+
+
+/* Final centering correction for archive sections. */
+.mission-shell .projects-section,
+.mission-shell .timeline-section,
+.mission-shell .dossier-section {
+  width: min(100% - 4rem, 76rem) !important;
+  max-width: 76rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mission-shell .projects-section > div,
+.mission-shell .timeline-section > div,
+.mission-shell .dossier-section > div {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.mission-shell .project-grid {
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  justify-content: center !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 900px) {
+  .mission-shell .projects-section,
+  .mission-shell .timeline-section,
+  .mission-shell .dossier-section {
+    width: min(100% - 2rem, 76rem) !important;
+  }
+
+  .mission-shell .project-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Final split layout: Growth Timeline and User Dossier share one desktop view. */
+.mission-shell .archive-duo {
+  width: min(100% - 5.2rem, 70rem) !important;
+  max-width: 70rem !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(18rem, 0.78fr) minmax(0, 1.22fr) !important;
+  gap: clamp(1.5rem, 3vw, 2.6rem) !important;
+  align-items: start !important;
+  padding: clamp(4rem, 7vw, 5.5rem) 0 !important;
+}
+
+.mission-shell .archive-duo .timeline-section,
+.mission-shell .archive-duo .dossier-section {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mission-shell .archive-duo .timeline-section h2,
+.mission-shell .archive-duo .dossier-section h2 {
+  margin-bottom: 2rem !important;
+}
+
+.mission-shell .archive-duo .timeline-section .glass-card {
+  padding: 1rem !important;
+}
+
+.mission-shell .archive-duo .dossier-section .resume-panel {
+  padding: clamp(1.5rem, 2.5vw, 2rem) !important;
+}
+
+@media (max-width: 1023px) {
+  .mission-shell .archive-duo {
+    width: min(100% - 2.6rem, 70rem) !important;
+    grid-template-columns: 1fr !important;
+    gap: 4rem !important;
+  }
 }

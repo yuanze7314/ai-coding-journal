@@ -3,23 +3,16 @@ import {
   Upload,
   Star,
   Image,
-  ArrowRight,
   Plus,
   Menu,
   X,
-  Sparkles,
   Trash2,
   Lock,
   Unlock,
-  ShieldCheck,
   Eye,
   EyeOff,
   Phone,
   Mail,
-  GraduationCap,
-  Trophy,
-  BriefcaseBusiness,
-  UserRound,
   Maximize2,
   ChevronLeft,
   ChevronRight,
@@ -56,7 +49,32 @@ const defaultProjects = [
 // localStorage 工具函数
 // ========================
 const STORAGE_KEY = 'ai-coding-projects'
+const TIMELINE_STORAGE_KEY = 'ai-coding-timeline'
 const OWNER_PASSWORD = '123456'
+
+const defaultTimeline = [
+  {
+    phase: 'Current',
+    title: '整理项目复盘与求职材料',
+    desc: '系统梳理经管知识背景与 AI 技能库，沉淀可复用的策略、数据分析方法和代码片段。',
+    active: true,
+  },
+  {
+    phase: 'Phase 3',
+    title: '开始搭建 AI Coding 项目展示网站',
+    desc: '设计并部署专属个人成长档案，将项目截图、说明、评分和简历信息整合到同一展示系统。',
+  },
+  {
+    phase: 'Phase 2',
+    title: '开发 A股热点日报 Agent',
+    desc: '结合大模型 API 与自动化工作流，实现金融信息的数据清洗、热点提炼与策略输出。',
+  },
+  {
+    phase: 'Phase 1',
+    title: '完善 AI 产品实习作品集',
+    desc: '探索大模型在内容生产、行业分析和学术研究中的实际落地场景。',
+  },
+]
 
 function loadProjects() {
   try {
@@ -81,11 +99,48 @@ function saveProjects(projects) {
   }
 }
 
+function loadTimeline() {
+  try {
+    const raw = localStorage.getItem(TIMELINE_STORAGE_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed
+    }
+  } catch (e) {
+    console.warn('读取时间线失败', e)
+  }
+  return defaultTimeline
+}
+
+function saveTimeline(timeline) {
+  try {
+    localStorage.setItem(TIMELINE_STORAGE_KEY, JSON.stringify(timeline))
+  } catch (e) {
+    console.warn('保存时间线失败', e)
+  }
+}
+
+function normalizeProjectImages(project) {
+  if (Array.isArray(project.images)) {
+    return project.images.filter(Boolean)
+  }
+  return project.image ? [project.image] : []
+}
+
+function readImageFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onload = (e) => resolve(e.target.result)
+    reader.readAsDataURL(file)
+  })
+}
+
 // ========================
 // 主 App 组件
 // ========================
 export default function App() {
   const [projects, setProjects] = useState(() => loadProjects())
+  const [timeline, setTimeline] = useState(() => loadTimeline())
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
   const [showUnlockModal, setShowUnlockModal] = useState(false)
@@ -101,6 +156,32 @@ export default function App() {
     }
   }, [projects, isOwner])
 
+  useEffect(() => {
+    if (isOwner) {
+      saveTimeline(timeline)
+    }
+  }, [timeline, isOwner])
+
+  useEffect(() => {
+    const revealElements = document.querySelectorAll('.reveal')
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active')
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    )
+
+    revealElements.forEach((element) => observer.observe(element))
+    return () => observer.disconnect()
+  }, [projects.length])
+
   // ---- owner 相关 ----
 
   const handleUnlock = useCallback((password) => {
@@ -109,6 +190,7 @@ export default function App() {
       setShowUnlockModal(false)
       // 重新加载最新数据
       setProjects(loadProjects())
+      setTimeline(loadTimeline())
       return { success: true }
     }
     return { success: false, error: '密码错误' }
@@ -118,6 +200,7 @@ export default function App() {
     setIsOwner(false)
     // 退出编辑模式后，刷新显示只读内容
     setProjects(loadProjects())
+    setTimeline(loadTimeline())
   }, [])
 
   // ---- 核心操作函数 ----
@@ -130,16 +213,31 @@ export default function App() {
   }, [isOwner])
 
   const handleImageUpload = useCallback(
-    (id, file) => {
-      if (!isOwner || !file || !file.type.startsWith('image/')) return
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        updateProject(id, 'image', e.target.result)
-      }
-      reader.readAsDataURL(file)
+    async (id, files) => {
+      if (!isOwner || !files) return
+      const imageFiles = Array.from(files).filter((file) => file.type.startsWith('image/'))
+      if (!imageFiles.length) return
+      const uploadedImages = await Promise.all(imageFiles.map(readImageFile))
+
+      setProjects((prev) =>
+        prev.map((project) => {
+          if (project.id !== id) return project
+          const images = [...normalizeProjectImages(project), ...uploadedImages]
+          return { ...project, images, image: images[0] || '' }
+        })
+      )
     },
-    [isOwner, updateProject]
+    [isOwner]
   )
+
+  const updateTimelineItem = useCallback((index, key, value) => {
+    if (!isOwner) return
+    setTimeline((prev) =>
+      prev.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, [key]: value } : item
+      )
+    )
+  }, [isOwner])
 
   const addProject = useCallback(() => {
     if (!isOwner) return
@@ -170,39 +268,51 @@ export default function App() {
   }
 
   return (
-    <div className="bg-glow relative min-h-screen bg-gray-950 text-white/90 overflow-x-hidden">
-      {/* ========== 顶部导航栏 ========== */}
-      <Navbar
-        mobileMenuOpen={mobileMenuOpen}
-        setMobileMenuOpen={setMobileMenuOpen}
-        scrollTo={scrollTo}
-        isOwner={isOwner}
-        onUnlock={() => setShowUnlockModal(true)}
-        onLock={handleLock}
-      />
+    <div className="mission-shell relative min-h-screen overflow-hidden bg-black text-white/90">
+      <div className="game-bg" aria-hidden="true" />
+      <div className="bg-overlay-left" aria-hidden="true" />
 
-      {/* ========== Hero 区 ========== */}
-      <HeroSection scrollTo={scrollTo} addProject={addProject} isOwner={isOwner} />
+      <div className="scroll-panel" id="scroll-container">
+        {/* ========== 顶部导航栏 ========== */}
+        <Navbar
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+          scrollTo={scrollTo}
+          isOwner={isOwner}
+          onUnlock={() => setShowUnlockModal(true)}
+          onLock={handleLock}
+        />
 
-      {/* ========== 项目效果展示区 ========== */}
-      <ShowcaseSection isOwner={isOwner} />
+        {/* ========== Hero 区 ========== */}
+        <HeroSection scrollTo={scrollTo} />
 
-      {/* ========== 项目卡片区 ========== */}
-      <ProjectsSection
-        projects={projects}
-        updateProject={updateProject}
-        handleImageUpload={handleImageUpload}
-        addProject={addProject}
-        deleteProject={deleteProject}
-        isOwner={isOwner}
-      />
+        {/* ========== 项目卡片区 ========== */}
+        <ProjectsSection
+          projects={projects}
+          updateProject={updateProject}
+          handleImageUpload={handleImageUpload}
+          addProject={addProject}
+          deleteProject={deleteProject}
+          isOwner={isOwner}
+          onUnlock={() => setShowUnlockModal(true)}
+        />
 
-      {/* ========== 底部 ========== */}
-      <Footer
-        isOwner={isOwner}
-        onUnlock={() => setShowUnlockModal(true)}
-        onLock={handleLock}
-      />
+        <div className="archive-duo relative z-10">
+          <TimelineSection
+            timeline={timeline}
+            updateTimelineItem={updateTimelineItem}
+            isOwner={isOwner}
+          />
+          <DossierSection />
+        </div>
+
+        {/* ========== 底部 ========== */}
+        <Footer
+          isOwner={isOwner}
+          onUnlock={() => setShowUnlockModal(true)}
+          onLock={handleLock}
+        />
+      </div>
 
       {/* ========== 解锁弹窗 ========== */}
       {showUnlockModal && (
@@ -220,21 +330,21 @@ export default function App() {
 // ========================
 function Navbar({ mobileMenuOpen, setMobileMenuOpen, scrollTo, isOwner, onUnlock, onLock }) {
   const navItems = [
-    { label: '概览', target: 'hero' },
-    { label: '项目展示', target: 'showcase' },
-    { label: '项目卡片', target: 'projects' },
+    { label: 'Missions', target: 'missions' },
+    { label: 'Timeline', target: 'timeline' },
+    { label: 'Dossier', target: 'resume' },
   ]
 
   return (
-    <nav className="glass fixed top-0 left-0 right-0 z-50">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <nav className="glass sticky top-0 z-50">
+      <div className="flex items-center justify-between px-6 py-4 md:px-12">
         {/* Logo */}
         <button
           onClick={() => scrollTo('hero')}
-          className="flex items-center gap-2 text-lg font-semibold tracking-tight text-white"
+          className="brand-mark flex items-center gap-2 font-mono text-sm tracking-[0.22em] text-white"
         >
-          <Sparkles size={20} className="text-blue-400" />
-          AI Coding Journal
+          <span>YZ</span>
+          <span className="text-white/35">// SYSTEM.OS</span>
         </button>
 
         {/* 桌面导航 */}
@@ -309,139 +419,25 @@ function Navbar({ mobileMenuOpen, setMobileMenuOpen, scrollTo, isOwner, onUnlock
 // ========================
 // Hero 区组件
 // ========================
-function HeroSection({ scrollTo, addProject, isOwner }) {
+function HeroSection({ scrollTo }) {
   return (
     <section
       id="hero"
-      className="relative z-10 mx-auto flex min-h-[90vh] max-w-7xl flex-col items-center justify-center px-6 pt-24 md:flex-row md:gap-16"
+      className="relative z-10 flex min-h-[85vh] flex-col justify-center px-6 pb-10 pt-10 md:px-12"
     >
-      {/* 左侧文字 */}
-      <div className="flex-1 text-center md:text-left">
-        <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl lg:text-7xl">
-          用一个网站记录Yz的
+      <div className="w-full">
+        <h1 className="reveal mb-8 text-6xl font-semibold leading-tight tracking-tight text-white md:text-[5.5rem]">
+          Yz AI Coding
           <br />
           <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-            AI Coding 成长轨迹
+            Growth Archive
           </span>
-          。
         </h1>
 
-        <p className="mb-10 max-w-lg text-base leading-relaxed text-white/50 md:text-lg">
-          这是一个用于展示 AI Coding
-          练习成果的个人项目页，重点呈现项目名称、项目简介、最终效果截图和主观星级评分。
+        <p className="reveal mb-10 max-w-2xl text-xl font-light leading-relaxed text-white/50 md:text-2xl">
+          记录我如何用 AI 编程、数据分析和自动化 Agent，把分散的想法变成可展示的项目系统。
         </p>
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row md:justify-start">
-          <button
-            onClick={() => scrollTo('showcase')}
-            className="flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-medium text-gray-900 transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10"
-          >
-            <span>查看项目展示</span>
-            <ArrowRight size={16} />
-          </button>
-
-          {isOwner && (
-            <button
-              onClick={addProject}
-              className="flex items-center gap-2 rounded-full border border-white/15 px-7 py-3 text-sm font-medium text-white/80 transition-all hover:border-white/30 hover:text-white"
-            >
-              <Plus size={16} />
-              <span>添加项目卡片</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* 右侧个人简历 */}
-      <div className="mt-14 flex-1 md:mt-0 flex justify-center">
-        <div className="glass-card w-full max-w-md rounded-2xl p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-shadow duration-500 hover:shadow-[0_32px_100px_rgba(59,130,246,0.15)]">
-          <div className="mb-5 flex items-start justify-between gap-4">
-            <div>
-              <span className="text-xs font-medium uppercase tracking-wider text-white/30">
-                Personal Resume
-              </span>
-              <h3 className="mt-2 text-2xl font-semibold text-white">
-                袁泽
-              </h3>
-              <p className="mt-1 text-xs leading-relaxed text-white/45">
-                立刻到岗｜出勤五天｜六个月以上
-              </p>
-            </div>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-500/20">
-              <UserRound size={18} className="text-blue-400" />
-            </div>
-          </div>
-
-          <div className="grid gap-5 text-sm">
-            <section>
-              <div className="mb-2 flex items-center gap-2 text-white/75">
-                <Phone size={15} className="text-blue-300" />
-                <h4 className="font-medium">个人联系方式</h4>
-              </div>
-              <div className="grid gap-1.5 text-white/50 sm:grid-cols-2">
-                <span>电话：18732865855</span>
-                <span className="flex items-center gap-1.5">
-                  <Mail size={13} />
-                  yzz7314@163.com
-                </span>
-              </div>
-            </section>
-
-            <section>
-              <div className="mb-2 flex items-center gap-2 text-white/75">
-                <GraduationCap size={15} className="text-blue-300" />
-                <h4 className="font-medium">教育背景</h4>
-              </div>
-              <div className="space-y-2 text-white/50">
-                <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between">
-                  <span>中国石油大学（北京）｜经济学</span>
-                  <span className="text-xs text-white/35">2021.09-2025.06</span>
-                </div>
-                <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between">
-                  <span>中国海洋大学｜区域经济学</span>
-                  <span className="text-xs text-white/35">2025.09-2028.06</span>
-                </div>
-              </div>
-            </section>
-
-            <section>
-              <div className="mb-2 flex items-center gap-2 text-white/75">
-                <BriefcaseBusiness size={15} className="text-blue-300" />
-                <h4 className="font-medium">经历亮点</h4>
-              </div>
-              <ul className="space-y-1.5 text-white/50">
-                <li>快手主站-热点运营中心策略产品经理，负责热词挖掘策略与热点 push 看板。</li>
-                <li>搭建多 Agent 长文本播客自动化生产系统，覆盖 PDF 解析、脚本生成、质检与 TTS 合成。</li>
-                <li>完成评论数据分析、问卷建模、动态定价补货等数据分析与建模项目。</li>
-              </ul>
-            </section>
-
-            <section>
-              <div className="mb-2 flex items-center gap-2 text-white/75">
-                <Trophy size={15} className="text-blue-300" />
-                <h4 className="font-medium">竞赛经历</h4>
-              </div>
-              <ul className="space-y-1.5 text-white/50">
-                <li>美国大学生数学建模竞赛国家级一等奖</li>
-                <li>“正大杯”第十三届全国大学生市场调查与分析大赛国家级三等奖</li>
-                <li>中国国际大学生创新大赛（2024）国家级三等奖</li>
-                <li>全国大学生数学建模竞赛省级特等奖</li>
-              </ul>
-            </section>
-
-            <section>
-              <div className="mb-2 flex items-center gap-2 text-white/75">
-                <Sparkles size={15} className="text-blue-300" />
-                <h4 className="font-medium">个人总结</h4>
-              </div>
-              <ul className="space-y-1.5 text-white/50">
-                <li>数据分析：熟悉 Python、SQL，能够完成数据清洗、建模分析与结果解读。</li>
-                <li>AI 应用：持续使用 ChatGPT、Gemini、DeepSeek 等工具提升信息处理和方案产出效率。</li>
-                <li>AI 编程：熟悉 Claude Code、Codex、Cursor、Trae、Coze，具备将想法快速落地为原型的能力。</li>
-              </ul>
-            </section>
-          </div>
-        </div>
       </div>
     </section>
   )
@@ -479,11 +475,11 @@ function ShowcaseSection({ isOwner }) {
   }
 
   return (
-    <section id="showcase" className="relative z-10 py-24 px-6">
+    <section id="showcase" className="showcase-section relative z-10 py-24 px-6">
       <div className="mx-auto max-w-5xl">
         <div className="mb-12 text-center">
           <h2 className="mb-3 text-3xl font-bold text-white md:text-5xl">
-            项目效果展示
+            项目展示
           </h2>
           <p className="text-white/40">
             这里放置一张核心项目截图即可，用于展示 AI Coding
@@ -491,7 +487,7 @@ function ShowcaseSection({ isOwner }) {
           </p>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.02]">
+        <div className="showcase-frame relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.02]">
           {isOwner && (
             <input
               ref={fileInputRef}
@@ -561,40 +557,34 @@ function ProjectsSection({
   addProject,
   deleteProject,
   isOwner,
+  onUnlock,
 }) {
   const [selectedProject, setSelectedProject] = useState(null)
   const [zoomImage, setZoomImage] = useState(null)
+  const handleDetailUpdate = useCallback((id, key, value) => {
+    updateProject(id, key, value)
+    setSelectedProject((current) =>
+      current?.id === id ? { ...current, [key]: value } : current
+    )
+  }, [updateProject])
 
   return (
-    <section id="projects" className="relative z-10 py-24 px-6">
+    <section id="missions" className="projects-section relative z-10 py-16 px-6 md:px-12">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-12 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+        <div className="mb-12">
           <div>
             <h2 className="mb-3 text-3xl font-bold text-white md:text-5xl">
-              项目卡片
+              项目展示
             </h2>
-            <p className="text-white/40">
-              {isOwner
-                ? '每张卡片都可以在本地上传一张项目截图、编辑文字介绍，并用星标记录项目评分。数据会保存在当前浏览器本地。'
-                : '浏览已完成的 AI Coding 项目，查看项目截图、介绍和评分。'}
-            </p>
           </div>
-          {isOwner && (
-            <button
-              onClick={addProject}
-              className="flex shrink-0 items-center gap-2 rounded-full border border-white/15 px-6 py-2.5 text-sm text-white/70 transition-all hover:border-white/30 hover:text-white"
-            >
-              <Plus size={16} />
-              <span>添加项目卡片</span>
-            </button>
-          )}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
+        <div className="project-grid grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
               project={project}
+              revealDelay={`${index * 0.08}s`}
               updateProject={updateProject}
               handleImageUpload={handleImageUpload}
               deleteProject={deleteProject}
@@ -602,12 +592,30 @@ function ProjectsSection({
               onOpen={() => setSelectedProject(project)}
             />
           ))}
+          <button
+            type="button"
+            onClick={isOwner ? addProject : onUnlock}
+            className="add-mission-card reveal glass-card group flex min-h-[25rem] flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-white/20 text-white/45 transition-all"
+            style={{ transitionDelay: `${projects.length * 0.08}s` }}
+          >
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 transition-all group-hover:border-blue-300/70 group-hover:text-white">
+              <Plus size={26} strokeWidth={1.5} />
+            </span>
+            <span className="font-mono text-sm uppercase tracking-[0.18em]">
+              Add New Mission
+            </span>
+            <span className="max-w-[15rem] text-center text-xs leading-relaxed text-white/30">
+              {isOwner ? '创建新的项目卡片并继续补充截图、说明与评分' : '当前为只读模式，输入密码后可添加新项目'}
+            </span>
+          </button>
         </div>
       </div>
 
       {selectedProject && (
         <ProjectDetailModal
           project={selectedProject}
+          isOwner={isOwner}
+          updateProject={handleDetailUpdate}
           onClose={() => setSelectedProject(null)}
           onZoom={setZoomImage}
         />
@@ -623,15 +631,211 @@ function ProjectsSection({
   )
 }
 
+function TimelineSection({ timeline, updateTimelineItem, isOwner }) {
+  return (
+    <section id="timeline" className="timeline-section relative z-10 px-6 py-20 md:px-12">
+      <h2 className="reveal mb-10 text-2xl font-light tracking-wide text-white">
+        Growth Timeline
+      </h2>
+      <div className="relative ml-3 space-y-8 border-l border-white/10 pb-4">
+        {timeline.map((item, index) => (
+          <div
+            key={item.phase}
+            className="reveal relative pl-8"
+            style={{ transitionDelay: `${index * 0.1}s` }}
+          >
+            <span
+              className={`absolute -left-[6.5px] top-1.5 h-3 w-3 rounded-full ${
+                item.active ? 'bg-blue-300 shadow-[0_0_16px_rgba(147,197,253,0.9)]' : 'bg-white/25'
+              }`}
+            />
+            <div className={`mb-1 font-mono text-xs ${item.active ? 'text-blue-200' : 'text-white/35'}`}>
+              {isOwner ? (
+                <input
+                  value={item.phase}
+                  onChange={(e) => updateTimelineItem(index, 'phase', e.target.value)}
+                  className="timeline-edit-field timeline-edit-field--phase"
+                  aria-label="编辑时间线阶段"
+                />
+              ) : (
+                item.phase
+              )}
+            </div>
+            <div className="glass-card rounded-xl p-4">
+              {isOwner ? (
+                <div className="grid gap-3">
+                  <input
+                    value={item.title}
+                    onChange={(e) => updateTimelineItem(index, 'title', e.target.value)}
+                    className="timeline-edit-field text-lg font-medium"
+                    aria-label="编辑时间线标题"
+                  />
+                  <textarea
+                    value={item.desc}
+                    rows={3}
+                    onChange={(e) => updateTimelineItem(index, 'desc', e.target.value)}
+                    className="timeline-edit-field resize-none text-sm leading-relaxed"
+                    aria-label="编辑时间线说明"
+                  />
+                </div>
+              ) : (
+                <>
+                  <h3 className="text-lg font-medium text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/45">{item.desc}</p>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function DossierSection() {
+  return (
+    <section id="resume" className="dossier-section relative z-10 px-6 py-16 md:px-12">
+      <h2 className="reveal mb-10 flex items-center gap-3 border-l-4 border-blue-500 pl-4 text-2xl font-light tracking-wide text-white">
+        User Dossier
+      </h2>
+
+      <div className="resume-panel reveal glass-card group relative overflow-hidden rounded-2xl border border-white/10 p-8 transition-colors hover:border-blue-400/30 md:p-10">
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/5 blur-3xl transition-all group-hover:bg-blue-500/10" />
+
+        <div className="relative z-10 mb-8 border-b border-white/10 pb-8">
+          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <div className="mb-2 font-mono text-xs uppercase tracking-widest text-white/35">
+                Personal Resume
+              </div>
+              <h3 className="text-4xl font-semibold tracking-widest text-white">袁 泽</h3>
+            </div>
+            <div className="flex flex-wrap gap-2 font-mono text-xs text-white/45">
+              <span className="flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                立刻到岗
+              </span>
+              <span className="rounded border border-white/10 bg-white/5 px-2 py-1">出勤五天</span>
+              <span className="rounded border border-white/10 bg-white/5 px-2 py-1">六个月以上</span>
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-4 font-mono text-sm text-white/70 md:flex-row md:gap-6">
+            <span className="flex items-center gap-2 transition-colors hover:text-white">
+              <Phone size={16} className="text-white/35" />
+              18732865855
+            </span>
+            <span className="flex items-center gap-2 transition-colors hover:text-white">
+              <Mail size={16} className="text-white/35" />
+              yzz7314@163.com
+            </span>
+          </div>
+        </div>
+
+        <div className="relative z-10 space-y-10">
+          <DossierBlock title="Education">
+            <div className="space-y-4">
+              <DossierRow title="中国海洋大学" meta="2025.09 - 2028.06" desc="区域经济学" active />
+              <DossierRow title="中国石油大学（北京）" meta="2021.09 - 2025.06" desc="经济学" />
+            </div>
+          </DossierBlock>
+
+          <DossierBlock title="Experience Highlights">
+            <ul className="ml-1 space-y-3 border-l border-white/10 pl-2 text-sm leading-relaxed text-white/65">
+              <li className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
+                <span className="font-medium text-white">快手主站 - 热点运营中心策略产品经理：</span>
+                负责热词挖掘策略与热点 push 看板。
+              </li>
+              <li className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
+                <span className="font-medium text-white">AI 系统搭建：</span>
+                搭建多 Agent 长文本播客自动化生产系统，覆盖 PDF 解析、脚本生成、质检与 TTS 合成。
+              </li>
+              <li className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
+                <span className="font-medium text-white">数据分析建模：</span>
+                完成评论数据分析、问卷建模、动态定价补货等数据分析与建模项目。
+              </li>
+            </ul>
+          </DossierBlock>
+
+          <DossierBlock title="Awards">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {[
+                ['美国大学生数学建模竞赛', '国家级一等奖'],
+                ['“正大杯”全国大学生市场调查与分析大赛', '国家级三等奖'],
+                ['中国国际大学生创新大赛（2024）', '国家级三等奖'],
+                ['全国大学生数学建模竞赛', '省级特等奖'],
+              ].map(([name, result]) => (
+                <div
+                  key={name}
+                  className="rounded border border-white/5 bg-white/5 p-3 text-xs text-white/60 transition-colors hover:border-blue-400/30"
+                >
+                  {name}
+                  <span className="mt-1 block text-white">{result}</span>
+                </div>
+              ))}
+            </div>
+          </DossierBlock>
+
+          <DossierBlock title="Core Skills">
+            <div className="space-y-4 text-sm text-white/65">
+              <SkillLine label="Data Analytics">熟悉 Python、SQL，能够完成数据清洗、建模分析与结果解读。</SkillLine>
+              <SkillLine label="AI Application">持续使用 ChatGPT、Gemini、DeepSeek 等工具提升信息处理和方案产出效率。</SkillLine>
+              <SkillLine label="AI Coding">熟悉 Claude Code、Codex、Cursor、Trae、Coze，具备将想法快速落地为原型的能力。</SkillLine>
+            </div>
+          </DossierBlock>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function DossierBlock({ title, children }) {
+  return (
+    <div>
+      <h4 className="mb-4 flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-white/35">
+        <span className="h-1 w-1 rounded-full bg-blue-400" />
+        {title}
+      </h4>
+      {children}
+    </div>
+  )
+}
+
+function DossierRow({ title, desc, meta, active }) {
+  return (
+    <div className="flex flex-col justify-between rounded border border-transparent p-3 transition-colors hover:border-white/5 hover:bg-white/5 md:flex-row md:items-center">
+      <div className="text-base text-white">
+        {title}
+        <span className="mx-2 text-white/30">|</span>
+        <span className="text-white/65">{desc}</span>
+      </div>
+      <div className={`mt-1 font-mono text-xs md:mt-0 ${active ? 'text-blue-300' : 'text-white/35'}`}>
+        {meta}
+      </div>
+    </div>
+  )
+}
+
+function SkillLine({ label, children }) {
+  return (
+    <div className="flex flex-col gap-2 border-b border-white/5 pb-3 last:border-b-0 last:pb-1 md:flex-row md:gap-4">
+      <span className="min-w-[120px] font-mono text-xs uppercase tracking-wider text-white/80">{label}</span>
+      <span className="leading-relaxed">{children}</span>
+    </div>
+  )
+}
+
 // ========================
 // 单张项目卡片组件
 // ========================
-function ProjectCard({ project, updateProject, handleImageUpload, deleteProject, isOwner, onOpen }) {
+function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, deleteProject, isOwner, onOpen }) {
   const fileInputRef = useRef(null)
+  const projectImages = normalizeProjectImages(project)
+  const coverImage = projectImages[0]
 
   const handleFileChange = (e) => {
-    if (e.target.files?.[0]) {
-      handleImageUpload(project.id, e.target.files[0])
+    if (e.target.files?.length) {
+      handleImageUpload(project.id, e.target.files)
     }
     e.target.value = ''
   }
@@ -639,7 +843,8 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
   return (
     <article
       onClick={onOpen}
-      className="glass-card group flex cursor-pointer flex-col rounded-2xl overflow-hidden relative shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_100px_rgba(59,130,246,0.20)]"
+      className="project-card reveal glass-card group flex cursor-pointer flex-col rounded-2xl overflow-hidden relative shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_100px_rgba(59,130,246,0.20)]"
+      style={{ transitionDelay: revealDelay }}
     >
       {/* ---- 删除按钮 ---- */}
       {isOwner && (
@@ -661,12 +866,13 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
           ref={fileInputRef}
           type="file"
           accept="image/*"
+          multiple
           className="hidden"
           onChange={handleFileChange}
         />
       )}
 
-      {project.image ? (
+      {coverImage ? (
         <div
           className={`relative overflow-hidden ${isOwner ? 'cursor-pointer' : ''}`}
           onClick={(e) => {
@@ -676,7 +882,7 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
           }}
         >
           <img
-            src={project.image}
+            src={coverImage}
             alt={project.title}
             className="h-48 w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -698,7 +904,7 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
             <Upload size={28} strokeWidth={1.5} />
             <div className="text-center">
               <p className="text-sm font-medium">点击上传项目图片</p>
-              <p className="mt-0.5 text-xs">图片仅保存在本地浏览器</p>
+              <p className="mt-0.5 text-xs">Mission Cover</p>
             </div>
           </button>
         ) : (
@@ -742,41 +948,33 @@ function ProjectCard({ project, updateProject, handleImageUpload, deleteProject,
           onChange={(val) => updateProject(project.id, 'rating', val)}
           interactive={isOwner}
         />
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            onOpen()
-          }}
-          className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/45 transition-colors hover:border-white/25 hover:text-white/80"
-        >
-          查看详情
-          <ArrowRight size={13} />
-        </button>
       </div>
     </article>
   )
 }
 
 function getProjectDetail(project) {
+  const fallbackDetail = [
+    '围绕目标场景拆解页面信息架构，明确核心展示内容、交互路径和最终呈现效果。',
+    '通过组件化方式组织页面结构，保留项目截图、文字说明和评分记录，便于后续迭代复盘。',
+    '适合继续补充项目背景、实现过程、关键难点、最终成果和个人反思，让每张卡片都能沉淀为完整作品说明。',
+  ].join('\n')
+  const detailText = project.detailText || fallbackDetail
+
   return {
     overview: project.desc || '这是一个 AI Coding 练习项目，用于记录从需求拆解、页面实现到结果复盘的完整过程。',
-    points: [
-      '围绕目标场景拆解页面信息架构，明确核心展示内容、交互路径和最终呈现效果。',
-      '通过组件化方式组织页面结构，保留项目截图、文字说明和评分记录，便于后续迭代复盘。',
-      '适合继续补充项目背景、实现过程、关键难点、最终成果和个人反思，让每张卡片都能沉淀为完整作品说明。',
-    ],
+    detailText,
+    points: detailText.split('\n').map((point) => point.trim()).filter(Boolean),
   }
 }
 
-function ProjectDetailModal({ project, onClose, onZoom }) {
+function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }) {
   const detail = getProjectDetail(project)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
-  const panels = [
-    { id: 'main', image: project.image, label: '主展示图' },
-    { id: 'flow', image: '', label: '流程展示图' },
-    { id: 'result', image: '', label: '结果展示图' },
-  ]
+  const images = normalizeProjectImages(project)
+  const panels = images.length
+    ? images.map((image, index) => ({ id: `${project.id}-${index}`, image, label: `展示图 ${index + 1}` }))
+    : [{ id: `${project.id}-empty`, image: '', label: '展示图' }]
   const activePanel = panels[activeImageIndex]
 
   const showPrevImage = () => {
@@ -793,7 +991,7 @@ function ProjectDetailModal({ project, onClose, onZoom }) {
       onClick={onClose}
     >
       <div
-        className="glass-card relative w-full max-w-6xl rounded-2xl p-5 shadow-[0_24px_80px_rgba(0,0,0,0.55)] md:p-6"
+        className="project-detail-shell glass-card relative w-full max-w-6xl rounded-2xl p-5 shadow-[0_24px_80px_rgba(0,0,0,0.55)] md:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -806,7 +1004,7 @@ function ProjectDetailModal({ project, onClose, onZoom }) {
         </button>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-          <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black/20">
+          <div className="project-carousel relative overflow-hidden rounded-xl border border-white/10 bg-black/20">
             <button
               type="button"
               onClick={() => activePanel.image && onZoom({ src: activePanel.image, alt: `${project.title} ${activePanel.label}` })}
@@ -832,41 +1030,45 @@ function ProjectDetailModal({ project, onClose, onZoom }) {
             </button>
 
             <span className="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1 text-sm font-medium text-white/80 backdrop-blur-sm">
-              {activeImageIndex + 1}/{panels.length}
+              {images.length ? activeImageIndex + 1 : 0}/{images.length}
             </span>
 
-            <button
-              type="button"
-              onClick={showPrevImage}
-              className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white/70 backdrop-blur-sm transition-colors hover:bg-black/55 hover:text-white"
-              aria-label="上一张展示图"
-            >
-              <ChevronLeft size={22} />
-            </button>
-            <button
-              type="button"
-              onClick={showNextImage}
-              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white/70 backdrop-blur-sm transition-colors hover:bg-black/55 hover:text-white"
-              aria-label="下一张展示图"
-            >
-              <ChevronRight size={22} />
-            </button>
-
-            <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm">
-              {panels.map((panel, index) => (
+            {images.length > 1 && (
+              <>
                 <button
-                  key={panel.id}
                   type="button"
-                  onClick={() => setActiveImageIndex(index)}
-                  className={`h-2 rounded-full transition-all ${
-                    index === activeImageIndex
-                      ? 'w-5 bg-white'
-                      : 'w-2 bg-white/45 hover:bg-white/75'
-                  }`}
-                  aria-label={`查看第 ${index + 1} 张展示图`}
-                />
-              ))}
-            </div>
+                  onClick={showPrevImage}
+                  className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white/70 backdrop-blur-sm transition-colors hover:bg-black/55 hover:text-white"
+                  aria-label="上一张展示图"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <button
+                  type="button"
+                  onClick={showNextImage}
+                  className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white/70 backdrop-blur-sm transition-colors hover:bg-black/55 hover:text-white"
+                  aria-label="下一张展示图"
+                >
+                  <ChevronRight size={22} />
+                </button>
+
+                <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/20 px-3 py-2 backdrop-blur-sm">
+                  {panels.map((panel, index) => (
+                    <button
+                      key={panel.id}
+                      type="button"
+                      onClick={() => setActiveImageIndex(index)}
+                      className={`h-2 rounded-full transition-all ${
+                        index === activeImageIndex
+                          ? 'w-5 bg-white'
+                          : 'w-2 bg-white/45 hover:bg-white/75'
+                      }`}
+                      aria-label={`查看第 ${index + 1} 张展示图`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           <div className="flex flex-col justify-between gap-6 pr-0 md:pr-8">
@@ -874,25 +1076,59 @@ function ProjectDetailModal({ project, onClose, onZoom }) {
               <span className="text-xs font-medium uppercase tracking-wider text-white/30">
                 Project Detail
               </span>
-              <h3 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
-                {project.title}
-              </h3>
-              <p className="mt-4 text-sm leading-relaxed text-white/55">
-                {detail.overview}
-              </p>
+              {isOwner ? (
+                <div className="mt-3 grid gap-3">
+                  <input
+                    value={project.title}
+                    onChange={(e) => updateProject(project.id, 'title', e.target.value)}
+                    className="detail-edit-field detail-edit-field--title"
+                    aria-label="编辑项目名称"
+                  />
+                  <textarea
+                    value={project.desc}
+                    rows={3}
+                    onChange={(e) => updateProject(project.id, 'desc', e.target.value)}
+                    className="detail-edit-field resize-none text-sm leading-relaxed"
+                    aria-label="编辑项目简介"
+                  />
+                </div>
+              ) : (
+                <>
+                  <h3 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
+                    {project.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-relaxed text-white/55">
+                    {detail.overview}
+                  </p>
+                </>
+              )}
 
               <div className="mt-6 grid gap-3">
                 <h4 className="text-sm font-medium text-white/80">详细说明</h4>
-                <ul className="space-y-2 text-sm leading-relaxed text-white/50">
-                  {detail.points.map((point) => (
-                    <li key={point}>{point}</li>
-                  ))}
-                </ul>
+                {isOwner ? (
+                  <textarea
+                    value={detail.detailText}
+                    rows={8}
+                    onChange={(e) => updateProject(project.id, 'detailText', e.target.value)}
+                    className="detail-edit-field resize-none text-sm leading-relaxed"
+                    aria-label="编辑项目详细说明"
+                  />
+                ) : (
+                  <ul className="space-y-2 text-sm leading-relaxed text-white/50">
+                    {detail.points.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5">
-              <StarRating rating={project.rating} onChange={() => {}} interactive={false} />
+              <StarRating
+                rating={project.rating}
+                onChange={(val) => updateProject(project.id, 'rating', val)}
+                interactive={isOwner}
+              />
               <span className="text-xs text-white/30">
                 点击左侧展示图可放大查看
               </span>
