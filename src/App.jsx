@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import {
   Upload,
-  Star,
   Image,
   Plus,
   Menu,
@@ -17,102 +17,21 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
-import { projects as publicProjects } from './data/projects'
+import { AdminPage } from './pages/AdminPage'
+import { mockDossier } from './data/mockDossier'
+import { dossierService } from './services/dossierService'
+import { adminAuth, projectService } from './services/projectService'
+import { timelineService } from './services/timelineService'
 
-// ========================
-// 公开项目数据来自仓库静态文件，Vercel 部署后所有浏览器读取同一份内容。
-// ========================
-const PUBLIC_PROJECTS = publicProjects.map((project) => ({
-  ...project,
-  desc: project.description,
-  detailText: project.summary,
-  image: project.image,
-  images: project.images?.length ? project.images : [project.image].filter(Boolean),
-}))
-
-// ========================
-// localStorage 仅用于本地草稿，不作为线上公开数据源。
-// ========================
-const PROJECT_DRAFT_STORAGE_KEY = 'ai-coding-project-drafts'
-const TIMELINE_STORAGE_KEY = 'ai-coding-timeline'
-const OWNER_PASSWORD = '123456'
-
-// TODO: 若后续需要真正的在线后台新增项目，接入 Vercel Postgres/Neon/Supabase
-// 保存项目元数据，接入 Vercel Blob 保存项目图片，并通过受管理员登录保护的
-// API Routes 处理新增、编辑和删除。
-
-const defaultTimeline = [
-  {
-    phase: 'Current',
-    title: '整理项目复盘与求职材料',
-    desc: '系统梳理经管知识背景与 AI 技能库，沉淀可复用的策略、数据分析方法和代码片段。',
-    active: true,
-  },
-  {
-    phase: 'Phase 3',
-    title: '开始搭建 AI Coding 项目展示网站',
-    desc: '设计并部署专属个人成长档案，将项目截图、说明、评分和简历信息整合到同一展示系统。',
-  },
-  {
-    phase: 'Phase 2',
-    title: '开发 A股热点日报 Agent',
-    desc: '结合大模型 API 与自动化工作流，实现金融信息的数据清洗、热点提炼与策略输出。',
-  },
-  {
-    phase: 'Phase 1',
-    title: '完善 AI 产品实习作品集',
-    desc: '探索大模型在内容生产、行业分析和学术研究中的实际落地场景。',
-  },
-]
-
-function loadProjectDrafts() {
-  try {
-    const raw = localStorage.getItem(PROJECT_DRAFT_STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed
-      }
-    }
-  } catch (e) {
-    console.warn('读取本地项目草稿失败', e)
-  }
-  return PUBLIC_PROJECTS
-}
-
-function saveProjectDrafts(projects) {
-  try {
-    localStorage.setItem(PROJECT_DRAFT_STORAGE_KEY, JSON.stringify(projects))
-  } catch (e) {
-    console.warn('保存本地项目草稿失败', e)
-  }
-}
-
-function loadTimeline() {
-  try {
-    const raw = localStorage.getItem(TIMELINE_STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed
-    }
-  } catch (e) {
-    console.warn('读取时间线失败', e)
-  }
-  return defaultTimeline
-}
-
-function saveTimeline(timeline) {
-  try {
-    localStorage.setItem(TIMELINE_STORAGE_KEY, JSON.stringify(timeline))
-  } catch (e) {
-    console.warn('保存时间线失败', e)
-  }
-}
+const OWNER_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '123456'
 
 function normalizeProjectImages(project) {
   if (Array.isArray(project.images)) {
     return project.images.filter(Boolean)
   }
+  if (project.coverImage) return [project.coverImage]
+  if (project.coverUrl) return [project.coverUrl]
+  if (project.imageUrl) return [project.imageUrl]
   return project.image ? [project.image] : []
 }
 
@@ -128,32 +47,65 @@ function readImageFile(file) {
 // 主 App 组件
 // ========================
 export default function App() {
-  const [projects, setProjects] = useState(() => PUBLIC_PROJECTS)
-  const [timeline, setTimeline] = useState(() => loadTimeline())
+  const [projects, setProjects] = useState([])
+  const [isProjectsLoading, setIsProjectsLoading] = useState(true)
+  const [timeline, setTimeline] = useState([])
+  const [dossier, setDossier] = useState(mockDossier)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
+  const [isAdminMode, setIsAdminMode] = useState(false)
   const [showUnlockModal, setShowUnlockModal] = useState(false)
 
-  const nextIdRef = useRef(
-    Math.max(...PUBLIC_PROJECTS.map((p) => p.id), 0) + 1
-  )
-
-  // 本地编辑仅保存为当前浏览器草稿，不会影响线上公开展示。
-  useEffect(() => {
-    if (isOwner) {
-      saveProjectDrafts(projects)
+  const loadDisplayData = useCallback(async () => {
+    setIsProjectsLoading(true)
+    try {
+      const [nextProjects, nextTimeline, nextDossier] = await Promise.all([
+        projectService.getFeaturedProjects(),
+        timelineService.getTimelineItems(),
+        dossierService.getDossier(),
+      ])
+      setProjects(nextProjects)
+      setTimeline(nextTimeline)
+      setDossier(nextDossier)
+    } catch (error) {
+      console.warn('加载展示数据失败', error)
+    } finally {
+      setIsProjectsLoading(false)
     }
-  }, [projects, isOwner])
+  }, [])
 
   useEffect(() => {
-    if (isOwner) {
-      saveTimeline(timeline)
+    let mounted = true
+    setIsProjectsLoading(true)
+    Promise.all([
+      projectService.getFeaturedProjects(),
+      timelineService.getTimelineItems(),
+      dossierService.getDossier(),
+    ]).then(([nextProjects, nextTimeline, nextDossier]) => {
+      if (!mounted) return
+      setProjects(nextProjects)
+      setTimeline(nextTimeline)
+      setDossier(nextDossier)
+      setIsProjectsLoading(false)
+    }).catch((error) => {
+      console.warn('加载展示数据失败', error)
+      if (mounted) setIsProjectsLoading(false)
+    })
+
+    return () => {
+      mounted = false
     }
-  }, [timeline, isOwner])
+  }, [])
 
   useEffect(() => {
+    if (isAdminMode) return undefined
+
+    let frameId
+    let observer
+
+    frameId = window.requestAnimationFrame(() => {
     const revealElements = document.querySelectorAll('.reveal')
-    const observer = new IntersectionObserver(
+      observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -167,98 +119,61 @@ export default function App() {
       }
     )
 
-    revealElements.forEach((element) => observer.observe(element))
-    return () => observer.disconnect()
-  }, [projects.length])
+      revealElements.forEach((element) => {
+        const rect = element.getBoundingClientRect()
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          element.classList.add('active')
+        }
+        observer.observe(element)
+      })
+    })
+
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      observer?.disconnect()
+    }
+  }, [isAdminMode, projects.length, timeline.length, isProjectsLoading])
 
   // ---- owner 相关 ----
 
-  const handleUnlock = useCallback((password) => {
-    if (password === OWNER_PASSWORD) {
+  const handleUnlock = useCallback(async (password) => {
+    const verifiedByServer = await adminAuth.verifyPassword(password)
+    if (verifiedByServer || password === OWNER_PASSWORD) {
+      adminAuth.setPassword(password)
       setIsOwner(true)
+      setIsAdminMode(true)
       setShowUnlockModal(false)
-      // 解锁后进入本地草稿编辑模式。公开页面仍使用仓库静态数据。
-      const drafts = loadProjectDrafts()
-      nextIdRef.current = Math.max(...drafts.map((p) => p.id), 0) + 1
-      setProjects(drafts)
-      setTimeline(loadTimeline())
       return { success: true }
     }
-    return { success: false, error: '密码错误' }
+    return { success: false, error: '密码错误，请重新输入' }
   }, [])
 
   const handleLock = useCallback(() => {
+    adminAuth.clearPassword()
     setIsOwner(false)
-    // 退出编辑模式后恢复线上公开数据，避免公开展示依赖本地草稿。
-    setProjects(PUBLIC_PROJECTS)
-    setTimeline(loadTimeline())
-  }, [])
+    setIsAdminMode(false)
+    setShowUnlockModal(false)
+    setMobileMenuOpen(false)
+    if (window.location.pathname !== '/' || window.location.hash) {
+      window.history.replaceState(null, '', '/')
+    }
+    window.requestAnimationFrame(() => {
+      document.getElementById('scroll-container')?.scrollTo({ top: 0 })
+    })
+    loadDisplayData().catch((error) => {
+      console.warn('重新加载展示数据失败', error)
+    })
+  }, [loadDisplayData])
 
   // ---- 核心操作函数 ----
 
-  const updateProject = useCallback((id, key, value) => {
-    if (!isOwner) return
-    setProjects((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, [key]: value } : p))
-    )
-  }, [isOwner])
+  const updateProject = useCallback(() => {}, [])
+  const handleImageUpload = useCallback(() => {}, [])
 
-  const handleImageUpload = useCallback(
-    async (id, files) => {
-      if (!isOwner || !files) return
-      const imageFiles = Array.from(files).filter((file) => file.type.startsWith('image/'))
-      if (!imageFiles.length) return
-      const uploadedImages = await Promise.all(imageFiles.map(readImageFile))
+  const updateTimelineItem = useCallback(() => {}, [])
 
-      setProjects((prev) =>
-        prev.map((project) => {
-          if (project.id !== id) return project
-          const images = [...normalizeProjectImages(project), ...uploadedImages]
-          return { ...project, images, image: images[0] || '' }
-        })
-      )
-    },
-    [isOwner]
-  )
-
-  const updateTimelineItem = useCallback((index, key, value) => {
-    if (!isOwner) return
-    setTimeline((prev) =>
-      prev.map((item, itemIndex) =>
-        itemIndex === index ? { ...item, [key]: value } : item
-      )
-    )
-  }, [isOwner])
-
-  const addProject = useCallback(() => {
-    if (!isOwner) return
-    const newId = nextIdRef.current
-    nextIdRef.current += 1
-    const count = newId
-    setProjects((prev) => [
-      ...prev,
-      {
-        id: newId,
-        title: `AI Coding 项目 ${String(count).padStart(2, '0')}`,
-        desc: '用于展示本次 AI Coding 练习的核心页面、功能效果和个人评分。',
-        description: '用于展示本次 AI Coding 练习的核心页面、功能效果和个人评分。',
-        subtitle: 'Local Draft',
-        techStack: [],
-        rating: 0,
-        image: '',
-        images: [],
-        summary: '本项目当前仅保存在本机浏览器草稿中，不会自动同步到线上公开网站。',
-        demoUrl: '',
-        githubUrl: '',
-        createdAt: new Date().toISOString().slice(0, 10),
-      },
-    ])
-  }, [isOwner])
-
-  const deleteProject = useCallback((id) => {
-    if (!isOwner) return
-    setProjects((prev) => prev.filter((p) => p.id !== id))
-  }, [isOwner])
+  const addProject = useCallback(() => {}, [])
+  const deleteProject = useCallback(() => {}, [])
 
   // ---- 平滑滚动 ----
   const scrollTo = (id) => {
@@ -267,7 +182,10 @@ export default function App() {
   }
 
   return (
-    <div className="mission-shell relative min-h-screen overflow-hidden bg-black text-white/90">
+    isAdminMode ? (
+      <AdminPage authenticated onExit={handleLock} />
+    ) : (
+      <div className="mission-shell relative min-h-screen overflow-hidden bg-black text-white/90">
       <div className="game-bg" aria-hidden="true" />
       <div className="bg-overlay-left" aria-hidden="true" />
 
@@ -288,6 +206,7 @@ export default function App() {
         {/* ========== 项目卡片区 ========== */}
         <ProjectsSection
           projects={projects}
+          isLoading={isProjectsLoading}
           updateProject={updateProject}
           handleImageUpload={handleImageUpload}
           addProject={addProject}
@@ -301,7 +220,7 @@ export default function App() {
             updateTimelineItem={updateTimelineItem}
             isOwner={isOwner}
           />
-          <DossierSection />
+          <DossierSection dossier={dossier} />
         </div>
 
         {/* ========== 底部 ========== */}
@@ -319,7 +238,8 @@ export default function App() {
           onClose={() => setShowUnlockModal(false)}
         />
       )}
-    </div>
+      </div>
+    )
   )
 }
 
@@ -361,17 +281,17 @@ function Navbar({ mobileMenuOpen, setMobileMenuOpen, scrollTo, isOwner, onUnlock
           <button
             onClick={isOwner ? onLock : onUnlock}
             className="ml-2 flex items-center gap-1.5 text-xs text-white/30 transition-colors hover:text-white/60"
-            title={isOwner ? '锁定为只读模式' : '输入密码解锁编辑'}
+            title={isOwner ? '退出后台管理' : '输入密码进入编辑后台'}
           >
             {isOwner ? (
               <>
                 <Unlock size={14} className="text-blue-400" />
-                <span className="hidden lg:inline">已解锁</span>
+                <span className="hidden lg:inline">退出编辑</span>
               </>
             ) : (
               <>
                 <Lock size={14} />
-                <span className="hidden lg:inline">只读</span>
+                <span className="hidden lg:inline">编辑</span>
               </>
             )}
           </button>
@@ -382,6 +302,7 @@ function Navbar({ mobileMenuOpen, setMobileMenuOpen, scrollTo, isOwner, onUnlock
           <button
             onClick={isOwner ? onLock : onUnlock}
             className="text-white/30 hover:text-white/60"
+            aria-label={isOwner ? '退出编辑后台' : '进入编辑后台'}
           >
             {isOwner ? <Unlock size={16} className="text-blue-400" /> : <Lock size={16} />}
           </button>
@@ -446,6 +367,7 @@ function HeroSection({ scrollTo }) {
 // ========================
 function ProjectsSection({
   projects,
+  isLoading,
   updateProject,
   handleImageUpload,
   addProject,
@@ -454,6 +376,7 @@ function ProjectsSection({
 }) {
   const [selectedProject, setSelectedProject] = useState(null)
   const [zoomImage, setZoomImage] = useState(null)
+  const canEditProjects = false
   const handleDetailUpdate = useCallback((id, key, value) => {
     updateProject(id, key, value)
     setSelectedProject((current) =>
@@ -472,7 +395,9 @@ function ProjectsSection({
           </div>
         </div>
 
-        {projects.length > 0 ? (
+        {isLoading ? (
+          <ProjectsLoadingState />
+        ) : projects.length > 0 ? (
           <div className="project-grid grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((project, index) => (
               <ProjectCard
@@ -482,11 +407,11 @@ function ProjectsSection({
                 updateProject={updateProject}
                 handleImageUpload={handleImageUpload}
                 deleteProject={deleteProject}
-                isOwner={isOwner}
+                isOwner={canEditProjects}
                 onOpen={() => setSelectedProject(project)}
               />
             ))}
-            {isOwner && (
+            {canEditProjects && (
               <button
                 type="button"
                 onClick={addProject}
@@ -506,14 +431,14 @@ function ProjectsSection({
             )}
           </div>
         ) : (
-          <EmptyProjectsState isOwner={isOwner} onAdd={addProject} />
+          <EmptyProjectsState isOwner={canEditProjects} onAdd={addProject} />
         )}
       </div>
 
       {selectedProject && (
         <ProjectDetailModal
           project={selectedProject}
-          isOwner={isOwner}
+          isOwner={canEditProjects}
           updateProject={handleDetailUpdate}
           onClose={() => setSelectedProject(null)}
           onZoom={setZoomImage}
@@ -536,9 +461,9 @@ function EmptyProjectsState({ isOwner, onAdd }) {
       <span className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/45">
         <Image size={26} strokeWidth={1.4} />
       </span>
-      <h3 className="text-xl font-medium text-white">暂无公开项目</h3>
+      <h3 className="text-xl font-medium text-white">暂无项目内容</h3>
       <p className="mt-3 max-w-md text-sm leading-relaxed text-white/45">
-        公开作品集数据应写入仓库内的静态数据文件，并使用 Vercel 可访问的图片路径。
+        暂无项目内容，请点击编辑添加项目。
       </p>
       {isOwner && (
         <button
@@ -553,25 +478,42 @@ function EmptyProjectsState({ isOwner, onAdd }) {
   )
 }
 
+function ProjectsLoadingState() {
+  return (
+    <div className="empty-project-state reveal glass-card flex min-h-[22rem] flex-col items-center justify-center rounded-2xl border border-white/10 px-6 text-center">
+      <span className="mb-5 h-10 w-10 animate-pulse rounded-full border border-blue-300/30 bg-blue-300/10" />
+      <h3 className="text-xl font-medium text-white">正在加载项目</h3>
+      <p className="mt-3 max-w-md text-sm leading-relaxed text-white/45">
+        正在同步最新作品展示数据。
+      </p>
+    </div>
+  )
+}
+
 function TimelineSection({ timeline, updateTimelineItem, isOwner }) {
   return (
     <section id="timeline" className="timeline-section relative z-10 px-6 py-20 md:px-12">
       <h2 className="reveal mb-10 text-2xl font-light tracking-wide text-white">
         Growth Timeline
       </h2>
+      {timeline.length === 0 ? (
+        <div className="empty-project-state reveal glass-card rounded-2xl border border-dashed border-white/15 px-6 py-12 text-center text-white/45">
+          暂无成长时间线内容
+        </div>
+      ) : (
       <div className="relative ml-3 space-y-8 border-l border-white/10 pb-4">
         {timeline.map((item, index) => (
           <div
-            key={item.phase}
+            key={item.id ?? item.phase}
             className="reveal relative pl-8"
             style={{ transitionDelay: `${index * 0.1}s` }}
           >
             <span
               className={`absolute -left-[6.5px] top-1.5 h-3 w-3 rounded-full ${
-                item.active ? 'bg-blue-300 shadow-[0_0_16px_rgba(147,197,253,0.9)]' : 'bg-white/25'
+                (item.isCurrent ?? item.active) ? 'bg-blue-300 shadow-[0_0_16px_rgba(147,197,253,0.9)]' : 'bg-white/25'
               }`}
             />
-            <div className={`mb-1 font-mono text-xs ${item.active ? 'text-blue-200' : 'text-white/35'}`}>
+            <div className={`mb-1 font-mono text-xs ${(item.isCurrent ?? item.active) ? 'text-blue-200' : 'text-white/35'}`}>
               {isOwner ? (
                 <input
                   value={item.phase}
@@ -603,18 +545,26 @@ function TimelineSection({ timeline, updateTimelineItem, isOwner }) {
               ) : (
                 <>
                   <h3 className="text-lg font-medium text-white">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/45">{item.desc}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-white/45">{item.description ?? item.desc}</p>
                 </>
               )}
             </div>
           </div>
         ))}
       </div>
+      )}
     </section>
   )
 }
 
-function DossierSection() {
+function DossierSection({ dossier }) {
+  const data = dossier || {}
+  const status = Array.isArray(data.status) ? data.status : []
+  const education = Array.isArray(data.education) ? data.education : []
+  const highlights = Array.isArray(data.highlights) ? data.highlights : []
+  const awards = Array.isArray(data.awards) ? data.awards : []
+  const skills = Array.isArray(data.skills) ? data.skills : []
+
   return (
     <section id="resume" className="dossier-section relative z-10 px-6 py-16 md:px-12">
       <h2 className="reveal mb-10 flex items-center gap-3 border-l-4 border-blue-500 pl-4 text-2xl font-light tracking-wide text-white">
@@ -627,72 +577,60 @@ function DossierSection() {
         <div className="relative z-10 mb-8 border-b border-white/10 pb-8">
           <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
             <div>
-              <div className="mb-2 font-mono text-xs uppercase tracking-widest text-white/35">
-                Personal Resume
-              </div>
-              <h3 className="text-4xl font-semibold tracking-widest text-white">袁 泽</h3>
+              <div className="mb-2 font-mono text-xs uppercase tracking-widest text-white/35">Personal Resume</div>
+              <h3 className="text-4xl font-semibold tracking-widest text-white">{data.name || '? ?'}</h3>
             </div>
             <div className="flex flex-wrap gap-2 font-mono text-xs text-white/45">
-              <span className="flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2 py-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                立刻到岗
-              </span>
-              <span className="rounded border border-white/10 bg-white/5 px-2 py-1">出勤五天</span>
-              <span className="rounded border border-white/10 bg-white/5 px-2 py-1">六个月以上</span>
+              {status.map((item, index) => (
+                <span key={item} className="flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2 py-1">
+                  {index === 0 && <span className="h-1.5 w-1.5 rounded-full bg-green-500" />}
+                  {item}
+                </span>
+              ))}
             </div>
           </div>
 
           <div className="mt-6 flex flex-col gap-4 font-mono text-sm text-white/70 md:flex-row md:gap-6">
-            <span className="flex items-center gap-2 transition-colors hover:text-white">
-              <Phone size={16} className="text-white/35" />
-              18732865855
-            </span>
-            <span className="flex items-center gap-2 transition-colors hover:text-white">
-              <Mail size={16} className="text-white/35" />
-              yzz7314@163.com
-            </span>
+            {data.phone && (
+              <span className="flex items-center gap-2 transition-colors hover:text-white">
+                <Phone size={16} className="text-white/35" />
+                {data.phone}
+              </span>
+            )}
+            {data.email && (
+              <span className="flex items-center gap-2 transition-colors hover:text-white">
+                <Mail size={16} className="text-white/35" />
+                {data.email}
+              </span>
+            )}
           </div>
         </div>
 
         <div className="relative z-10 space-y-10">
           <DossierBlock title="Education">
             <div className="space-y-4">
-              <DossierRow title="中国海洋大学" meta="2025.09 - 2028.06" desc="区域经济学" active />
-              <DossierRow title="中国石油大学（北京）" meta="2021.09 - 2025.06" desc="经济学" />
+              {education.map((item) => (
+                <DossierRow key={`${item.school}-${item.period}`} title={item.school} meta={item.period} desc={item.major} active={item.active} />
+              ))}
             </div>
           </DossierBlock>
 
           <DossierBlock title="Experience Highlights">
             <ul className="ml-1 space-y-3 border-l border-white/10 pl-2 text-sm leading-relaxed text-white/65">
-              <li className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
-                <span className="font-medium text-white">快手主站 - 热点运营中心策略产品经理：</span>
-                负责热词挖掘策略与热点 push 看板。
-              </li>
-              <li className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
-                <span className="font-medium text-white">AI 系统搭建：</span>
-                搭建多 Agent 长文本播客自动化生产系统，覆盖 PDF 解析、脚本生成、质检与 TTS 合成。
-              </li>
-              <li className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
-                <span className="font-medium text-white">数据分析建模：</span>
-                完成评论数据分析、问卷建模、动态定价补货等数据分析与建模项目。
-              </li>
+              {highlights.map((item) => (
+                <li key={item} className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
+                  {item}
+                </li>
+              ))}
             </ul>
           </DossierBlock>
 
           <DossierBlock title="Awards">
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {[
-                ['美国大学生数学建模竞赛', '国家级一等奖'],
-                ['“正大杯”全国大学生市场调查与分析大赛', '国家级三等奖'],
-                ['中国国际大学生创新大赛（2024）', '国家级三等奖'],
-                ['全国大学生数学建模竞赛', '省级特等奖'],
-              ].map(([name, result]) => (
-                <div
-                  key={name}
-                  className="rounded border border-white/5 bg-white/5 p-3 text-xs text-white/60 transition-colors hover:border-blue-400/30"
-                >
-                  {name}
-                  <span className="mt-1 block text-white">{result}</span>
+              {awards.map((item) => (
+                <div key={`${item.title}-${item.level}`} className="rounded border border-white/5 bg-white/5 p-3 text-xs text-white/60 transition-colors hover:border-blue-400/30">
+                  {item.title}
+                  <span className="mt-1 block text-white">{item.level}</span>
                 </div>
               ))}
             </div>
@@ -700,9 +638,9 @@ function DossierSection() {
 
           <DossierBlock title="Core Skills">
             <div className="space-y-4 text-sm text-white/65">
-              <SkillLine label="Data Analytics">熟悉 Python、SQL，能够完成数据清洗、建模分析与结果解读。</SkillLine>
-              <SkillLine label="AI Application">持续使用 ChatGPT、Gemini、DeepSeek 等工具提升信息处理和方案产出效率。</SkillLine>
-              <SkillLine label="AI Coding">熟悉 Claude Code、Codex、Cursor、Trae、Coze，具备将想法快速落地为原型的能力。</SkillLine>
+              {skills.map((item) => (
+                <SkillLine key={item.label} label={item.label}>{item.value}</SkillLine>
+              ))}
             </div>
           </DossierBlock>
         </div>
@@ -731,9 +669,7 @@ function DossierRow({ title, desc, meta, active }) {
         <span className="mx-2 text-white/30">|</span>
         <span className="text-white/65">{desc}</span>
       </div>
-      <div className={`mt-1 font-mono text-xs md:mt-0 ${active ? 'text-blue-300' : 'text-white/35'}`}>
-        {meta}
-      </div>
+      <div className={`mt-1 font-mono text-xs md:mt-0 ${active ? 'text-blue-300' : 'text-white/35'}`}>{meta}</div>
     </div>
   )
 }
@@ -747,9 +683,6 @@ function SkillLine({ label, children }) {
   )
 }
 
-// ========================
-// 单张项目卡片组件
-// ========================
 function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, deleteProject, isOwner, onOpen }) {
   const fileInputRef = useRef(null)
   const projectImages = normalizeProjectImages(project)
@@ -796,7 +729,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
 
       {coverImage ? (
         <div
-          className={`relative overflow-hidden ${isOwner ? 'cursor-pointer' : ''}`}
+          className={`relative aspect-video overflow-hidden border-b border-white/5 bg-black/30 ${isOwner ? 'cursor-pointer' : ''}`}
           onClick={(e) => {
             if (!isOwner) return
             e.stopPropagation()
@@ -806,7 +739,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
           <img
             src={coverImage}
             alt={project.title}
-            className="h-48 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
           />
           {isOwner && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -821,7 +754,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
               e.stopPropagation()
               fileInputRef.current?.click()
             }}
-            className="flex h-48 w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/25 transition-colors hover:text-white/45"
+            className="flex aspect-video w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/25 transition-colors hover:text-white/45"
           >
             <Upload size={28} strokeWidth={1.5} />
             <div className="text-center">
@@ -830,7 +763,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
             </div>
           </button>
         ) : (
-          <div className="flex h-48 w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/12">
+          <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/12">
             <Image size={28} strokeWidth={1} />
             <p className="text-xs">暂无图片</p>
           </div>
@@ -854,7 +787,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
 
         {isOwner ? (
           <textarea
-            value={project.desc}
+            value={project.description ?? project.desc}
             onClick={(e) => e.stopPropagation()}
             onChange={(e) => updateProject(project.id, 'desc', e.target.value)}
             rows={3}
@@ -862,14 +795,20 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
             placeholder="输入项目介绍..."
           />
         ) : (
-          <p className="text-sm leading-relaxed text-white/45">{project.desc}</p>
+          <p className="text-sm leading-relaxed text-white/45">{project.description ?? project.desc}</p>
         )}
 
-        <StarRating
-          rating={project.rating}
-          onChange={(val) => updateProject(project.id, 'rating', val)}
-          interactive={isOwner}
-        />
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="mt-auto inline-flex w-fit items-center rounded-full border border-white/15 px-4 py-2 text-xs font-medium uppercase tracking-[0.16em] text-white/65 transition-colors hover:border-blue-300/50 hover:text-white"
+          >
+            GitHub
+          </a>
+        )}
       </div>
     </article>
   )
@@ -881,10 +820,10 @@ function getProjectDetail(project) {
     '通过组件化方式组织页面结构，保留项目截图、文字说明和评分记录，便于后续迭代复盘。',
     '适合继续补充项目背景、实现过程、关键难点、最终成果和个人反思，让每张卡片都能沉淀为完整作品说明。',
   ].join('\n')
-  const detailText = project.detailText || fallbackDetail
+  const detailText = project.longDescription || project.detailText || fallbackDetail
 
   return {
-    overview: project.desc || '这是一个 AI Coding 练习项目，用于记录从需求拆解、页面实现到结果复盘的完整过程。',
+    overview: project.description || project.desc || '这是一个 AI Coding 练习项目，用于记录从需求拆解、页面实现到结果复盘的完整过程。',
     detailText,
     points: detailText.split('\n').map((point) => point.trim()).filter(Boolean),
   }
@@ -907,13 +846,25 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
     setActiveImageIndex((index) => (index === panels.length - 1 ? 0 : index + 1))
   }
 
-  return (
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [])
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-[90] flex items-center justify-center overflow-y-auto bg-black/70 px-4 py-8 backdrop-blur-sm"
+      className="project-modal-root fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto px-4 py-8"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
     >
+      <div className="absolute inset-0 bg-black/65 backdrop-blur-md" aria-hidden="true" />
       <div
-        className="project-detail-shell glass-card relative w-full max-w-6xl rounded-2xl p-5 shadow-[0_24px_80px_rgba(0,0,0,0.55)] md:p-6"
+        className="project-detail-shell modal-enter glass-card relative z-10 w-full max-w-6xl rounded-2xl p-5 shadow-[0_24px_80px_rgba(0,0,0,0.55)] md:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -930,7 +881,7 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
             <button
               type="button"
               onClick={() => activePanel.image && onZoom({ src: activePanel.image, alt: `${project.title} ${activePanel.label}` })}
-              className="group relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden md:aspect-[5/4] lg:aspect-[4/5]"
+              className="group relative flex aspect-video w-full items-center justify-center overflow-hidden"
             >
               {activePanel.image ? (
                 <>
@@ -951,9 +902,11 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
               )}
             </button>
 
-            <span className="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1 text-sm font-medium text-white/80 backdrop-blur-sm">
-              {images.length ? activeImageIndex + 1 : 0}/{images.length}
-            </span>
+            {images.length > 1 && (
+              <span className="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1 text-sm font-medium text-white/80 backdrop-blur-sm">
+                {activeImageIndex + 1}/{images.length}
+              </span>
+            )}
 
             {images.length > 1 && (
               <>
@@ -1007,9 +960,9 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
                     aria-label="编辑项目名称"
                   />
                   <textarea
-                    value={project.desc}
+                    value={project.description ?? project.desc}
                     rows={3}
-                    onChange={(e) => updateProject(project.id, 'desc', e.target.value)}
+                    onChange={(e) => updateProject(project.id, 'description', e.target.value)}
                     className="detail-edit-field resize-none text-sm leading-relaxed"
                     aria-label="编辑项目简介"
                   />
@@ -1031,7 +984,7 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
                   <textarea
                     value={detail.detailText}
                     rows={8}
-                    onChange={(e) => updateProject(project.id, 'detailText', e.target.value)}
+                    onChange={(e) => updateProject(project.id, 'longDescription', e.target.value)}
                     className="detail-edit-field resize-none text-sm leading-relaxed"
                     aria-label="编辑项目详细说明"
                   />
@@ -1046,11 +999,16 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-5">
-              <StarRating
-                rating={project.rating}
-                onChange={(val) => updateProject(project.id, 'rating', val)}
-                interactive={isOwner}
-              />
+              {project.githubUrl ? (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center rounded-full border border-white/15 px-4 py-2 text-xs font-medium uppercase tracking-[0.16em] text-white/65 transition-colors hover:border-blue-300/50 hover:text-white"
+                >
+                  GitHub
+                </a>
+              ) : null}
               <span className="text-xs text-white/30">
                 点击左侧展示图可放大查看
               </span>
@@ -1058,14 +1016,15 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
 function ImageZoomModal({ image, onClose }) {
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[110] flex items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-md"
       onClick={onClose}
     >
       <button
@@ -1082,50 +1041,8 @@ function ImageZoomModal({ image, onClose }) {
         className="max-h-[88vh] max-w-[94vw] rounded-xl object-contain shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
         onClick={(e) => e.stopPropagation()}
       />
-    </div>
-  )
-}
-
-// ========================
-// 星标评分组件
-// ========================
-function StarRating({ rating, onChange, interactive = true }) {
-  const stars = [1, 2, 3, 4, 5]
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex gap-1">
-        {stars.map((star) =>
-          interactive ? (
-            <button
-              key={star}
-              onClick={(e) => {
-                e.stopPropagation()
-                onChange(star)
-              }}
-              className="star-btn p-0.5"
-              title={`${star} 星`}
-            >
-              <Star
-                size={20}
-                fill={star <= rating ? '#fff' : 'none'}
-                className={star <= rating ? 'text-white' : 'text-white/15'}
-              />
-            </button>
-          ) : (
-            <span key={star} className="p-0.5">
-              <Star
-                size={20}
-                fill={star <= rating ? '#fff' : 'none'}
-                className={star <= rating ? 'text-white' : 'text-white/15'}
-              />
-            </span>
-          )
-        )}
-      </div>
-      <span className="text-sm font-medium text-white/50 tabular-nums">
-        {rating.toFixed(1)} / 5.0
-      </span>
-    </div>
+    </div>,
+    document.body
   )
 }
 
@@ -1144,12 +1061,12 @@ function Footer({ isOwner, onUnlock, onLock }) {
           {isOwner ? (
             <>
               <Unlock size={12} className="text-blue-400" />
-              <span>编辑模式 · 点击锁定</span>
+              <span>后台模式 · 点击退出</span>
             </>
           ) : (
             <>
               <Lock size={12} />
-              <span>只读模式 · 点击解锁</span>
+              <span>展示模式 · 点击编辑</span>
             </>
           )}
         </button>
@@ -1209,12 +1126,12 @@ function UnlockModal({ onUnlock, onClose }) {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15">
             <Lock size={28} className="text-blue-400" />
           </div>
-          <h3 className="text-lg font-semibold text-white">
-            输入密码解锁
-          </h3>
-          <p className="mt-1 text-sm text-white/40">
-            解锁后可编辑项目内容
-          </p>
+              <h3 className="text-lg font-semibold text-white">
+                输入密码进入编辑后台
+              </h3>
+              <p className="mt-1 text-sm text-white/40">
+                通过验证后可新增、修改和删除项目
+              </p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
