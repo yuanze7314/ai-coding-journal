@@ -17,40 +17,29 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
+import { projects as publicProjects } from './data/projects'
 
 // ========================
-// 默认项目数据
+// 公开项目数据来自仓库静态文件，Vercel 部署后所有浏览器读取同一份内容。
 // ========================
-const defaultProjects = [
-  {
-    id: 1,
-    title: 'AI Coding 项目 01',
-    desc: '用于展示本次 AI Coding 练习的核心页面、功能效果和个人评分。',
-    rating: 4,
-    image: '',
-  },
-  {
-    id: 2,
-    title: 'AI Coding 项目 02',
-    desc: '可以上传项目截图，并补充项目目的、实现方式和展示亮点。',
-    rating: 3,
-    image: '',
-  },
-  {
-    id: 3,
-    title: 'AI Coding 项目 03',
-    desc: '适合记录网页、App 原型、小工具或自动化脚本等练习成果。',
-    rating: 5,
-    image: '',
-  },
-]
+const PUBLIC_PROJECTS = publicProjects.map((project) => ({
+  ...project,
+  desc: project.description,
+  detailText: project.summary,
+  image: project.image,
+  images: project.images?.length ? project.images : [project.image].filter(Boolean),
+}))
 
 // ========================
-// localStorage 工具函数
+// localStorage 仅用于本地草稿，不作为线上公开数据源。
 // ========================
-const STORAGE_KEY = 'ai-coding-projects'
+const PROJECT_DRAFT_STORAGE_KEY = 'ai-coding-project-drafts'
 const TIMELINE_STORAGE_KEY = 'ai-coding-timeline'
 const OWNER_PASSWORD = '123456'
+
+// TODO: 若后续需要真正的在线后台新增项目，接入 Vercel Postgres/Neon/Supabase
+// 保存项目元数据，接入 Vercel Blob 保存项目图片，并通过受管理员登录保护的
+// API Routes 处理新增、编辑和删除。
 
 const defaultTimeline = [
   {
@@ -76,9 +65,9 @@ const defaultTimeline = [
   },
 ]
 
-function loadProjects() {
+function loadProjectDrafts() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(PROJECT_DRAFT_STORAGE_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
       if (Array.isArray(parsed) && parsed.length > 0) {
@@ -86,16 +75,16 @@ function loadProjects() {
       }
     }
   } catch (e) {
-    console.warn('读取本地数据失败', e)
+    console.warn('读取本地项目草稿失败', e)
   }
-  return defaultProjects
+  return PUBLIC_PROJECTS
 }
 
-function saveProjects(projects) {
+function saveProjectDrafts(projects) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects))
+    localStorage.setItem(PROJECT_DRAFT_STORAGE_KEY, JSON.stringify(projects))
   } catch (e) {
-    console.warn('保存本地数据失败', e)
+    console.warn('保存本地项目草稿失败', e)
   }
 }
 
@@ -139,20 +128,20 @@ function readImageFile(file) {
 // 主 App 组件
 // ========================
 export default function App() {
-  const [projects, setProjects] = useState(() => loadProjects())
+  const [projects, setProjects] = useState(() => PUBLIC_PROJECTS)
   const [timeline, setTimeline] = useState(() => loadTimeline())
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
   const [showUnlockModal, setShowUnlockModal] = useState(false)
 
   const nextIdRef = useRef(
-    Math.max(...loadProjects().map((p) => p.id), 0) + 1
+    Math.max(...PUBLIC_PROJECTS.map((p) => p.id), 0) + 1
   )
 
-  // 每次 projects 变化自动保存
+  // 本地编辑仅保存为当前浏览器草稿，不会影响线上公开展示。
   useEffect(() => {
     if (isOwner) {
-      saveProjects(projects)
+      saveProjectDrafts(projects)
     }
   }, [projects, isOwner])
 
@@ -188,8 +177,10 @@ export default function App() {
     if (password === OWNER_PASSWORD) {
       setIsOwner(true)
       setShowUnlockModal(false)
-      // 重新加载最新数据
-      setProjects(loadProjects())
+      // 解锁后进入本地草稿编辑模式。公开页面仍使用仓库静态数据。
+      const drafts = loadProjectDrafts()
+      nextIdRef.current = Math.max(...drafts.map((p) => p.id), 0) + 1
+      setProjects(drafts)
       setTimeline(loadTimeline())
       return { success: true }
     }
@@ -198,8 +189,8 @@ export default function App() {
 
   const handleLock = useCallback(() => {
     setIsOwner(false)
-    // 退出编辑模式后，刷新显示只读内容
-    setProjects(loadProjects())
+    // 退出编辑模式后恢复线上公开数据，避免公开展示依赖本地草稿。
+    setProjects(PUBLIC_PROJECTS)
     setTimeline(loadTimeline())
   }, [])
 
@@ -250,8 +241,16 @@ export default function App() {
         id: newId,
         title: `AI Coding 项目 ${String(count).padStart(2, '0')}`,
         desc: '用于展示本次 AI Coding 练习的核心页面、功能效果和个人评分。',
+        description: '用于展示本次 AI Coding 练习的核心页面、功能效果和个人评分。',
+        subtitle: 'Local Draft',
+        techStack: [],
         rating: 0,
         image: '',
+        images: [],
+        summary: '本项目当前仅保存在本机浏览器草稿中，不会自动同步到线上公开网站。',
+        demoUrl: '',
+        githubUrl: '',
+        createdAt: new Date().toISOString().slice(0, 10),
       },
     ])
   }, [isOwner])
@@ -294,7 +293,6 @@ export default function App() {
           addProject={addProject}
           deleteProject={deleteProject}
           isOwner={isOwner}
-          onUnlock={() => setShowUnlockModal(true)}
         />
 
         <div className="archive-duo relative z-10">
@@ -444,110 +442,6 @@ function HeroSection({ scrollTo }) {
 }
 
 // ========================
-// 项目效果展示区组件
-// ========================
-function ShowcaseSection({ isOwner }) {
-  const [showcaseImage, setShowcaseImage] = useState(() => {
-    try {
-      return localStorage.getItem('ai-coding-showcase') || ''
-    } catch {
-      return ''
-    }
-  })
-
-  const fileInputRef = useRef(null)
-
-  useEffect(() => {
-    if (isOwner) {
-      try {
-        localStorage.setItem('ai-coding-showcase', showcaseImage)
-      } catch {
-        // ignore
-      }
-    }
-  }, [showcaseImage, isOwner])
-
-  const handleShowcaseUpload = (file) => {
-    if (!file || !file.type.startsWith('image/')) return
-    const reader = new FileReader()
-    reader.onload = (e) => setShowcaseImage(e.target.result)
-    reader.readAsDataURL(file)
-  }
-
-  return (
-    <section id="showcase" className="showcase-section relative z-10 py-24 px-6">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-12 text-center">
-          <h2 className="mb-3 text-3xl font-bold text-white md:text-5xl">
-            项目展示
-          </h2>
-          <p className="text-white/40">
-            这里放置一张核心项目截图即可，用于展示 AI Coding
-            生成结果或最终页面效果。
-          </p>
-        </div>
-
-        <div className="showcase-frame relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.02]">
-          {isOwner && (
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files?.[0]) {
-                  handleShowcaseUpload(e.target.files[0])
-                }
-                e.target.value = ''
-              }}
-            />
-          )}
-
-          {showcaseImage ? (
-            <div
-              className={`relative ${isOwner ? 'cursor-pointer' : ''}`}
-              onClick={() => isOwner && fileInputRef.current?.click()}
-            >
-              <img
-                src={showcaseImage}
-                alt="项目效果图"
-                className="w-full aspect-video object-cover"
-              />
-              {isOwner && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity">
-                  <span className="text-sm text-white/80">点击替换图片</span>
-                </div>
-              )}
-            </div>
-          ) : (
-            isOwner ? (
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="flex w-full aspect-video flex-col items-center justify-center gap-3 text-white/25 transition-colors hover:text-white/45"
-              >
-                <Image size={48} strokeWidth={1} />
-                <div className="text-center">
-                  <p className="text-base font-medium">项目截图展示区</p>
-                  <p className="mt-1 text-sm">将此区域替换为项目最终效果图</p>
-                </div>
-              </button>
-            ) : (
-              <div className="flex w-full aspect-video flex-col items-center justify-center gap-3 text-white/15">
-                <Image size={48} strokeWidth={1} />
-                <div className="text-center">
-                  <p className="text-base font-medium">暂无项目截图</p>
-                  <p className="mt-1 text-sm">等待项目所有者上传</p>
-                </div>
-              </div>
-            )
-          )}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ========================
 // 项目卡片区组件
 // ========================
 function ProjectsSection({
@@ -557,7 +451,6 @@ function ProjectsSection({
   addProject,
   deleteProject,
   isOwner,
-  onUnlock,
 }) {
   const [selectedProject, setSelectedProject] = useState(null)
   const [zoomImage, setZoomImage] = useState(null)
@@ -579,36 +472,42 @@ function ProjectsSection({
           </div>
         </div>
 
-        <div className="project-grid grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              revealDelay={`${index * 0.08}s`}
-              updateProject={updateProject}
-              handleImageUpload={handleImageUpload}
-              deleteProject={deleteProject}
-              isOwner={isOwner}
-              onOpen={() => setSelectedProject(project)}
-            />
-          ))}
-          <button
-            type="button"
-            onClick={isOwner ? addProject : onUnlock}
-            className="add-mission-card reveal glass-card group flex min-h-[25rem] flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-white/20 text-white/45 transition-all"
-            style={{ transitionDelay: `${projects.length * 0.08}s` }}
-          >
-            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 transition-all group-hover:border-blue-300/70 group-hover:text-white">
-              <Plus size={26} strokeWidth={1.5} />
-            </span>
-            <span className="font-mono text-sm uppercase tracking-[0.18em]">
-              Add New Mission
-            </span>
-            <span className="max-w-[15rem] text-center text-xs leading-relaxed text-white/30">
-              {isOwner ? '创建新的项目卡片并继续补充截图、说明与评分' : '当前为只读模式，输入密码后可添加新项目'}
-            </span>
-          </button>
-        </div>
+        {projects.length > 0 ? (
+          <div className="project-grid grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                revealDelay={`${index * 0.08}s`}
+                updateProject={updateProject}
+                handleImageUpload={handleImageUpload}
+                deleteProject={deleteProject}
+                isOwner={isOwner}
+                onOpen={() => setSelectedProject(project)}
+              />
+            ))}
+            {isOwner && (
+              <button
+                type="button"
+                onClick={addProject}
+                className="add-mission-card reveal glass-card group flex min-h-[25rem] flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-white/20 text-white/45 transition-all"
+                style={{ transitionDelay: `${projects.length * 0.08}s` }}
+              >
+                <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 transition-all group-hover:border-blue-300/70 group-hover:text-white">
+                  <Plus size={26} strokeWidth={1.5} />
+                </span>
+                <span className="font-mono text-sm uppercase tracking-[0.18em]">
+                  Add Local Draft
+                </span>
+                <span className="max-w-[15rem] text-center text-xs leading-relaxed text-white/30">
+                  仅保存到当前浏览器草稿，不会更新线上公开数据
+                </span>
+              </button>
+            )}
+          </div>
+        ) : (
+          <EmptyProjectsState isOwner={isOwner} onAdd={addProject} />
+        )}
       </div>
 
       {selectedProject && (
@@ -628,6 +527,29 @@ function ProjectsSection({
         />
       )}
     </section>
+  )
+}
+
+function EmptyProjectsState({ isOwner, onAdd }) {
+  return (
+    <div className="empty-project-state reveal glass-card flex min-h-[22rem] flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 px-6 text-center">
+      <span className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/45">
+        <Image size={26} strokeWidth={1.4} />
+      </span>
+      <h3 className="text-xl font-medium text-white">暂无公开项目</h3>
+      <p className="mt-3 max-w-md text-sm leading-relaxed text-white/45">
+        公开作品集数据应写入仓库内的静态数据文件，并使用 Vercel 可访问的图片路径。
+      </p>
+      {isOwner && (
+        <button
+          type="button"
+          onClick={onAdd}
+          className="mt-6 rounded-full border border-white/15 px-5 py-2 text-sm text-white/65 transition-colors hover:border-blue-300/50 hover:text-white"
+        >
+          新建本地草稿
+        </button>
+      )}
+    </div>
   )
 }
 
