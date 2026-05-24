@@ -203,6 +203,8 @@ pm2 restart ai-coding-journal
 
 ## 8. 更新代码流程
 
+如果服务器可以访问 GitHub，可以在服务器上直接执行：
+
 ```bash
 cd /var/www/ai-coding-journal
 git pull
@@ -210,6 +212,32 @@ npm install
 npm run build
 pm2 restart ai-coding-journal
 ```
+
+如果服务器无法访问 GitHub，推荐使用仓库内的 GitHub Actions：
+
+```txt
+.github/workflows/deploy-tencent-lighthouse.yml
+```
+
+需要在 GitHub 仓库的 Settings → Secrets and variables → Actions 中新增：
+
+```txt
+TENCENT_SERVER_HOST=192.144.129.55
+TENCENT_SERVER_USER=root
+TENCENT_SERVER_PASSWORD=你的服务器 SSH 密码
+TENCENT_SERVER_PORT=22
+ADMIN_PASSWORD=你的后台管理密码
+```
+
+之后每次推送到 `main` 分支，GitHub Actions 会自动：
+
+1. 安装依赖；
+2. 执行类型检查；
+3. 构建前端；
+4. 打包代码；
+5. 通过 SSH 上传到服务器；
+6. 保留服务器现有 `.env`、SQLite 数据库和 uploads 图片；
+7. 重启 PM2 服务。
 
 ## 9. API 能力
 

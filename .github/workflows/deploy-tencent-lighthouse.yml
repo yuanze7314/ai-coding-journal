@@ -1,0 +1,122 @@
+name: Deploy to Tencent Lighthouse
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Create release archive
+        run: |
+          tar \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=server/data \
+            --exclude=server/uploads \
+            --exclude=.env \
+            -czf release.tgz .
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Upload release archive
+        env:
+          SSH_PASSWORD: ${{ secrets.TENCENT_SERVER_PASSWORD }}
+          SSH_USER: ${{ secrets.TENCENT_SERVER_USER }}
+          SSH_HOST: ${{ secrets.TENCENT_SERVER_HOST }}
+          SSH_PORT: ${{ secrets.TENCENT_SERVER_PORT || '22' }}
+        run: |
+          sshpass -p "$SSH_PASSWORD" scp \
+            -P "$SSH_PORT" \
+            -o StrictHostKeyChecking=no \
+            release.tgz \
+            "$SSH_USER@$SSH_HOST:/tmp/ai-coding-journal-release.tgz"
+
+      - name: Deploy on server
+        env:
+          SSH_PASSWORD: ${{ secrets.TENCENT_SERVER_PASSWORD }}
+          SSH_USER: ${{ secrets.TENCENT_SERVER_USER }}
+          SSH_HOST: ${{ secrets.TENCENT_SERVER_HOST }}
+          SSH_PORT: ${{ secrets.TENCENT_SERVER_PORT || '22' }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          sshpass -p "$SSH_PASSWORD" ssh \
+            -p "$SSH_PORT" \
+            -o StrictHostKeyChecking=no \
+            "$SSH_USER@$SSH_HOST" \
+            "ADMIN_PASSWORD='$ADMIN_PASSWORD' bash -s" <<'EOF'
+          set -euo pipefail
+
+          APP_DIR=/var/www/ai-coding-journal
+          RELEASE_DIR=/tmp/ai-coding-journal-release
+          BACKUP_DIR=/var/www/ai-coding-journal.previous
+
+          rm -rf "$RELEASE_DIR"
+          mkdir -p "$RELEASE_DIR"
+          tar -xzf /tmp/ai-coding-journal-release.tgz -C "$RELEASE_DIR"
+
+          mkdir -p "$APP_DIR/server/data" "$APP_DIR/server/uploads"
+
+          if [ -f "$APP_DIR/.env" ]; then
+            cp "$APP_DIR/.env" "$RELEASE_DIR/.env"
+          else
+            cat > "$RELEASE_DIR/.env" <<ENVEOF
+          ADMIN_PASSWORD=${ADMIN_PASSWORD}
+          PORT=3001
+          DATA_DIR=server/data
+          UPLOAD_DIR=server/uploads
+          ENVEOF
+          fi
+
+          mkdir -p "$RELEASE_DIR/server"
+          if [ -d "$APP_DIR/server/data" ]; then
+            cp -a "$APP_DIR/server/data" "$RELEASE_DIR/server/data"
+          fi
+          if [ -d "$APP_DIR/server/uploads" ]; then
+            cp -a "$APP_DIR/server/uploads" "$RELEASE_DIR/server/uploads"
+          fi
+
+          rm -rf "$BACKUP_DIR"
+          if [ -d "$APP_DIR" ]; then
+            mv "$APP_DIR" "$BACKUP_DIR"
+          fi
+          mv "$RELEASE_DIR" "$APP_DIR"
+
+          cd "$APP_DIR"
+          npm ci --omit=dev
+          set -a
+          . ./.env
+          set +a
+
+          if pm2 describe ai-coding-journal >/dev/null 2>&1; then
+            pm2 restart ai-coding-journal --update-env
+          else
+            pm2 start ecosystem.config.cjs
+          fi
+
+          pm2 save
+          rm -f /tmp/ai-coding-journal-release.tgz
+          EOF
