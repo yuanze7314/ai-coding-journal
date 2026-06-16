@@ -267,8 +267,9 @@ app.put('/api/dossier', requireAdmin, (req, res) => {
 })
 
 if (existsSync(distDir)) {
-  app.use(express.static(distDir, { maxAge: '1h' }))
+  app.use(express.static(distDir, { index: false, maxAge: '1h' }))
   app.get(/.*/, (_req, res) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
     res.sendFile(path.join(distDir, 'index.html'))
   })
 }
