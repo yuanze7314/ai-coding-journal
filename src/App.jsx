@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import {
+  Briefcase,
   Upload,
   Image,
   Plus,
-  Menu,
   X,
   Trash2,
   Lock,
@@ -13,17 +13,21 @@ import {
   EyeOff,
   Phone,
   Mail,
+  GitBranch,
   Maximize2,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
 import { AdminPage } from './pages/AdminPage'
-import { mockDossier } from './data/mockDossier'
-import { dossierService } from './services/dossierService'
 import { adminAuth, projectService } from './services/projectService'
-import { timelineService } from './services/timelineService'
+import { capabilitySummaryService, defaultCapabilitySummary } from './services/capabilitySummaryService'
+import { resumeService } from './services/resumeService'
+import { MiniResumeCard } from './components/resume/MiniResumeCard'
+import { ResumeDrawer } from './components/resume/ResumeDrawer'
+import { resumeData } from './components/resume/ResumeData'
 
 const OWNER_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '123456'
+const PAGE_SECTION_IDS = ['hero', 'capabilities', 'missions', 'contact']
 
 function normalizeProjectImages(project) {
   if (Array.isArray(project.images)) {
@@ -43,30 +47,49 @@ function readImageFile(file) {
   })
 }
 
+function useEscapeToClose(onClose, enabled = true) {
+  useEffect(() => {
+    if (!enabled) return undefined
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [enabled, onClose])
+}
+
 // ========================
 // 主 App 组件
 // ========================
 export default function App() {
   const [projects, setProjects] = useState([])
   const [isProjectsLoading, setIsProjectsLoading] = useState(true)
-  const [timeline, setTimeline] = useState([])
-  const [dossier, setDossier] = useState(mockDossier)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('hero')
   const [isOwner, setIsOwner] = useState(false)
   const [isAdminMode, setIsAdminMode] = useState(false)
   const [showUnlockModal, setShowUnlockModal] = useState(false)
+  const [isResumeDrawerOpen, setIsResumeDrawerOpen] = useState(false)
+  const [portfolioResumeData, setPortfolioResumeData] = useState(resumeData)
+  const [capabilitySummary, setCapabilitySummary] = useState(defaultCapabilitySummary)
+  const resumeLoadedRef = useRef(false)
+  const capabilitySummaryLoadedRef = useRef(false)
+  const resumeTriggerRef = useRef(null)
+  const activeSectionRef = useRef(activeSection)
+
+  useEffect(() => {
+    activeSectionRef.current = activeSection
+  }, [activeSection])
 
   const loadDisplayData = useCallback(async () => {
     setIsProjectsLoading(true)
     try {
-      const [nextProjects, nextTimeline, nextDossier] = await Promise.all([
-        projectService.getFeaturedProjects(),
-        timelineService.getTimelineItems(),
-        dossierService.getDossier(),
-      ])
+      const nextProjects = await projectService.getFeaturedProjects()
       setProjects(nextProjects)
-      setTimeline(nextTimeline)
-      setDossier(nextDossier)
     } catch (error) {
       console.warn('加载展示数据失败', error)
     } finally {
@@ -77,15 +100,9 @@ export default function App() {
   useEffect(() => {
     let mounted = true
     setIsProjectsLoading(true)
-    Promise.all([
-      projectService.getFeaturedProjects(),
-      timelineService.getTimelineItems(),
-      dossierService.getDossier(),
-    ]).then(([nextProjects, nextTimeline, nextDossier]) => {
+    projectService.getFeaturedProjects().then((nextProjects) => {
       if (!mounted) return
       setProjects(nextProjects)
-      setTimeline(nextTimeline)
-      setDossier(nextDossier)
       setIsProjectsLoading(false)
     }).catch((error) => {
       console.warn('加载展示数据失败', error)
@@ -96,6 +113,48 @@ export default function App() {
       mounted = false
     }
   }, [])
+
+  useEffect(() => {
+    let mounted = true
+
+    resumeService.getResume().then((nextResume) => {
+      if (!mounted) return
+      resumeLoadedRef.current = true
+      setPortfolioResumeData(nextResume)
+    })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!resumeLoadedRef.current) return
+    resumeService.updateResume(portfolioResumeData).catch((error) => {
+      console.warn('保存简历数据失败', error)
+    })
+  }, [portfolioResumeData])
+
+  useEffect(() => {
+    let mounted = true
+
+    capabilitySummaryService.getSummary().then((nextSummary) => {
+      if (!mounted) return
+      capabilitySummaryLoadedRef.current = true
+      setCapabilitySummary(nextSummary)
+    })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!capabilitySummaryLoadedRef.current) return
+    capabilitySummaryService.updateSummary(capabilitySummary).catch((error) => {
+      console.warn('保存个人总结数据失败', error)
+    })
+  }, [capabilitySummary])
 
   useEffect(() => {
     if (isAdminMode) return undefined
@@ -132,7 +191,7 @@ export default function App() {
       window.cancelAnimationFrame(frameId)
       observer?.disconnect()
     }
-  }, [isAdminMode, projects.length, timeline.length, isProjectsLoading])
+  }, [isAdminMode, projects.length, isProjectsLoading])
 
   // ---- owner 相关 ----
 
@@ -153,7 +212,6 @@ export default function App() {
     setIsOwner(false)
     setIsAdminMode(false)
     setShowUnlockModal(false)
-    setMobileMenuOpen(false)
     if (window.location.pathname !== '/' || window.location.hash) {
       window.history.replaceState(null, '', '/')
     }
@@ -164,6 +222,26 @@ export default function App() {
       console.warn('重新加载展示数据失败', error)
     })
   }, [loadDisplayData])
+
+  const handleReturnHomeFromAdmin = useCallback(() => {
+    setIsAdminMode(false)
+    setShowUnlockModal(false)
+    loadDisplayData().catch((error) => {
+      console.warn('重新加载展示数据失败', error)
+    })
+  }, [loadDisplayData])
+
+  const updateResumeData = useCallback((updater) => {
+    setPortfolioResumeData((current) => (
+      typeof updater === 'function' ? updater(current) : updater
+    ))
+  }, [])
+
+  const updateCapabilitySummary = useCallback((updater) => {
+    setCapabilitySummary((current) => (
+      typeof updater === 'function' ? updater(current) : updater
+    ))
+  }, [])
 
   // ---- 核心操作函数 ----
 
@@ -178,22 +256,91 @@ export default function App() {
   // ---- 平滑滚动 ----
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    setMobileMenuOpen(false)
+    activeSectionRef.current = id
+    setActiveSection(id)
   }
+
+  const handleResumeNavigate = (id) => {
+    setIsResumeDrawerOpen(false)
+    window.setTimeout(() => scrollTo(id), 220)
+  }
+
+  useEffect(() => {
+    if (isAdminMode) return undefined
+
+    const scroller = document.getElementById('scroll-container')
+
+    if (!scroller) return undefined
+
+    const updateActiveSection = () => {
+      const scrollerRect = scroller.getBoundingClientRect()
+      const activationOffset = Math.min(Math.max(scrollerRect.height * 0.28, 132), 260)
+      const sections = PAGE_SECTION_IDS.map((id) => {
+        const element = document.getElementById(id)
+        if (!element) return null
+        const rect = element.getBoundingClientRect()
+        return {
+          id,
+          top: rect.top - scrollerRect.top,
+          bottom: rect.bottom - scrollerRect.top,
+        }
+      }).filter(Boolean)
+
+      const containingSections = sections.filter(
+        (section) => section.top <= activationOffset && section.bottom > activationOffset
+      )
+      const currentVisibleSection = containingSections.find((section) => section.id === activeSectionRef.current)
+      const latestPassedSection = sections.reduce(
+        (latest, section) => (section.top <= activationOffset ? section : latest),
+        null
+      )
+      const nextSection = currentVisibleSection?.id
+        || containingSections[0]?.id
+        || latestPassedSection?.id
+        || PAGE_SECTION_IDS[0]
+
+      if (nextSection !== activeSectionRef.current) {
+        activeSectionRef.current = nextSection
+        setActiveSection(nextSection)
+      }
+    }
+
+    let frameId = 0
+    const scheduleActiveSectionUpdate = () => {
+      if (frameId) return
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0
+        updateActiveSection()
+      })
+    }
+
+    updateActiveSection()
+    scroller.addEventListener('scroll', scheduleActiveSectionUpdate, { passive: true })
+    window.addEventListener('scroll', scheduleActiveSectionUpdate, { passive: true })
+    window.addEventListener('resize', scheduleActiveSectionUpdate)
+
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId)
+      scroller.removeEventListener('scroll', scheduleActiveSectionUpdate)
+      window.removeEventListener('scroll', scheduleActiveSectionUpdate)
+      window.removeEventListener('resize', scheduleActiveSectionUpdate)
+    }
+  }, [isAdminMode, projects.length, isProjectsLoading])
 
   return (
     isAdminMode ? (
-      <AdminPage authenticated onExit={handleLock} />
+      <AdminPage authenticated onExit={handleReturnHomeFromAdmin} />
     ) : (
-      <div className="mission-shell relative min-h-screen overflow-hidden bg-black text-white/90">
+      <div className="mission-shell claude-code-theme relative min-h-screen overflow-hidden bg-black text-white/90">
+      <a href="#main-content" className="skip-link">
+        跳到主要内容
+      </a>
       <div className="game-bg" aria-hidden="true" />
       <div className="bg-overlay-left" aria-hidden="true" />
 
       <div className="scroll-panel" id="scroll-container">
         {/* ========== 顶部导航栏 ========== */}
         <Navbar
-          mobileMenuOpen={mobileMenuOpen}
-          setMobileMenuOpen={setMobileMenuOpen}
           scrollTo={scrollTo}
           isOwner={isOwner}
           onUnlock={() => setShowUnlockModal(true)}
@@ -201,7 +348,17 @@ export default function App() {
         />
 
         {/* ========== Hero 区 ========== */}
+          <div className="doc-layout">
+            <LeftSidebar activeSection={activeSection} scrollTo={scrollTo} />
+
+            <main id="main-content" className="main-content">
         <HeroSection scrollTo={scrollTo} />
+
+        <CapabilityProofSection
+          data={capabilitySummary}
+          isOwner={isOwner}
+          onUpdate={updateCapabilitySummary}
+        />
 
         {/* ========== 项目卡片区 ========== */}
         <ProjectsSection
@@ -214,14 +371,7 @@ export default function App() {
           isOwner={isOwner}
         />
 
-        <div className="archive-duo relative z-10">
-          <TimelineSection
-            timeline={timeline}
-            updateTimelineItem={updateTimelineItem}
-            isOwner={isOwner}
-          />
-          <DossierSection dossier={dossier} />
-        </div>
+        <ContactSection contacts={portfolioResumeData.contacts} />
 
         {/* ========== 底部 ========== */}
         <Footer
@@ -229,9 +379,25 @@ export default function App() {
           onUnlock={() => setShowUnlockModal(true)}
           onLock={handleLock}
         />
+            </main>
+
+            <aside className="resume-rail" aria-label="Mini resume entry">
+              <MiniResumeCard ref={resumeTriggerRef} data={portfolioResumeData} onOpen={() => setIsResumeDrawerOpen(true)} />
+            </aside>
+          </div>
       </div>
 
       {/* ========== 解锁弹窗 ========== */}
+      <ResumeDrawer
+        data={portfolioResumeData}
+        isOpen={isResumeDrawerOpen}
+        isOwner={isOwner}
+        onUpdate={updateResumeData}
+        onClose={() => setIsResumeDrawerOpen(false)}
+        onNavigate={handleResumeNavigate}
+        returnFocusRef={resumeTriggerRef}
+      />
+
       {showUnlockModal && (
         <UnlockModal
           onUnlock={handleUnlock}
@@ -246,20 +412,55 @@ export default function App() {
 // ========================
 // 导航栏组件
 // ========================
-function Navbar({ mobileMenuOpen, setMobileMenuOpen, scrollTo, isOwner, onUnlock, onLock }) {
-  const navItems = [
-    { label: 'Missions', target: 'missions' },
-    { label: 'Timeline', target: 'timeline' },
-    { label: 'Dossier', target: 'resume' },
+function LeftSidebar({ activeSection, scrollTo }) {
+  const groups = [
+    {
+      title: 'Platform',
+      items: [
+        { label: '能力总览', target: 'capabilities' },
+        { label: '项目展示', target: 'missions' },
+        { label: '联系方式', target: 'contact' },
+      ],
+    },
   ]
 
+  return (
+    <aside className="left-sidebar" aria-label="页面栏目导航">
+      <button
+        type="button"
+        className={`side-link side-link-home ${activeSection === 'hero' ? 'active' : ''}`}
+        onClick={() => scrollTo('hero')}
+      >
+        Overview
+      </button>
+      {groups.map((group) => (
+        <div key={group.title} className="side-group">
+          <div className="side-group-title">{group.title}</div>
+          {group.items.map((item) => (
+            <button
+              key={item.target}
+              type="button"
+              className={`side-link ${activeSection === item.target ? 'active' : ''}`}
+              onClick={() => scrollTo(item.target)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      ))}
+    </aside>
+  )
+}
+
+function Navbar({ scrollTo, isOwner, onUnlock, onLock }) {
   return (
     <nav className="glass sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-4 md:px-12">
         {/* Logo */}
         <button
           onClick={() => scrollTo('hero')}
-          className="brand-mark flex items-center gap-2 font-mono text-sm tracking-[0.22em] text-white"
+          className="brand-mark flex min-h-11 items-center gap-2 font-mono text-sm tracking-[0.22em] text-white"
+          aria-label="回到首页"
         >
           <span>YZ</span>
           <span className="text-white/35">// SYSTEM.OS</span>
@@ -267,21 +468,12 @@ function Navbar({ mobileMenuOpen, setMobileMenuOpen, scrollTo, isOwner, onUnlock
 
         {/* 桌面导航 */}
         <div className="hidden items-center gap-8 md:flex">
-          {navItems.map((item) => (
-            <button
-              key={item.target}
-              onClick={() => scrollTo(item.target)}
-              className="text-sm text-white/60 transition-colors hover:text-white"
-            >
-              {item.label}
-            </button>
-          ))}
-
           {/* 锁定/解锁状态 */}
           <button
             onClick={isOwner ? onLock : onUnlock}
-            className="ml-2 flex items-center gap-1.5 text-xs text-white/30 transition-colors hover:text-white/60"
+            className="ml-2 flex min-h-11 items-center gap-1.5 text-xs text-white/30 transition-colors hover:text-white/60"
             title={isOwner ? '退出后台管理' : '输入密码进入编辑后台'}
+            aria-label={isOwner ? '退出编辑后台' : '进入编辑后台'}
           >
             {isOwner ? (
               <>
@@ -301,36 +493,14 @@ function Navbar({ mobileMenuOpen, setMobileMenuOpen, scrollTo, isOwner, onUnlock
         <div className="flex items-center gap-3 md:hidden">
           <button
             onClick={isOwner ? onLock : onUnlock}
-            className="text-white/30 hover:text-white/60"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-full text-white/30 hover:text-white/60"
             aria-label={isOwner ? '退出编辑后台' : '进入编辑后台'}
           >
             {isOwner ? <Unlock size={16} className="text-blue-400" /> : <Lock size={16} />}
           </button>
-          <button
-            className="text-white/70"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
         </div>
       </div>
 
-      {/* 移动端下拉菜单 */}
-      {mobileMenuOpen && (
-        <div className="border-t border-white/5 bg-gray-950/95 backdrop-blur-xl md:hidden">
-          <div className="flex flex-col px-6 py-4 gap-3">
-            {navItems.map((item) => (
-              <button
-                key={item.target}
-                onClick={() => scrollTo(item.target)}
-                className="text-left text-sm text-white/60 transition-colors hover:text-white py-1"
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
     </nav>
   )
 }
@@ -345,18 +515,147 @@ function HeroSection({ scrollTo }) {
       className="relative z-10 flex min-h-[85vh] flex-col justify-center px-6 pb-10 pt-10 md:px-12"
     >
       <div className="w-full">
+        <div className="hero-kicker reveal mb-5 font-mono text-xs uppercase text-blue-200/80">
+          Personal AI Portfolio
+        </div>
         <h1 className="reveal mb-8 text-6xl font-semibold leading-tight tracking-tight text-white md:text-[5.5rem]">
-          Yz AI Coding
-          <br />
-          <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-            Growth Archive
-          </span>
+          <span className="hero-title-accent">Yz AI Coding</span>
+          <span className="hero-title-main">个人项目档案</span>
         </h1>
 
         <p className="reveal mb-10 max-w-2xl text-xl font-light leading-relaxed text-white/50 md:text-2xl">
           记录我如何用 AI 编程、数据分析和自动化 Agent，把分散的想法变成可展示的项目系统。
         </p>
 
+        <div className="hero-actions reveal flex flex-col gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => scrollTo('missions')}
+            className="cta-primary inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-medium"
+          >
+            查看项目
+            <ChevronRight size={17} className="ml-2" />
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CapabilityProofSection({ data, isOwner, onUpdate }) {
+  const items = Array.isArray(data.items) ? data.items : []
+
+  const updateHeading = (value) => {
+    onUpdate?.((current) => ({ ...current, heading: value }))
+  }
+
+  const updateSummary = (value) => {
+    onUpdate?.((current) => ({ ...current, summary: value }))
+  }
+
+  const updateItem = (index, key, value) => {
+    onUpdate?.((current) => ({
+      ...current,
+      items: (current.items || []).map((item, itemIndex) => (
+        itemIndex === index ? { ...item, [key]: value } : item
+      )),
+    }))
+  }
+
+  return (
+    <section id="capabilities" className="capability-section relative z-10 px-6 py-12 md:px-12">
+      <div className="mx-auto max-w-7xl">
+        <div className="capability-section-header mb-10">
+          {isOwner ? (
+            <div className="capability-edit-heading">
+              <label>
+                <span>区块标题</span>
+                <input
+                  value={data.heading}
+                  onChange={(event) => updateHeading(event.target.value)}
+                  aria-label="编辑个人总结标题"
+                />
+              </label>
+              <label>
+                <span>说明文字</span>
+                <textarea
+                  value={data.summary || ''}
+                  rows={2}
+                  onChange={(event) => updateSummary(event.target.value)}
+                  aria-label="编辑个人总结说明文字"
+                />
+              </label>
+            </div>
+          ) : (
+            <>
+              <h2 className="section-heading">
+                {data.heading}
+              </h2>
+              {data.summary && (
+                <p className="section-lead capability-summary-lead">
+                  {data.summary}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+        <div className="capability-grid grid gap-4 md:grid-cols-3">
+          {items.map((item, index) => (
+            <article
+              key={`capability-summary-${index}`}
+              className={`capability-card reveal glass-card rounded-2xl p-5 ${isOwner ? 'is-editing' : ''}`}
+              style={{ transitionDelay: `${index * 0.08}s` }}
+            >
+              {isOwner ? (
+                <div className="capability-edit-card">
+                  <label>
+                    <span>分类标识</span>
+                    <input
+                      value={item.label}
+                      onChange={(event) => updateItem(index, 'label', event.target.value)}
+                      aria-label={`编辑第 ${index + 1} 张总结卡分类`}
+                    />
+                  </label>
+                  <label>
+                    <span>标题</span>
+                    <textarea
+                      value={item.title}
+                      rows={2}
+                      onChange={(event) => updateItem(index, 'title', event.target.value)}
+                      aria-label={`编辑第 ${index + 1} 张总结卡标题`}
+                    />
+                  </label>
+                  <label>
+                    <span>描述</span>
+                    <textarea
+                      value={item.description}
+                      rows={4}
+                      onChange={(event) => updateItem(index, 'description', event.target.value)}
+                      aria-label={`编辑第 ${index + 1} 张总结卡描述`}
+                    />
+                  </label>
+                  <label>
+                    <span>代表项目</span>
+                    <textarea
+                      value={item.proof}
+                      rows={2}
+                      onChange={(event) => updateItem(index, 'proof', event.target.value)}
+                      aria-label={`编辑第 ${index + 1} 张总结卡代表项目`}
+                    />
+                  </label>
+                </div>
+              ) : (
+                <>
+                  <h3 className="text-xl font-semibold leading-snug text-white">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-white/52">{item.description}</p>
+                  <p className="mt-5 border-t border-white/10 pt-4 text-xs leading-relaxed text-white/38">
+                    代表项目：{item.proof}
+                  </p>
+                </>
+              )}
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -387,11 +686,17 @@ function ProjectsSection({
   return (
     <section id="missions" className="projects-section relative z-10 py-16 px-6 md:px-12">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-12">
-          <div>
-            <h2 className="mb-3 text-3xl font-bold text-white md:text-5xl">
-              项目展示
-            </h2>
+        <div className="projects-section-header mb-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="projects-section-heading">
+              <h2 className="section-heading">
+                项目展示
+              </h2>
+              <p className="section-lead">
+                按能力路径浏览项目：AI 原型、Agent 工作流、数据分析和建模优化。
+              </p>
+            </div>
+
           </div>
         </div>
 
@@ -461,9 +766,9 @@ function EmptyProjectsState({ isOwner, onAdd }) {
       <span className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/45">
         <Image size={26} strokeWidth={1.4} />
       </span>
-      <h3 className="text-xl font-medium text-white">暂无项目内容</h3>
+      <h3 className="text-xl font-medium text-white">暂无项目</h3>
       <p className="mt-3 max-w-md text-sm leading-relaxed text-white/45">
-        暂无项目内容，请点击编辑添加项目。
+        当前筛选下还没有可展示项目，可以切换分类继续查看。
       </p>
       {isOwner && (
         <button
@@ -568,7 +873,7 @@ function DossierSection({ dossier }) {
   return (
     <section id="resume" className="dossier-section relative z-10 px-6 py-16 md:px-12">
       <h2 className="reveal mb-10 flex items-center gap-3 border-l-4 border-blue-500 pl-4 text-2xl font-light tracking-wide text-white">
-        User Dossier
+        关于我
       </h2>
 
       <div className="resume-panel reveal glass-card group relative overflow-hidden rounded-2xl border border-white/10 p-8 transition-colors hover:border-blue-400/30 md:p-10">
@@ -577,7 +882,7 @@ function DossierSection({ dossier }) {
         <div className="relative z-10 mb-8 border-b border-white/10 pb-8">
           <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
             <div>
-              <div className="mb-2 font-mono text-xs uppercase tracking-widest text-white/35">Personal Resume</div>
+              <div className="mb-2 font-mono text-xs uppercase tracking-widest text-white/35">Personal Profile</div>
               <h3 className="text-4xl font-semibold tracking-widest text-white">{data.name || '? ?'}</h3>
             </div>
             <div className="flex flex-wrap gap-2 font-mono text-xs text-white/45">
@@ -607,7 +912,7 @@ function DossierSection({ dossier }) {
         </div>
 
         <div className="relative z-10 space-y-10">
-          <DossierBlock title="Education">
+          <DossierBlock title="教育经历">
             <div className="space-y-4">
               {education.map((item) => (
                 <DossierRow key={`${item.school}-${item.period}`} title={item.school} meta={item.period} desc={item.major} active={item.active} />
@@ -615,7 +920,7 @@ function DossierSection({ dossier }) {
             </div>
           </DossierBlock>
 
-          <DossierBlock title="Experience Highlights">
+          <DossierBlock title="经历亮点">
             <ul className="ml-1 space-y-3 border-l border-white/10 pl-2 text-sm leading-relaxed text-white/65">
               {highlights.map((item) => (
                 <li key={item} className="relative pl-4 before:absolute before:-left-[5px] before:top-2 before:h-2 before:w-2 before:rounded-full before:bg-white/20">
@@ -625,7 +930,7 @@ function DossierSection({ dossier }) {
             </ul>
           </DossierBlock>
 
-          <DossierBlock title="Awards">
+          <DossierBlock title="奖项成果">
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {awards.map((item) => (
                 <div key={`${item.title}-${item.level}`} className="rounded border border-white/5 bg-white/5 p-3 text-xs text-white/60 transition-colors hover:border-blue-400/30">
@@ -636,7 +941,7 @@ function DossierSection({ dossier }) {
             </div>
           </DossierBlock>
 
-          <DossierBlock title="Core Skills">
+          <DossierBlock title="能力栈">
             <div className="space-y-4 text-sm text-white/65">
               {skills.map((item) => (
                 <SkillLine key={item.label} label={item.label}>{item.value}</SkillLine>
@@ -687,6 +992,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
   const fileInputRef = useRef(null)
   const projectImages = normalizeProjectImages(project)
   const coverImage = projectImages[0]
+  const githubHref = typeof project.githubUrl === 'string' ? project.githubUrl.trim() : ''
 
   const handleFileChange = (e) => {
     if (e.target.files?.length) {
@@ -697,8 +1003,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
 
   return (
     <article
-      onClick={onOpen}
-      className="project-card reveal glass-card group flex cursor-pointer flex-col rounded-2xl overflow-hidden relative shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_100px_rgba(59,130,246,0.20)]"
+      className="project-card ai-writing-card reveal glass-card group flex flex-col rounded-2xl overflow-hidden relative shadow-[0_24px_80px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_32px_100px_rgba(59,130,246,0.20)]"
       style={{ transitionDelay: revealDelay }}
     >
       {/* ---- 删除按钮 ---- */}
@@ -708,8 +1013,9 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
             e.stopPropagation()
             deleteProject(project.id)
           }}
-          className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white/40 backdrop-blur-sm transition-all hover:bg-red-500/30 hover:text-red-300"
+          className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white/40 backdrop-blur-sm transition-all hover:bg-red-500/30 hover:text-red-300"
           title="删除此卡片"
+          aria-label={`删除项目：${project.title}`}
         >
           <Trash2 size={15} />
         </button>
@@ -729,7 +1035,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
 
       {coverImage ? (
         <div
-          className={`relative aspect-video overflow-hidden border-b border-white/5 bg-black/30 ${isOwner ? 'cursor-pointer' : ''}`}
+          className={`project-card-media relative aspect-video overflow-hidden border-b border-white/5 bg-black/30 ${isOwner ? 'cursor-pointer' : ''}`}
           onClick={(e) => {
             if (!isOwner) return
             e.stopPropagation()
@@ -739,7 +1045,9 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
           <img
             src={coverImage}
             alt={project.title}
-            className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
           {isOwner && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -754,7 +1062,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
               e.stopPropagation()
               fileInputRef.current?.click()
             }}
-            className="flex aspect-video w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/25 transition-colors hover:text-white/45"
+            className="project-card-media flex aspect-video w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/25 transition-colors hover:text-white/45"
           >
             <Upload size={28} strokeWidth={1.5} />
             <div className="text-center">
@@ -763,7 +1071,7 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
             </div>
           </button>
         ) : (
-          <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/12">
+          <div className="project-card-media flex aspect-video w-full flex-col items-center justify-center gap-2 border-b border-white/5 bg-white/[0.01] text-white/12">
             <Image size={28} strokeWidth={1} />
             <p className="text-xs">暂无图片</p>
           </div>
@@ -771,7 +1079,13 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
       )}
 
       {/* ---- 卡片内容 ---- */}
-      <div className="flex flex-1 flex-col gap-5 p-5 bg-white/[0.05] border-t border-white/10">
+      <div className="project-card-body flex flex-1 flex-col gap-5 p-5 bg-white/[0.05] border-t border-white/10">
+        <div className="project-card-toolbar" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <i />
+        </div>
         {isOwner ? (
           <input
             type="text"
@@ -798,29 +1112,36 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
           <p className="text-sm leading-relaxed text-white/45">{project.description ?? project.desc}</p>
         )}
 
-        {project.githubUrl && (
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="mt-auto inline-flex w-fit items-center rounded-full border border-white/15 px-4 py-2 text-xs font-medium uppercase tracking-[0.16em] text-white/65 transition-colors hover:border-blue-300/50 hover:text-white"
+        <div className="mt-auto flex flex-wrap items-center gap-3 pt-1">
+          <button
+            type="button"
+            onClick={onOpen}
+            className="detail-link inline-flex min-h-11 items-center rounded-full border px-4 py-2 text-xs font-medium"
           >
-            GitHub
-          </a>
-        )}
+            查看详情
+            <ChevronRight size={15} className="detail-icon ml-1.5" />
+          </button>
+
+          {githubHref && (
+            <a
+              href={githubHref}
+              target="_blank"
+              rel="noreferrer"
+              className="github-link inline-flex min-h-11 w-fit items-center rounded-full border px-4 py-2 text-xs font-medium"
+              aria-label={`打开 ${project.title} 的 GitHub 相关页面`}
+            >
+              <GitBranch size={14} aria-hidden="true" />
+              GitHub
+            </a>
+          )}
+        </div>
       </div>
     </article>
   )
 }
 
 function getProjectDetail(project) {
-  const fallbackDetail = [
-    '围绕目标场景拆解页面信息架构，明确核心展示内容、交互路径和最终呈现效果。',
-    '通过组件化方式组织页面结构，保留项目截图、文字说明和评分记录，便于后续迭代复盘。',
-    '适合继续补充项目背景、实现过程、关键难点、最终成果和个人反思，让每张卡片都能沉淀为完整作品说明。',
-  ].join('\n')
-  const detailText = project.longDescription || project.detailText || fallbackDetail
+  const detailText = project.longDescription || project.detailText || ''
 
   return {
     overview: project.description || project.desc || '这是一个 AI Coding 练习项目，用于记录从需求拆解、页面实现到结果复盘的完整过程。',
@@ -832,6 +1153,7 @@ function getProjectDetail(project) {
 function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }) {
   const detail = getProjectDetail(project)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const closeButtonRef = useRef(null)
   const images = normalizeProjectImages(project)
   const panels = images.length
     ? images.map((image, index) => ({ id: `${project.id}-${index}`, image, label: `展示图 ${index + 1}` }))
@@ -846,9 +1168,12 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
     setActiveImageIndex((index) => (index === panels.length - 1 ? 0 : index + 1))
   }
 
+  useEscapeToClose(onClose)
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+    closeButtonRef.current?.focus()
 
     return () => {
       document.body.style.overflow = previousOverflow
@@ -857,10 +1182,11 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
 
   return createPortal(
     <div
-      className="project-modal-root fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto px-4 py-8"
+      className="project-modal-root fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden px-4 py-8"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      aria-labelledby="project-detail-title"
     >
       <div className="absolute inset-0 bg-black/65 backdrop-blur-md" aria-hidden="true" />
       <div
@@ -868,15 +1194,16 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          ref={closeButtonRef}
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white/45 transition-colors hover:bg-white/10 hover:text-white"
+          className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/30 text-white/45 transition-colors hover:bg-white/10 hover:text-white"
           aria-label="关闭项目详情"
         >
           <X size={18} />
         </button>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+        <div className="project-detail-layout grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
           <div className="project-carousel relative overflow-hidden rounded-xl border border-white/10 bg-black/20">
             <button
               type="button"
@@ -888,6 +1215,8 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
                   <img
                     src={activePanel.image}
                     alt={`${project.title} ${activePanel.label}`}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
                   />
                   <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/45 text-white/75 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
@@ -946,7 +1275,7 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
             )}
           </div>
 
-          <div className="flex flex-col justify-between gap-6 pr-0 md:pr-8">
+          <div className="project-detail-content flex flex-col justify-between gap-6 pr-0 md:pr-8">
             <div>
               <span className="text-xs font-medium uppercase tracking-wider text-white/30">
                 Project Detail
@@ -969,7 +1298,7 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
                 </div>
               ) : (
                 <>
-                  <h3 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
+                  <h3 id="project-detail-title" className="mt-3 text-2xl font-semibold text-white md:text-3xl">
                     {project.title}
                   </h3>
                   <p className="mt-4 text-sm leading-relaxed text-white/55">
@@ -978,8 +1307,8 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
                 </>
               )}
 
-              <div className="mt-6 grid gap-3">
-                <h4 className="text-sm font-medium text-white/80">详细说明</h4>
+              <div className="project-story-grid mt-7 grid gap-3">
+                <h4 className="text-sm font-medium text-white/80">项目详细说明</h4>
                 {isOwner ? (
                   <textarea
                     value={detail.detailText}
@@ -989,11 +1318,17 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
                     aria-label="编辑项目详细说明"
                   />
                 ) : (
-                  <ul className="space-y-2 text-sm leading-relaxed text-white/50">
-                    {detail.points.map((point) => (
-                      <li key={point}>{point}</li>
-                    ))}
-                  </ul>
+                  <div className="project-detail-copy rounded-xl border border-white/8 bg-white/[0.035] p-4">
+                    {detail.points.length > 0 ? (
+                      detail.points.map((point, index) => (
+                        <p key={`${project.id}-detail-${index}`} className="text-sm leading-relaxed text-white/58">
+                          {point}
+                        </p>
+                      ))
+                    ) : (
+                      <p className="text-sm leading-relaxed text-white/42">暂无项目详细说明。</p>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -1022,15 +1357,27 @@ function ProjectDetailModal({ project, isOwner, updateProject, onClose, onZoom }
 }
 
 function ImageZoomModal({ image, onClose }) {
+  const closeButtonRef = useRef(null)
+
+  useEscapeToClose(onClose)
+
+  useEffect(() => {
+    closeButtonRef.current?.focus()
+  }, [])
+
   return createPortal(
     <div
       className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-md"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="图片预览"
     >
       <button
+        ref={closeButtonRef}
         type="button"
         onClick={onClose}
-        className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
+        className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/20 hover:text-white"
         aria-label="关闭图片预览"
       >
         <X size={20} />
@@ -1038,11 +1385,54 @@ function ImageZoomModal({ image, onClose }) {
       <img
         src={image.src}
         alt={image.alt}
+        decoding="async"
         className="max-h-[88vh] max-w-[94vw] rounded-xl object-contain shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
         onClick={(e) => e.stopPropagation()}
       />
     </div>,
     document.body
+  )
+}
+
+function ContactSection({ contacts = [] }) {
+  return (
+    <section id="contact" className="contact-section site-bottom-contact relative z-10 px-6 py-16 md:px-12">
+      <div className="mx-auto max-w-7xl">
+        <div className="contact-section-header mb-8">
+          <h2 className="section-heading">
+            联系方式
+          </h2>
+        </div>
+
+        <div className="site-contact-list">
+          {contacts.map((contact) => {
+            const Icon = contact.label === 'Email'
+              ? Mail
+              : contact.label === 'Phone'
+                ? Phone
+                : contact.label === 'GitHub'
+                  ? GitBranch
+                  : Briefcase
+
+            return (
+              <a
+                key={contact.label}
+                href={contact.href}
+                target={contact.href.startsWith('http') ? '_blank' : undefined}
+                rel={contact.href.startsWith('http') ? 'noreferrer' : undefined}
+                className="site-contact-item"
+              >
+                <Icon size={18} aria-hidden="true" />
+                <span>
+                  <strong>{contact.label}</strong>
+                  <small>{contact.value}</small>
+                </span>
+              </a>
+            )
+          })}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -1056,7 +1446,8 @@ function Footer({ isOwner, onUnlock, onLock }) {
         <p>AI Coding Journal — 用代码记录成长</p>
         <button
           onClick={isOwner ? onLock : onUnlock}
-          className="flex items-center gap-1.5 text-xs text-white/20 transition-colors hover:text-white/50"
+          className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-xs text-white/20 transition-colors hover:text-white/50"
+          aria-label={isOwner ? '退出编辑后台' : '进入编辑后台'}
         >
           {isOwner ? (
             <>
@@ -1083,6 +1474,8 @@ function UnlockModal({ onUnlock, onClose }) {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEscapeToClose(onClose)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -1113,6 +1506,9 @@ function UnlockModal({ onUnlock, onClose }) {
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center px-4"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="unlock-modal-title"
     >
       {/* 遮罩 */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
@@ -1126,7 +1522,7 @@ function UnlockModal({ onUnlock, onClose }) {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15">
             <Lock size={28} className="text-blue-400" />
           </div>
-              <h3 className="text-lg font-semibold text-white">
+              <h3 id="unlock-modal-title" className="text-lg font-semibold text-white">
                 输入密码进入编辑后台
               </h3>
               <p className="mt-1 text-sm text-white/40">
@@ -1150,7 +1546,8 @@ function UnlockModal({ onUnlock, onClose }) {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/50"
+              className="absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-white/25 hover:text-white/50"
+              aria-label={showPassword ? '隐藏密码' : '显示密码'}
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>

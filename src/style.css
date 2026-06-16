@@ -3127,3 +3127,3752 @@ body {
     transform: translateY(0) scale(1);
   }
 }
+
+/* UI/UX Pro Max pass: content-first actions, touch targets, and calmer motion. */
+.mission-shell button,
+.mission-shell a {
+  touch-action: manipulation;
+}
+
+.mission-shell button:focus-visible,
+.mission-shell a:focus-visible,
+.mission-shell input:focus-visible,
+.mission-shell textarea:focus-visible {
+  outline: 2px solid rgba(191, 219, 254, 0.88);
+  outline-offset: 3px;
+}
+
+.mission-shell section[id="hero"] h1,
+.mission-shell .projects-section h2,
+.mission-shell .timeline-section h2,
+.mission-shell .dossier-section h2,
+.mission-shell .project-card h3,
+.mission-shell .resume-panel h3 {
+  letter-spacing: 0 !important;
+}
+
+.mission-shell .hero-kicker {
+  color: rgba(191, 219, 254, 0.82) !important;
+}
+
+.mission-shell .hero-actions {
+  position: relative;
+  z-index: 2;
+}
+
+.mission-shell .hero-actions .cta-primary,
+.mission-shell .hero-actions .mission-button,
+.mission-shell .project-card .detail-link,
+.mission-shell .project-card a {
+  min-height: 44px;
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.mission-shell .hero-actions .cta-primary {
+  border-color: rgba(191, 219, 254, 0.52);
+  background:
+    linear-gradient(180deg, rgba(219, 234, 254, 0.24), rgba(147, 197, 253, 0.12)),
+    rgba(37, 99, 235, 0.34);
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.mission-shell .hero-actions .mission-button {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(226, 232, 240, 0.82);
+}
+
+.mission-shell .hero-actions .cta-primary:hover,
+.mission-shell .hero-actions .mission-button:hover,
+.mission-shell .project-card .detail-link:hover {
+  transform: translateY(-2px);
+}
+
+.mission-shell .hero-tags span,
+.mission-shell .project-tech-list span {
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.mission-shell .project-card {
+  cursor: default !important;
+}
+
+.mission-shell .project-card .detail-link {
+  border-color: rgba(147, 197, 253, 0.34);
+  background: rgba(147, 197, 253, 0.11);
+  color: rgba(239, 246, 255, 0.9);
+}
+
+.mission-shell .project-card .detail-icon {
+  transition: transform 220ms ease;
+}
+
+.mission-shell .project-card .detail-link:hover .detail-icon {
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .mission-shell .hero-actions {
+    width: 100%;
+  }
+
+  .mission-shell .hero-actions .cta-primary,
+  .mission-shell .hero-actions .mission-button {
+    width: 100%;
+  }
+
+  .mission-shell nav.glass > div {
+    min-height: 56px;
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-shell *,
+  .project-modal-root .project-detail-shell {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+
+  .mission-shell .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Portfolio completion pass: proof, filters, story modal, contact, and keyboard affordances. */
+.mission-shell .skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 10001;
+  transform: translateY(-150%);
+  border-radius: 999px;
+  background: rgba(239, 246, 255, 0.96);
+  color: #05070a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  transition: transform 180ms ease;
+}
+
+.mission-shell .skip-link:focus {
+  transform: translateY(0);
+}
+
+.mission-shell .capability-section,
+.mission-shell .contact-section {
+  width: min(100% - 4rem, 76rem) !important;
+  max-width: 76rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mission-shell .capability-card,
+.mission-shell .contact-panel,
+.mission-shell .contact-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+    rgba(12, 15, 22, 0.54) !important;
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  box-shadow: none !important;
+}
+
+.mission-shell .capability-card:hover,
+.mission-shell .contact-card:hover {
+  border-color: rgba(147, 197, 253, 0.34) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.035)),
+    rgba(18, 24, 34, 0.66) !important;
+}
+
+.mission-shell .projects-section {
+  margin-top: clamp(2rem, 6vh, 4rem) !important;
+}
+
+.mission-shell .project-filter-button {
+  touch-action: manipulation;
+}
+
+.mission-shell .project-filter-button.is-active {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 12px 34px rgba(59, 130, 246, 0.13);
+}
+
+.mission-shell .project-story-grid article {
+  border-color: rgba(255, 255, 255, 0.085);
+}
+
+.mission-shell .project-story-grid h5 {
+  color: rgba(248, 250, 252, 0.88);
+}
+
+.mission-shell .contact-section .cta-primary,
+.mission-shell .contact-section .mission-button,
+.mission-shell .contact-card {
+  min-height: 44px;
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.mission-shell .contact-section .cta-primary:hover,
+.mission-shell .contact-section .mission-button:hover,
+.mission-shell .contact-card:hover {
+  transform: translateY(-2px);
+}
+
+.mission-shell .contact-card {
+  color: inherit;
+}
+
+@media (max-width: 900px) {
+  .mission-shell .capability-section,
+  .mission-shell .contact-section {
+    width: min(100% - 2rem, 76rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .mission-shell .project-filters {
+    flex-wrap: nowrap;
+    margin-inline: -0.25rem;
+    overflow-x: auto;
+    padding: 0.25rem;
+    scroll-padding-inline: 1rem;
+  }
+
+  .mission-shell .project-filter-button {
+    flex: 0 0 auto;
+  }
+
+  .mission-shell .contact-section .cta-primary,
+  .mission-shell .contact-section .mission-button {
+    width: 100%;
+  }
+}
+
+/* Mental Health App rewrite + AI Writing Assistant project cards. */
+body {
+  background: #faf5ff !important;
+}
+
+.mission-shell.mental-health-app-theme {
+  --mh-bg: #faf5ff;
+  --mh-bg-soft: #f4fbf6;
+  --mh-surface: #fffaf2;
+  --mh-surface-strong: #ffffff;
+  --mh-ink: #33245c;
+  --mh-muted: #6b5f83;
+  --mh-faint: #8b7da3;
+  --mh-primary: #8b5cf6;
+  --mh-primary-dark: #5b21b6;
+  --mh-sage: #059669;
+  --mh-sage-soft: #dff7e9;
+  --mh-amber: #d97706;
+  --mh-line: rgba(76, 29, 149, 0.12);
+  --mh-line-strong: rgba(139, 92, 246, 0.28);
+  --mh-shadow-dark: rgba(82, 55, 122, 0.14);
+  --mh-shadow-light: rgba(255, 255, 255, 0.88);
+  color: var(--mh-ink) !important;
+  background:
+    linear-gradient(180deg, #faf5ff 0%, #f9f7ef 48%, #effaf3 100%) !important;
+  font-family: "Raleway", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.mission-shell.mental-health-app-theme::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(5, 150, 105, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.62), transparent 80%);
+}
+
+.mission-shell.mental-health-app-theme .game-bg {
+  background:
+    linear-gradient(135deg, #faf5ff 0%, #fffaf2 46%, #eaf8ef 100%) !important;
+  filter: none !important;
+}
+
+.mission-shell.mental-health-app-theme .bg-overlay-left {
+  background:
+    linear-gradient(180deg, rgba(250, 245, 255, 0.82), rgba(250, 245, 255, 0.48) 38%, rgba(239, 250, 243, 0.78)) !important;
+}
+
+.mission-shell.mental-health-app-theme .scroll-panel {
+  color: var(--mh-ink) !important;
+  scrollbar-color: rgba(139, 92, 246, 0.35) transparent;
+}
+
+.mission-shell.mental-health-app-theme .scroll-panel::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.35) !important;
+}
+
+.mission-shell.mental-health-app-theme .glass,
+.mission-shell.mental-health-app-theme .glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(245, 239, 255, 0.62)),
+    var(--mh-bg) !important;
+  box-shadow:
+    -10px -10px 24px var(--mh-shadow-light),
+    12px 14px 32px var(--mh-shadow-dark) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.mission-shell.mental-health-app-theme [class*="text-white"] {
+  color: var(--mh-ink) !important;
+}
+
+.mission-shell.mental-health-app-theme [class*="text-blue"],
+.mission-shell.mental-health-app-theme .hero-kicker {
+  color: var(--mh-primary-dark) !important;
+}
+
+.mission-shell.mental-health-app-theme [class*="border-white"] {
+  border-color: var(--mh-line) !important;
+}
+
+.mission-shell.mental-health-app-theme [class*="bg-white"] {
+  background-color: rgba(255, 255, 255, 0.54) !important;
+}
+
+.mission-shell.mental-health-app-theme p,
+.mission-shell.mental-health-app-theme li,
+.mission-shell.mental-health-app-theme footer,
+.mission-shell.mental-health-app-theme .project-card textarea,
+.mission-shell.mental-health-app-theme .resume-panel span {
+  color: var(--mh-muted) !important;
+}
+
+.mission-shell.mental-health-app-theme nav.glass {
+  width: min(100% - 2rem, 72rem) !important;
+  top: 1rem !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  margin: 1rem auto 0 !important;
+  border-radius: 999px !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(245, 239, 255, 0.74)) !important;
+  box-shadow:
+    -8px -8px 20px rgba(255, 255, 255, 0.76),
+    10px 12px 30px rgba(82, 55, 122, 0.13) !important;
+}
+
+.mission-shell.mental-health-app-theme nav.glass > div {
+  min-height: 4rem !important;
+  padding: 0.7rem 1.15rem !important;
+}
+
+.mission-shell.mental-health-app-theme nav button {
+  color: var(--mh-muted) !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.mission-shell.mental-health-app-theme nav .hidden.items-center > button {
+  color: var(--mh-muted) !important;
+}
+
+.mission-shell.mental-health-app-theme nav button:hover {
+  color: var(--mh-primary-dark) !important;
+}
+
+.mission-shell.mental-health-app-theme .brand-mark span:first-child {
+  color: var(--mh-primary-dark) !important;
+}
+
+.mission-shell.mental-health-app-theme section[id="hero"] {
+  min-height: auto !important;
+  padding: 8.25rem 4rem 3.25rem !important;
+  justify-content: flex-start !important;
+}
+
+.mission-shell.mental-health-app-theme section[id="hero"] > div:first-child {
+  width: min(100%, 58rem) !important;
+}
+
+.mission-shell.mental-health-app-theme .hero-kicker {
+  width: fit-content;
+  border-radius: 999px;
+  border: 1px solid rgba(139, 92, 246, 0.16);
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow:
+    inset -4px -4px 10px rgba(255, 255, 255, 0.82),
+    inset 4px 4px 10px rgba(139, 92, 246, 0.08);
+  padding: 0.55rem 0.85rem;
+  font-family: "Raleway", sans-serif !important;
+  font-weight: 700;
+  letter-spacing: 0.08em !important;
+}
+
+.mission-shell.mental-health-app-theme section[id="hero"] h1 {
+  width: min(100%, 48rem) !important;
+  margin-bottom: 1.75rem !important;
+  color: var(--mh-ink) !important;
+  font-family: "Lora", Georgia, serif !important;
+  font-size: 5rem !important;
+  font-weight: 600 !important;
+  line-height: 1.06 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.mental-health-app-theme section[id="hero"] h1 span {
+  background: none !important;
+  color: var(--mh-sage) !important;
+  -webkit-text-fill-color: var(--mh-sage) !important;
+}
+
+.mission-shell.mental-health-app-theme section[id="hero"] p {
+  width: min(100%, 39rem) !important;
+  color: var(--mh-muted) !important;
+  font-size: 1.18rem !important;
+  line-height: 1.8 !important;
+}
+
+.mission-shell.mental-health-app-theme .cta-primary,
+.mission-shell.mental-health-app-theme .mission-button,
+.mission-shell.mental-health-app-theme .detail-link,
+.mission-shell.mental-health-app-theme .project-filter-button,
+.mission-shell.mental-health-app-theme .contact-card {
+  border-radius: 999px !important;
+  box-shadow:
+    -6px -6px 16px rgba(255, 255, 255, 0.78),
+    7px 8px 20px rgba(82, 55, 122, 0.13) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.mental-health-app-theme .cta-primary,
+.mission-shell.mental-health-app-theme .detail-link,
+.mission-shell.mental-health-app-theme .project-filter-button.is-active {
+  border-color: rgba(5, 150, 105, 0.42) !important;
+  background:
+    linear-gradient(145deg, #0aa875, #047857) !important;
+  color: #ffffff !important;
+}
+
+.mission-shell.mental-health-app-theme .cta-primary *,
+.mission-shell.mental-health-app-theme .detail-link *,
+.mission-shell.mental-health-app-theme .project-filter-button.is-active * {
+  color: #ffffff !important;
+}
+
+.mission-shell.mental-health-app-theme .mission-button,
+.mission-shell.mental-health-app-theme .project-filter-button:not(.is-active) {
+  border-color: rgba(139, 92, 246, 0.16) !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  color: var(--mh-primary-dark) !important;
+}
+
+.mission-shell.mental-health-app-theme .hero-tags span,
+.mission-shell.mental-health-app-theme .project-tech-list span,
+.mission-shell.mental-health-app-theme .resume-panel .rounded,
+.mission-shell.mental-health-app-theme .contact-card {
+  border-color: rgba(139, 92, 246, 0.14) !important;
+  background: rgba(255, 255, 255, 0.54) !important;
+  color: var(--mh-muted) !important;
+}
+
+.mission-shell.mental-health-app-theme .capability-section,
+.mission-shell.mental-health-app-theme .projects-section,
+.mission-shell.mental-health-app-theme .contact-section {
+  width: min(100% - 3rem, 76rem) !important;
+}
+
+.mission-shell.mental-health-app-theme .capability-card,
+.mission-shell.mental-health-app-theme .contact-panel,
+.mission-shell.mental-health-app-theme .contact-card,
+.mission-shell.mental-health-app-theme .resume-panel,
+.mission-shell.mental-health-app-theme .timeline-section .glass-card,
+.mission-shell.mental-health-app-theme .empty-project-state {
+  border-radius: 1.35rem !important;
+  border-color: rgba(255, 255, 255, 0.72) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(246, 240, 255, 0.58)),
+    var(--mh-bg) !important;
+  box-shadow:
+    -10px -10px 24px rgba(255, 255, 255, 0.78),
+    12px 14px 30px rgba(82, 55, 122, 0.12) !important;
+}
+
+.mission-shell.mental-health-app-theme .capability-card h2,
+.mission-shell.mental-health-app-theme .projects-section h2,
+.mission-shell.mental-health-app-theme .timeline-section h2,
+.mission-shell.mental-health-app-theme .dossier-section h2,
+.mission-shell.mental-health-app-theme .contact-section h2,
+.mission-shell.mental-health-app-theme .resume-panel h3 {
+  color: var(--mh-ink) !important;
+  font-family: "Lora", Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.mental-health-app-theme .project-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21.5rem), 1fr)) !important;
+  gap: 1.25rem !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card {
+  border-radius: 1.25rem !important;
+  border: 1px solid rgba(120, 113, 108, 0.18) !important;
+  background: #fffbeb !important;
+  color: #1f2937 !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 18px 45px rgba(120, 113, 108, 0.14) !important;
+  transform: none !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card:hover {
+  border-color: rgba(217, 119, 6, 0.34) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 24px 55px rgba(120, 113, 108, 0.18) !important;
+  transform: translateY(-4px) !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-media {
+  margin: 0.85rem 0.85rem 0;
+  overflow: hidden;
+  border: 1px solid rgba(120, 113, 108, 0.16) !important;
+  border-radius: 1rem;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(180deg, rgba(217, 119, 6, 0.18), rgba(5, 150, 105, 0.16)) border-box !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(120, 113, 108, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 113, 108, 0.055) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-media img,
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-media > svg,
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-media > p,
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-media > div {
+  position: relative;
+  z-index: 1;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-body {
+  border-top: 0 !important;
+  background: #fffbeb !important;
+  padding: 1rem 1.15rem 1.15rem !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.25rem;
+}
+
+.mission-shell.mental-health-app-theme .project-card-toolbar span {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: rgba(120, 113, 108, 0.22) !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card-toolbar span:nth-child(1) {
+  background: rgba(217, 119, 6, 0.42) !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card-toolbar span:nth-child(2) {
+  background: rgba(139, 92, 246, 0.34) !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card-toolbar span:nth-child(3) {
+  background: rgba(5, 150, 105, 0.34) !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card-toolbar i {
+  flex: 1;
+  height: 0.42rem;
+  margin-left: 0.35rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(120, 113, 108, 0.15), rgba(120, 113, 108, 0.04));
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card h3 {
+  color: #1f2937 !important;
+  font-family: "Lora", Georgia, serif !important;
+  font-size: 1.25rem !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card p {
+  color: #5f5a54 !important;
+  line-height: 1.72 !important;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-tech-list span {
+  border-color: rgba(217, 119, 6, 0.22) !important;
+  background: rgba(255, 247, 237, 0.92) !important;
+  color: #7c4a03 !important;
+  font-family: "Raleway", sans-serif !important;
+  font-weight: 700;
+}
+
+.mission-shell.mental-health-app-theme .project-card.ai-writing-card a {
+  border-color: rgba(120, 113, 108, 0.2) !important;
+  background: rgba(255, 255, 255, 0.54) !important;
+  color: #3f3a34 !important;
+}
+
+.mission-shell.mental-health-app-theme .archive-duo {
+  width: min(100% - 3rem, 72rem) !important;
+  gap: 1.4rem !important;
+}
+
+.mission-shell.mental-health-app-theme .timeline-section .border-l {
+  border-color: rgba(139, 92, 246, 0.16) !important;
+}
+
+.mission-shell.mental-health-app-theme .timeline-section .absolute.-left-\[6\.5px\] {
+  background: var(--mh-sage) !important;
+  box-shadow: 0 0 0 5px rgba(5, 150, 105, 0.12) !important;
+}
+
+.mission-shell.mental-health-app-theme .resume-panel .absolute {
+  display: none !important;
+}
+
+.mission-shell.mental-health-app-theme .contact-card:hover,
+.mission-shell.mental-health-app-theme .capability-card:hover {
+  border-color: rgba(5, 150, 105, 0.28) !important;
+  transform: translateY(-3px);
+}
+
+.mission-shell.mental-health-app-theme footer {
+  border-color: rgba(76, 29, 149, 0.1) !important;
+}
+
+.mission-shell.mental-health-app-theme button:focus-visible,
+.mission-shell.mental-health-app-theme a:focus-visible,
+.mission-shell.mental-health-app-theme input:focus-visible,
+.mission-shell.mental-health-app-theme textarea:focus-visible {
+  outline: 3px solid rgba(5, 150, 105, 0.42) !important;
+  outline-offset: 4px !important;
+}
+
+.project-modal-root .project-detail-shell {
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(246, 240, 255, 0.8)),
+    #faf5ff !important;
+  color: #33245c !important;
+  box-shadow:
+    -10px -10px 24px rgba(255, 255, 255, 0.64),
+    16px 18px 44px rgba(82, 55, 122, 0.22) !important;
+}
+
+.project-modal-root .absolute.inset-0 {
+  background: rgba(51, 36, 92, 0.28) !important;
+}
+
+.project-modal-root [class*="text-white"] {
+  color: #33245c !important;
+}
+
+.project-modal-root p,
+.project-modal-root li,
+.project-modal-root [class*="text-white/"] {
+  color: #6b5f83 !important;
+}
+
+.project-modal-root .project-carousel,
+.project-modal-root .project-story-grid article,
+.project-modal-root .project-detail-copy {
+  border-color: rgba(76, 29, 149, 0.12) !important;
+  background: rgba(255, 250, 242, 0.74) !important;
+}
+
+.project-modal-root button[aria-label] {
+  border-color: rgba(76, 29, 149, 0.12) !important;
+  background: rgba(255, 255, 255, 0.74) !important;
+  color: #33245c !important;
+}
+
+@media (max-width: 900px) {
+  .mission-shell.mental-health-app-theme nav.glass {
+    width: min(100% - 1rem, 72rem) !important;
+    top: 0.5rem !important;
+  }
+
+  .mission-shell.mental-health-app-theme section[id="hero"] {
+    padding-top: 7.5rem !important;
+  }
+
+  .mission-shell.mental-health-app-theme section[id="hero"] h1 {
+    font-size: 3.65rem !important;
+  }
+
+  .mission-shell.mental-health-app-theme .capability-section,
+  .mission-shell.mental-health-app-theme .projects-section,
+  .mission-shell.mental-health-app-theme .contact-section,
+  .mission-shell.mental-health-app-theme .archive-duo {
+    width: min(100% - 1.25rem, 76rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .mission-shell.mental-health-app-theme section[id="hero"] {
+    padding-inline: 1.15rem !important;
+  }
+
+  .mission-shell.mental-health-app-theme section[id="hero"] h1 {
+    font-size: 3.05rem !important;
+  }
+
+  .mission-shell.mental-health-app-theme section[id="hero"] p {
+    font-size: 1.04rem !important;
+  }
+
+  .mission-shell.mental-health-app-theme .project-card.ai-writing-card .project-card-media {
+    margin: 0.7rem 0.7rem 0;
+  }
+}
+
+/* Claude Code Chinese spec rewrite: dark docs, three-column IA, muted orange accent. */
+body {
+  background: #101112 !important;
+}
+
+.mission-shell.claude-code-theme {
+  --content-max: 1500px;
+  --sidebar-width: 240px;
+  --rightbar-width: 260px;
+  --layout-gap: 18px;
+  --bg: #101112;
+  --bg-soft: #141516;
+  --panel: #18191b;
+  --card: #1f2022;
+  --card-hover: #242629;
+  --border: #2a2c2f;
+  --border-strong: #3a3d41;
+  --text-primary: #f5f3ed;
+  --text-secondary: #a8a28f;
+  --text-muted: #777777;
+  --accent: #d97757;
+  --accent-hover: #e58a68;
+  --accent-soft: rgba(217, 119, 87, 0.14);
+  --success: #79c27b;
+  --warning: #d6b95d;
+  --info: #8ab4f8;
+  --danger: #e07a7a;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  min-height: 100dvh;
+  color: var(--text-primary) !important;
+  background: var(--bg) !important;
+  font-family: "Times New Roman", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif !important;
+  scroll-padding-top: 112px;
+}
+
+.mission-shell.claude-code-theme .game-bg {
+  background: var(--bg) !important;
+  filter: none !important;
+}
+
+.mission-shell.claude-code-theme .bg-overlay-left {
+  background:
+    linear-gradient(180deg, rgba(16, 17, 18, 0.98), rgba(16, 17, 18, 0.96)),
+    radial-gradient(circle at 70% 18%, rgba(217, 119, 87, 0.05), transparent 34rem) !important;
+}
+
+.mission-shell.claude-code-theme .scroll-panel {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding-bottom: 5rem !important;
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  scroll-padding-top: 112px;
+  scrollbar-color: #77736d transparent;
+}
+
+.mission-shell.claude-code-theme * {
+  scrollbar-width: thin;
+  scrollbar-color: #77736d transparent;
+}
+
+.mission-shell.claude-code-theme *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.mission-shell.claude-code-theme *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mission-shell.claude-code-theme *::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #77736d;
+}
+
+.mission-shell.claude-code-theme *::-webkit-scrollbar-thumb:hover {
+  background: #8a857d;
+}
+
+.mission-shell.claude-code-theme .glass,
+.mission-shell.claude-code-theme .glass-card {
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.mission-shell.claude-code-theme [class*="text-white"] {
+  color: var(--text-primary) !important;
+}
+
+.mission-shell.claude-code-theme p,
+.mission-shell.claude-code-theme li,
+.mission-shell.claude-code-theme footer,
+.mission-shell.claude-code-theme .project-card textarea,
+.mission-shell.claude-code-theme .resume-panel span {
+  color: var(--text-secondary) !important;
+}
+
+.mission-shell.claude-code-theme [class*="text-blue"],
+.mission-shell.claude-code-theme .hero-kicker {
+  color: var(--accent) !important;
+}
+
+.mission-shell.claude-code-theme [class*="border-white"] {
+  border-color: var(--border) !important;
+}
+
+.mission-shell.claude-code-theme nav.glass {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 80 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  border-width: 0 0 1px !important;
+  border-color: var(--border) !important;
+  border-radius: 0 !important;
+  background: rgba(16, 17, 18, 0.94) !important;
+}
+
+.mission-shell.claude-code-theme nav.glass > div {
+  display: grid !important;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--rightbar-width) !important;
+  column-gap: var(--layout-gap) !important;
+  align-items: center !important;
+  width: min(100%, var(--content-max)) !important;
+  min-height: 72px !important;
+  margin: 0 auto !important;
+  padding: 0 28px !important;
+}
+
+.mission-shell.claude-code-theme .brand-mark {
+  justify-self: start !important;
+  color: var(--text-primary) !important;
+  font-family: "Times New Roman", "Microsoft YaHei", serif !important;
+  letter-spacing: 0.02em !important;
+}
+
+.mission-shell.claude-code-theme .brand-mark span:first-child {
+  color: var(--accent) !important;
+}
+
+.mission-shell.claude-code-theme nav .hidden.items-center {
+  grid-column: 2 / 4 !important;
+  justify-content: flex-end !important;
+  gap: 0 !important;
+}
+
+.mission-shell.claude-code-theme nav .hidden.items-center > button {
+  color: #f2f1d5 !important;
+  opacity: 0.78 !important;
+  font-family: "Times New Roman", "Microsoft YaHei", serif !important;
+  font-weight: 650 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+.mission-shell.claude-code-theme nav .hidden.items-center > button:hover {
+  color: #f2f1d5 !important;
+  opacity: 1 !important;
+}
+
+.mission-shell.claude-code-theme nav .hidden.items-center > button.active {
+  color: var(--accent) !important;
+  opacity: 1 !important;
+}
+
+.mission-shell.claude-code-theme nav .hidden.items-center > button:last-child {
+  position: relative;
+  margin-left: auto !important;
+  padding-left: 34px !important;
+}
+
+.mission-shell.claude-code-theme nav .hidden.items-center > button:last-child::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 28px;
+  transform: translateY(-50%);
+  background: var(--border-strong);
+  opacity: 0.9;
+}
+
+.mission-shell.claude-code-theme .doc-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--rightbar-width);
+  column-gap: var(--layout-gap);
+  width: min(100%, var(--content-max));
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.mission-shell.claude-code-theme .main-content {
+  min-width: 0;
+  padding: 0 0 5rem;
+  font-family: "Times New Roman", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+}
+
+.mission-shell.claude-code-theme .left-sidebar,
+.mission-shell.claude-code-theme .resume-rail {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+  max-height: calc(100dvh - 112px);
+  overflow: auto;
+  padding: 18px 0;
+}
+
+.mission-shell.claude-code-theme .left-sidebar {
+  padding-right: 18px;
+}
+
+.mission-shell.claude-code-theme .right-toc {
+  display: none !important;
+  padding-left: 18px;
+}
+
+.mission-shell.claude-code-theme .resume-rail {
+  padding-left: 18px;
+}
+
+.mission-shell.claude-code-theme .side-group {
+  margin-top: 24px;
+}
+
+.mission-shell.claude-code-theme .side-group-title,
+.mission-shell.claude-code-theme .toc-title {
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mission-shell.claude-code-theme .side-link,
+.mission-shell.claude-code-theme .toc-link {
+  display: block;
+  width: 100%;
+  min-height: 32px;
+  padding: 7px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  text-align: left;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.25;
+  transition: color 0.16s ease, opacity 0.16s ease;
+}
+
+.mission-shell.claude-code-theme .side-link:hover,
+.mission-shell.claude-code-theme .toc-link:hover {
+  color: var(--text-primary);
+}
+
+.mission-shell.claude-code-theme .side-link.active {
+  color: var(--accent);
+}
+
+.mission-shell.claude-code-theme .toc-nav {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-left: 24px;
+  border-left: 1px solid var(--border);
+}
+
+.mission-shell.claude-code-theme .toc-indicator {
+  position: absolute;
+  left: -3px;
+  top: 6px;
+  width: 5px;
+  height: 20px;
+  border-radius: 3px;
+  background: var(--accent);
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.mission-shell.claude-code-theme .toc-link {
+  min-height: 32px;
+  color: #9a9a9a;
+  opacity: 0.76;
+}
+
+.mission-shell.claude-code-theme .toc-link.active {
+  color: var(--text-primary);
+  opacity: 1;
+  font-weight: 760;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card {
+  position: relative;
+  display: grid;
+  width: 100%;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(217, 119, 87, 0.38);
+  border-radius: 14px;
+  background: rgba(31, 32, 34, 0.92);
+  color: var(--text-primary);
+  text-align: left;
+  box-shadow: 0 0 0 1px rgba(217, 119, 87, 0.08), 0 18px 52px rgba(217, 119, 87, 0.1);
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:hover,
+.mission-shell.claude-code-theme .mini-resume-card:focus-visible {
+  border-color: rgba(229, 138, 104, 0.72);
+  background: rgba(36, 38, 41, 0.96);
+  box-shadow: 0 0 0 1px rgba(229, 138, 104, 0.16), 0 24px 64px rgba(217, 119, 87, 0.16);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card-kicker,
+.resume-drawer-kicker {
+  color: #d97757;
+  font-family: "Times New Roman", "Microsoft YaHei", serif;
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.mission-shell.claude-code-theme .mini-resume-avatar,
+.resume-q-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.mission-shell.claude-code-theme .mini-resume-avatar {
+  width: 104px;
+  height: 104px;
+  margin: 0 auto;
+}
+
+.mission-shell.claude-code-theme .mini-resume-face,
+.resume-q-avatar-face {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(217, 119, 87, 0.48);
+  border-radius: 30%;
+  background: #242629;
+  color: #fff7ef;
+  box-shadow: inset 0 -12px 0 rgba(217, 119, 87, 0.1), 0 0 34px rgba(217, 119, 87, 0.16);
+}
+
+.mission-shell.claude-code-theme .mini-resume-face {
+  width: 96px;
+  height: 96px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-face strong,
+.resume-q-avatar-face strong {
+  transform: translateY(12px);
+  color: var(--accent);
+  font-family: "Times New Roman", "Microsoft YaHei", serif;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.mission-shell.claude-code-theme .mini-resume-eye,
+.resume-q-eye {
+  position: absolute;
+  top: 32%;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #f5f3ed;
+  box-shadow: 0 0 14px rgba(245, 243, 237, 0.4);
+}
+
+.mission-shell.claude-code-theme .mini-resume-eye-left,
+.resume-q-eye-left {
+  left: 30%;
+}
+
+.mission-shell.claude-code-theme .mini-resume-eye-right,
+.resume-q-eye-right {
+  right: 30%;
+}
+
+.mission-shell.claude-code-theme .mini-resume-smile,
+.resume-q-smile {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  width: 22px;
+  height: 10px;
+  border-bottom: 2px solid rgba(245, 243, 237, 0.9);
+  border-radius: 0 0 999px 999px;
+  transform: translateX(-50%);
+}
+
+.mission-shell.claude-code-theme .mini-resume-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-name-row strong {
+  display: block;
+  color: var(--text-primary);
+  font-family: "Times New Roman", "Microsoft YaHei", serif;
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+.mission-shell.claude-code-theme .mini-resume-name-row small,
+.mission-shell.claude-code-theme .mini-resume-summary,
+.mission-shell.claude-code-theme .mini-resume-signal {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.mission-shell.claude-code-theme .mini-resume-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  color: var(--accent-hover);
+}
+
+.resume-drawer-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.resume-drawer-root.is-open,
+.resume-drawer-root.is-opening {
+  pointer-events: auto;
+}
+
+.resume-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 6, 7, 0.68);
+  opacity: 0;
+  transition: opacity 0.42s ease;
+}
+
+.resume-drawer-root.is-open .resume-drawer-backdrop {
+  opacity: 1;
+}
+
+.resume-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(100vw, 520px);
+  height: 100dvh;
+  border-left: 1px solid #3a3d41;
+  background: #141516;
+  color: #f5f3ed;
+  box-shadow: -28px 0 80px rgba(0, 0, 0, 0.48), -1px 0 0 rgba(217, 119, 87, 0.12);
+  backface-visibility: hidden;
+  transform: translate3d(calc(100% + 32px), 0, 0);
+  transition: transform 0.56s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+
+.resume-drawer-root.is-opening .resume-drawer-panel {
+  transition-duration: 0.62s;
+  transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.resume-drawer-root.is-closing .resume-drawer-panel {
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.resume-drawer-root.is-open .resume-drawer-panel {
+  transform: translate3d(0, 0, 0);
+}
+
+.resume-drawer-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #3a3d41;
+  border-radius: 999px;
+  background: #1f2022;
+  color: #f5f3ed;
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+
+.resume-drawer-close:hover,
+.resume-drawer-close:focus-visible {
+  border-color: rgba(229, 138, 104, 0.72);
+  background: #242629;
+  color: #fff7ef;
+  outline: none;
+}
+
+.resume-drawer-hero {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 20px;
+  padding: 36px 28px 24px;
+  border-bottom: 1px solid #2a2c2f;
+  background: #18191b;
+}
+
+.resume-q-avatar {
+  width: 132px;
+  height: 132px;
+}
+
+.resume-q-avatar-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(217, 119, 87, 0.36);
+  border-radius: 36%;
+  box-shadow: 0 0 42px rgba(217, 119, 87, 0.14);
+}
+
+.resume-q-avatar-face {
+  width: 112px;
+  height: 112px;
+}
+
+.resume-q-cheek {
+  position: absolute;
+  top: 48%;
+  width: 12px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(217, 119, 87, 0.32);
+}
+
+.resume-q-cheek-left {
+  left: 22%;
+}
+
+.resume-q-cheek-right {
+  right: 22%;
+}
+
+.resume-drawer-hero h2 {
+  margin: 8px 0 0;
+  color: #f5f3ed;
+  font-family: "Times New Roman", "Microsoft YaHei", serif;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.resume-drawer-identity {
+  margin: 8px 0 0;
+  color: #d97757;
+  font-size: 15px;
+  font-weight: 760;
+  line-height: 1.45;
+}
+
+.resume-drawer-summary {
+  margin: 12px 0 0;
+  color: #a8a28f;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.resume-drawer-body {
+  display: grid;
+  gap: 18px;
+  padding: 22px 28px 32px;
+  overflow-y: auto;
+}
+
+.resume-drawer-section {
+  padding: 18px;
+  border: 1px solid #2a2c2f;
+  border-radius: 12px;
+  background: #1f2022;
+}
+
+.resume-drawer-section h3 {
+  margin: 0 0 14px;
+  color: #f5f3ed;
+  font-size: 16px;
+  font-weight: 780;
+  letter-spacing: 0;
+}
+
+.resume-info-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.resume-info-list div {
+  display: grid;
+  gap: 4px;
+}
+
+.resume-info-list dt {
+  color: #777777;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.resume-info-list dd {
+  margin: 0;
+  color: #d9d6cc;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.resume-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resume-tag {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  border: 1px solid rgba(217, 119, 87, 0.3);
+  border-radius: 999px;
+  background: rgba(217, 119, 87, 0.08);
+  color: #f5c1aa;
+  padding: 0 11px;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.resume-timeline {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resume-timeline::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 6px;
+  width: 1px;
+  background: #3a3d41;
+}
+
+.resume-timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.resume-timeline-dot {
+  position: relative;
+  z-index: 1;
+  width: 13px;
+  height: 13px;
+  margin-top: 5px;
+  border: 2px solid #d97757;
+  border-radius: 999px;
+  background: #1f2022;
+  box-shadow: 0 0 18px rgba(217, 119, 87, 0.26);
+}
+
+.resume-timeline-time {
+  color: #d97757;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.resume-timeline h4,
+.resume-education-list h4 {
+  margin: 3px 0 0;
+  color: #f5f3ed;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.resume-timeline p,
+.resume-education-list p,
+.resume-education-list span {
+  margin: 7px 0 0;
+  color: #a8a28f;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.resume-education-list,
+.resume-contact-list {
+  display: grid;
+  gap: 10px;
+}
+
+.resume-education-list article,
+.resume-contact-list a {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  color: #d9d6cc;
+}
+
+.resume-education-list svg,
+.resume-contact-list svg {
+  margin-top: 2px;
+  color: #d97757;
+}
+
+.resume-contact-list a {
+  min-height: 46px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid #2a2c2f;
+  border-radius: 10px;
+  background: #18191b;
+  text-decoration: none;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.resume-contact-list a:hover,
+.resume-contact-list a:focus-visible {
+  border-color: rgba(229, 138, 104, 0.62);
+  background: #242629;
+  outline: none;
+}
+
+.resume-contact-list strong {
+  display: block;
+  color: #f5f3ed;
+  font-size: 13px;
+}
+
+.resume-contact-list small {
+  display: block;
+  color: #a8a28f;
+  font-size: 12px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resume-drawer-backdrop,
+  .resume-drawer-panel {
+    transition-duration: 1ms;
+  }
+}
+
+.mission-shell.claude-code-theme section {
+  scroll-margin-top: 104px;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] {
+  min-height: auto !important;
+  padding: 80px 0 40px !important;
+  justify-content: flex-start !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] > div:first-child {
+  width: 100% !important;
+  max-width: 940px !important;
+}
+
+.mission-shell.claude-code-theme .hero-kicker {
+  width: fit-content;
+  margin-bottom: 24px !important;
+  padding: 0;
+  border: 0;
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+  font-size: 14px !important;
+  font-weight: 700;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] h1 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 22px !important;
+  width: min(100%, 940px) !important;
+  max-width: 940px !important;
+  margin: 0 0 32px !important;
+  color: var(--text-primary) !important;
+  font-family: "Times New Roman", "Microsoft YaHei", serif !important;
+  font-size: 92px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] h1 br {
+  display: none;
+}
+
+.mission-shell.claude-code-theme .hero-title-accent {
+  color: var(--accent) !important;
+  line-height: 0.92;
+}
+
+.mission-shell.claude-code-theme .hero-title-main {
+  color: var(--text-primary) !important;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+@media (min-width: 1440px) {
+  .mission-shell.claude-code-theme section[id="hero"] h1 {
+    font-size: 104px !important;
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 768px) {
+  .mission-shell.claude-code-theme section[id="hero"] h1 {
+    font-size: 74px !important;
+  }
+}
+
+.mission-shell.claude-code-theme section[id="hero"] p {
+  width: min(100%, 860px) !important;
+  max-width: 860px !important;
+  margin-bottom: 38px !important;
+  color: var(--text-secondary) !important;
+  font-size: 22px !important;
+  line-height: 1.72 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 36px;
+}
+
+.mission-shell.claude-code-theme .cta-primary,
+.mission-shell.claude-code-theme .mission-button,
+.mission-shell.claude-code-theme .detail-link,
+.mission-shell.claude-code-theme .project-filter-button {
+  min-height: 54px !important;
+  padding: 0 32px !important;
+  border-radius: 999px !important;
+  font-size: 17px !important;
+  font-weight: 760 !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+  box-shadow: none !important;
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease !important;
+}
+
+.mission-shell.claude-code-theme .cta-primary,
+.mission-shell.claude-code-theme .detail-link,
+.mission-shell.claude-code-theme .project-filter-button.is-active {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: #fff7ef !important;
+}
+
+.mission-shell.claude-code-theme .cta-primary:hover,
+.mission-shell.claude-code-theme .detail-link:hover,
+.mission-shell.claude-code-theme .project-filter-button.is-active:hover {
+  border-color: var(--accent-hover) !important;
+  background: var(--accent-hover) !important;
+}
+
+.mission-shell.claude-code-theme .mission-button,
+.mission-shell.claude-code-theme .project-filter-button:not(.is-active) {
+  border-color: var(--border-strong) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--text-primary) !important;
+}
+
+.mission-shell.claude-code-theme .mission-button:hover,
+.mission-shell.claude-code-theme .project-filter-button:not(.is-active):hover {
+  border-color: var(--border-strong) !important;
+  background: var(--card-hover) !important;
+}
+
+.mission-shell.claude-code-theme .cta-primary:hover,
+.mission-shell.claude-code-theme .mission-button:hover,
+.mission-shell.claude-code-theme .detail-link:hover,
+.mission-shell.claude-code-theme .project-filter-button:hover {
+  transform: translateY(-1px) !important;
+}
+
+.mission-shell.claude-code-theme .hero-tags span,
+.mission-shell.claude-code-theme .project-tech-list span {
+  border-color: var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+}
+
+.mission-shell.claude-code-theme .capability-section,
+.mission-shell.claude-code-theme .projects-section,
+.mission-shell.claude-code-theme .contact-section,
+.mission-shell.claude-code-theme .archive-duo {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mission-shell.claude-code-theme .capability-section {
+  padding-top: 0 !important;
+}
+
+.mission-shell.claude-code-theme .projects-section,
+.mission-shell.claude-code-theme .timeline-section,
+.mission-shell.claude-code-theme .dossier-section,
+.mission-shell.claude-code-theme .contact-section {
+  padding-top: clamp(3rem, 6vw, 5rem) !important;
+  padding-bottom: clamp(3rem, 6vw, 5rem) !important;
+}
+
+.mission-shell.claude-code-theme .projects-section > div,
+.mission-shell.claude-code-theme .timeline-section > div,
+.mission-shell.claude-code-theme .dossier-section > div,
+.mission-shell.claude-code-theme .contact-section > div {
+  max-width: none !important;
+}
+
+.mission-shell.claude-code-theme .capability-card,
+.mission-shell.claude-code-theme .contact-panel,
+.mission-shell.claude-code-theme .contact-card,
+.mission-shell.claude-code-theme .resume-panel,
+.mission-shell.claude-code-theme .timeline-section .glass-card,
+.mission-shell.claude-code-theme .empty-project-state,
+.mission-shell.claude-code-theme .project-card.ai-writing-card {
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  background: var(--card) !important;
+  color: var(--text-primary) !important;
+  box-shadow: none !important;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease !important;
+}
+
+.mission-shell.claude-code-theme .capability-card:hover,
+.mission-shell.claude-code-theme .contact-card:hover,
+.mission-shell.claude-code-theme .timeline-section .glass-card:hover,
+.mission-shell.claude-code-theme .project-card.ai-writing-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(217, 119, 87, 0.38) !important;
+  background: var(--card-hover) !important;
+}
+
+.mission-shell.claude-code-theme .capability-card h2,
+.mission-shell.claude-code-theme .projects-section h2,
+.mission-shell.claude-code-theme .timeline-section h2,
+.mission-shell.claude-code-theme .dossier-section h2,
+.mission-shell.claude-code-theme .contact-section h2,
+.mission-shell.claude-code-theme .resume-panel h3 {
+  color: var(--text-primary) !important;
+  font-family: "Times New Roman", "Microsoft YaHei", serif !important;
+  font-weight: 780 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.claude-code-theme .projects-section h2,
+.mission-shell.claude-code-theme .timeline-section h2,
+.mission-shell.claude-code-theme .dossier-section h2,
+.mission-shell.claude-code-theme .contact-section h2 {
+  position: relative;
+  margin-bottom: 12px !important;
+  font-size: 32px !important;
+  line-height: 1.24 !important;
+}
+
+.mission-shell.claude-code-theme .projects-section h2::before,
+.mission-shell.claude-code-theme .timeline-section h2::before,
+.mission-shell.claude-code-theme .dossier-section h2::before,
+.mission-shell.claude-code-theme .contact-section h2::before {
+  content: "#";
+  position: absolute;
+  left: -28px;
+  top: 0;
+  display: block !important;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.mission-shell.claude-code-theme .projects-section:hover h2::before,
+.mission-shell.claude-code-theme .timeline-section:hover h2::before,
+.mission-shell.claude-code-theme .dossier-section:hover h2::before,
+.mission-shell.claude-code-theme .contact-section:hover h2::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mission-shell.claude-code-theme .project-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)) !important;
+  gap: 18px !important;
+}
+
+.mission-shell.claude-code-theme .project-card.ai-writing-card .project-card-media {
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  background: #121820 !important;
+}
+
+.mission-shell.claude-code-theme .project-card.ai-writing-card .project-card-media::before {
+  content: none !important;
+}
+
+.mission-shell.claude-code-theme .project-card.ai-writing-card .project-card-body {
+  border-top: 0 !important;
+  background: transparent !important;
+  padding: 22px !important;
+}
+
+.mission-shell.claude-code-theme .project-card-toolbar {
+  display: none !important;
+}
+
+.mission-shell.claude-code-theme .project-card.ai-writing-card h3 {
+  color: var(--text-primary) !important;
+  font-family: "Times New Roman", "Microsoft YaHei", serif !important;
+  font-size: 20px !important;
+  line-height: 1.35 !important;
+}
+
+.mission-shell.claude-code-theme .project-card.ai-writing-card p {
+  color: var(--text-secondary) !important;
+  line-height: 1.75 !important;
+}
+
+.mission-shell.claude-code-theme .archive-duo {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr) !important;
+  gap: 18px !important;
+  padding: 0 !important;
+}
+
+.mission-shell.claude-code-theme .timeline-section .border-l {
+  border-color: var(--border) !important;
+}
+
+.mission-shell.claude-code-theme .timeline-section .absolute.-left-\[6\.5px\] {
+  background: var(--accent) !important;
+  box-shadow: none !important;
+}
+
+.mission-shell.claude-code-theme .resume-panel .absolute {
+  display: none !important;
+}
+
+.mission-shell.claude-code-theme input,
+.mission-shell.claude-code-theme textarea {
+  border-radius: var(--radius-md) !important;
+}
+
+.mission-shell.claude-code-theme input:focus,
+.mission-shell.claude-code-theme textarea:focus {
+  box-shadow: 0 0 0 2px rgba(217, 119, 87, 0.18) !important;
+}
+
+.mission-shell.claude-code-theme .skip-link {
+  background: var(--accent) !important;
+  color: #fff7ef !important;
+}
+
+.mission-shell.claude-code-theme footer {
+  border-color: var(--border) !important;
+}
+
+.project-modal-root .project-detail-shell {
+  border: 1px solid var(--border, #2a2c2f) !important;
+  background: #18191b !important;
+  color: #f5f3ed !important;
+  box-shadow: none !important;
+}
+
+.project-modal-root .absolute.inset-0 {
+  background: rgba(16, 17, 18, 0.78) !important;
+}
+
+.project-modal-root [class*="text-white"] {
+  color: #f5f3ed !important;
+}
+
+.project-modal-root p,
+.project-modal-root li,
+.project-modal-root [class*="text-white/"] {
+  color: #a8a28f !important;
+}
+
+.project-modal-root .project-carousel,
+.project-modal-root .project-story-grid article,
+.project-modal-root .project-detail-copy {
+  border-color: #2a2c2f !important;
+  background: #1f2022 !important;
+}
+
+.project-modal-root .project-story-grid h5 {
+  color: #f5f3ed !important;
+}
+
+.project-modal-root button[aria-label] {
+  border-color: #3a3d41 !important;
+  background: #1f2022 !important;
+  color: #f5f3ed !important;
+}
+
+@media (max-width: 1180px) {
+  .mission-shell.claude-code-theme {
+    --rightbar-width: 0px;
+  }
+
+  .mission-shell.claude-code-theme nav.glass > div,
+  .mission-shell.claude-code-theme .doc-layout {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr) !important;
+  }
+
+  .mission-shell.claude-code-theme .right-toc {
+    display: none;
+  }
+
+  .mission-shell.claude-code-theme .resume-rail {
+    position: fixed !important;
+    right: 18px;
+    bottom: 18px;
+    top: auto;
+    z-index: 70;
+    width: min(236px, calc(100vw - 36px));
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-card {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-face {
+    width: 68px;
+    height: 68px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-face strong {
+    font-size: 22px;
+  }
+
+  .mission-shell.claude-code-theme nav .hidden.items-center {
+    grid-column: 2 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .mission-shell.claude-code-theme nav.glass > div {
+    display: flex !important;
+    min-height: 64px !important;
+    padding: 0 16px !important;
+  }
+
+  .mission-shell.claude-code-theme .doc-layout {
+    display: block;
+    padding: 0 16px;
+  }
+
+  .mission-shell.claude-code-theme .left-sidebar {
+    position: sticky;
+    top: 64px;
+    z-index: 60;
+    display: flex;
+    gap: 14px;
+    margin-inline: -16px;
+    padding: 10px 16px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    background: rgba(16, 17, 18, 0.94);
+  }
+
+  .mission-shell.claude-code-theme .side-group {
+    display: contents;
+  }
+
+  .mission-shell.claude-code-theme .side-group-title {
+    display: none;
+  }
+
+  .mission-shell.claude-code-theme .side-link {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 36px;
+  }
+
+  .mission-shell.claude-code-theme section[id="hero"] {
+    padding: 3rem 0 3.25rem !important;
+  }
+
+  .mission-shell.claude-code-theme section[id="hero"] h1 {
+    max-width: 100% !important;
+    gap: 16px !important;
+    font-size: 42px !important;
+    letter-spacing: 0 !important;
+  }
+
+  .mission-shell.claude-code-theme section[id="hero"] p {
+    font-size: 16px !important;
+    line-height: 1.75 !important;
+  }
+
+  .mission-shell.claude-code-theme .projects-section h2,
+  .mission-shell.claude-code-theme .timeline-section h2,
+  .mission-shell.claude-code-theme .dossier-section h2,
+  .mission-shell.claude-code-theme .contact-section h2 {
+    font-size: 28px !important;
+  }
+
+  .mission-shell.claude-code-theme .cta-primary,
+  .mission-shell.claude-code-theme .mission-button,
+  .mission-shell.claude-code-theme .detail-link,
+  .mission-shell.claude-code-theme .project-filter-button {
+    min-height: 52px !important;
+    padding: 0 28px !important;
+    font-size: 15px !important;
+  }
+
+  .mission-shell.claude-code-theme .archive-duo {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .mission-shell.claude-code-theme .resume-rail {
+    right: 12px;
+    bottom: 12px;
+    width: min(218px, calc(100vw - 24px));
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-card {
+    border-radius: 12px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-card-kicker,
+  .mission-shell.claude-code-theme .mini-resume-summary {
+    display: none;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-name-row strong {
+    font-size: 20px;
+  }
+
+  .resume-drawer-panel {
+    width: 100vw;
+  }
+
+  .resume-drawer-hero {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 72px 20px 22px;
+  }
+
+  .resume-q-avatar {
+    width: 112px;
+    height: 112px;
+  }
+
+  .resume-q-avatar-face {
+    width: 96px;
+    height: 96px;
+  }
+
+  .resume-drawer-hero h2 {
+    font-size: 36px;
+  }
+
+  .resume-drawer-body {
+    padding: 18px 16px 28px;
+  }
+
+  .resume-drawer-section {
+    padding: 16px;
+  }
+}
+
+/* Portfolio UI polish pass: mature hero, resume entry, drawer hierarchy, and responsive behavior. */
+.mission-shell.claude-code-theme {
+  --portfolio-bg: #101112;
+  --portfolio-panel: #18191b;
+  --portfolio-panel-strong: #1f2022;
+  --portfolio-panel-hover: #242629;
+  --portfolio-border: #2f3236;
+  --portfolio-border-strong: #464a50;
+  --portfolio-text-primary: #f5f3ed;
+  --portfolio-text-secondary: #c9c1ad;
+  --portfolio-text-muted: #9a9385;
+  --portfolio-accent: #d97757;
+  --portfolio-accent-hover: #e58a68;
+  --portfolio-accent-muted: rgba(217, 119, 87, 0.16);
+  --portfolio-focus: rgba(229, 138, 104, 0.86);
+}
+
+.resume-drawer-root {
+  --portfolio-bg: #101112;
+  --portfolio-panel: #18191b;
+  --portfolio-panel-strong: #1f2022;
+  --portfolio-panel-hover: #242629;
+  --portfolio-border: #2f3236;
+  --portfolio-border-strong: #464a50;
+  --portfolio-text-primary: #f5f3ed;
+  --portfolio-text-secondary: #c9c1ad;
+  --portfolio-text-muted: #9a9385;
+  --portfolio-accent: #d97757;
+  --portfolio-accent-hover: #e58a68;
+  --portfolio-accent-muted: rgba(217, 119, 87, 0.16);
+  --portfolio-focus: rgba(229, 138, 104, 0.86);
+}
+
+.mission-shell.claude-code-theme button:focus-visible,
+.mission-shell.claude-code-theme a:focus-visible,
+.resume-drawer-root button:focus-visible,
+.resume-drawer-root a:focus-visible {
+  outline: 2px solid var(--portfolio-focus) !important;
+  outline-offset: 3px !important;
+}
+
+.mission-shell.claude-code-theme .doc-layout {
+  width: min(100%, 1480px);
+  column-gap: 18px;
+}
+
+.mission-shell.claude-code-theme .main-content {
+  max-width: 920px;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] {
+  min-height: auto !important;
+  padding: 56px 0 26px !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] > div:first-child {
+  max-width: 820px !important;
+}
+
+.mission-shell.claude-code-theme .hero-kicker {
+  margin-bottom: 18px !important;
+  color: var(--portfolio-accent) !important;
+  font-size: 13px !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] h1 {
+  gap: 12px !important;
+  width: min(100%, 820px) !important;
+  max-width: 820px !important;
+  margin-bottom: 24px !important;
+  font-size: clamp(3.8rem, 7vw, 5.85rem) !important;
+  line-height: 0.98 !important;
+  text-wrap: balance;
+}
+
+.mission-shell.claude-code-theme .hero-title-accent,
+.mission-shell.claude-code-theme .hero-title-main {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.08em 0.16em 0.12em;
+  border: 1px solid var(--portfolio-border);
+  border-radius: 12px;
+  background: rgba(24, 25, 27, 0.72);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  overflow-wrap: anywhere;
+}
+
+.mission-shell.claude-code-theme .hero-title-accent {
+  color: var(--portfolio-accent) !important;
+  text-shadow: 0 0 28px rgba(217, 119, 87, 0.2);
+}
+
+.mission-shell.claude-code-theme .hero-title-main {
+  color: transparent !important;
+  background:
+    linear-gradient(180deg, rgba(245, 243, 237, 0.98), rgba(201, 193, 173, 0.82)),
+    rgba(24, 25, 27, 0.78);
+  background-clip: text, border-box;
+  -webkit-background-clip: text, border-box;
+  -webkit-text-fill-color: transparent;
+  border-color: rgba(217, 119, 87, 0.28);
+}
+
+.mission-shell.claude-code-theme section[id="hero"] p {
+  width: min(100%, 720px) !important;
+  max-width: 720px !important;
+  margin-bottom: 22px !important;
+  color: var(--portfolio-text-secondary) !important;
+  font-size: 19px !important;
+  line-height: 1.7 !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions {
+  gap: 12px !important;
+  margin-top: 18px !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions .cta-primary,
+.mission-shell.claude-code-theme .hero-actions .mission-button {
+  min-height: 50px !important;
+  padding: 0 26px !important;
+  border-radius: 999px !important;
+  font-size: 15px !important;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions .cta-primary {
+  border-color: var(--portfolio-accent) !important;
+  background: var(--portfolio-accent) !important;
+  color: #fff7ef !important;
+  box-shadow: 0 14px 34px rgba(217, 119, 87, 0.18) !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions .cta-primary:hover {
+  background: var(--portfolio-accent-hover) !important;
+  border-color: var(--portfolio-accent-hover) !important;
+  transform: translateY(-1px);
+}
+
+.mission-shell.claude-code-theme .hero-actions .cta-primary:active,
+.mission-shell.claude-code-theme .hero-actions .mission-button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.mission-shell.claude-code-theme .hero-actions .mission-button {
+  border-color: var(--portfolio-border-strong) !important;
+  background: rgba(31, 32, 34, 0.72) !important;
+  color: var(--portfolio-text-primary) !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions .mission-button:hover {
+  border-color: rgba(229, 138, 104, 0.5) !important;
+  background: var(--portfolio-panel-hover) !important;
+}
+
+.mission-shell.claude-code-theme .hero-tags {
+  gap: 9px !important;
+  margin-top: 18px !important;
+}
+
+.mission-shell.claude-code-theme .hero-tags span {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  border-color: rgba(217, 119, 87, 0.28) !important;
+  background: rgba(31, 32, 34, 0.82) !important;
+  color: #ddd5c2 !important;
+  font-size: 12px;
+}
+
+.mission-shell.claude-code-theme .capability-section {
+  padding-top: 24px !important;
+}
+
+.mission-shell.claude-code-theme .capability-card p,
+.mission-shell.claude-code-theme .project-card p,
+.mission-shell.claude-code-theme .contact-section p,
+.mission-shell.claude-code-theme .dossier-section p {
+  color: var(--portfolio-text-secondary) !important;
+}
+
+.mission-shell.claude-code-theme .left-sidebar .side-link.active {
+  color: var(--portfolio-accent) !important;
+}
+
+.mission-shell.claude-code-theme .resume-rail {
+  padding-left: 16px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card {
+  gap: 16px;
+  padding: 18px;
+  border-color: rgba(217, 119, 87, 0.34);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(36, 38, 41, 0.9), rgba(24, 25, 27, 0.95));
+  box-shadow: 0 0 0 1px rgba(217, 119, 87, 0.08), 0 22px 60px rgba(0, 0, 0, 0.22);
+}
+
+.mission-shell.claude-code-theme .mini-resume-avatar,
+.resume-q-avatar {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  border: 1px solid rgba(217, 119, 87, 0.34);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 52% 32%, rgba(176, 108, 255, 0.2), transparent 62%),
+    rgba(31, 32, 34, 0.82);
+  box-shadow:
+    0 0 0 1px rgba(176, 108, 255, 0.12),
+    0 0 34px rgba(176, 108, 255, 0.22),
+    0 14px 36px rgba(0, 0, 0, 0.26);
+}
+
+.mission-shell.claude-code-theme .mini-resume-avatar {
+  padding: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:hover .mini-resume-avatar {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow:
+    0 0 0 1px rgba(217, 119, 87, 0.2),
+    0 0 40px rgba(176, 108, 255, 0.3),
+    0 18px 44px rgba(0, 0, 0, 0.3);
+}
+
+.mission-shell.claude-code-theme .mini-resume-avatar-image,
+.resume-q-avatar-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card-main {
+  display: grid;
+  gap: 14px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card-kicker {
+  color: var(--portfolio-text-muted);
+}
+
+.mission-shell.claude-code-theme .mini-resume-avatar {
+  width: 92px;
+  height: 92px;
+  margin: 0;
+}
+
+.mission-shell.claude-code-theme .mini-resume-face {
+  width: 86px;
+  height: 86px;
+  border-radius: 24px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-face strong {
+  font-size: 26px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-name-row {
+  align-items: flex-start;
+  position: relative;
+  padding-right: 24px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-name-row > svg {
+  position: absolute;
+  top: 0.42rem;
+  right: 0;
+}
+
+.mission-shell.claude-code-theme .mini-resume-name-row strong {
+  font-size: 28px;
+}
+
+.mission-shell.claude-code-theme .mini-resume-name-row small {
+  margin-top: 5px;
+  display: block;
+  color: var(--portfolio-text-secondary);
+  line-height: 1.55;
+}
+
+.mission-shell.claude-code-theme .mini-resume-summary {
+  color: var(--portfolio-text-secondary);
+  line-height: 1.65;
+}
+
+.mission-shell.claude-code-theme .mini-resume-signal {
+  min-height: 40px;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border: 1px solid rgba(217, 119, 87, 0.44);
+  border-radius: 999px;
+  background: rgba(217, 119, 87, 0.12);
+  color: #ffd3bf;
+  font-weight: 760;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:hover .mini-resume-signal {
+  border-color: rgba(229, 138, 104, 0.7);
+  background: rgba(217, 119, 87, 0.18);
+}
+
+.resume-drawer-backdrop {
+  background: rgba(5, 6, 7, 0.5);
+}
+
+.resume-drawer-root.is-entered {
+  pointer-events: auto;
+}
+
+.resume-drawer-root.is-entered .resume-drawer-backdrop {
+  opacity: 1;
+}
+
+.resume-drawer-root.is-entered .resume-drawer-panel,
+.resume-drawer-root.is-open .resume-drawer-panel {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+.resume-drawer-panel {
+  width: min(100vw, 540px);
+  max-width: 600px;
+  border-left-color: var(--portfolio-border-strong);
+  background: var(--portfolio-panel);
+}
+
+.resume-drawer-close {
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-color: transparent;
+  background: rgba(31, 32, 34, 0.64);
+  color: var(--portfolio-text-muted);
+}
+
+.resume-drawer-close:hover,
+.resume-drawer-close:focus-visible {
+  border-color: rgba(229, 138, 104, 0.58);
+  background: var(--portfolio-panel-hover);
+  color: var(--portfolio-text-primary);
+}
+
+.resume-drawer-hero {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 18px;
+  padding: 28px 26px 22px;
+  background: rgba(20, 21, 22, 0.96);
+  border-bottom-color: var(--portfolio-border);
+}
+
+.resume-q-avatar {
+  width: 118px;
+  height: 118px;
+  padding: 8px;
+  border-radius: 24px;
+}
+
+.resume-q-avatar-image {
+  filter: drop-shadow(0 10px 20px rgba(176, 108, 255, 0.28));
+}
+
+.resume-drawer-identity {
+  color: #ffb18f;
+}
+
+.resume-drawer-summary {
+  color: var(--portfolio-text-secondary);
+}
+
+.resume-drawer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.resume-drawer-action-primary,
+.resume-drawer-action-secondary {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 760;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+.resume-drawer-action-primary {
+  border: 1px solid var(--portfolio-accent);
+  background: var(--portfolio-accent);
+  color: #fff7ef;
+}
+
+.resume-drawer-action-secondary {
+  border: 1px solid var(--portfolio-border-strong);
+  background: rgba(31, 32, 34, 0.72);
+  color: var(--portfolio-text-primary);
+}
+
+.resume-drawer-action-primary:hover,
+.resume-drawer-action-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.resume-drawer-body {
+  flex: 1;
+  min-height: 0;
+  gap: 22px;
+  padding: 22px 26px 34px;
+  overflow-y: auto;
+}
+
+.resume-drawer-section {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.resume-drawer-section + .resume-drawer-section {
+  padding-top: 20px;
+  border-top: 1px solid var(--portfolio-border);
+}
+
+.resume-drawer-section h3 {
+  margin-bottom: 13px;
+  color: var(--portfolio-text-primary);
+}
+
+.resume-info-list {
+  gap: 10px;
+}
+
+.resume-info-list div {
+  padding: 12px 13px;
+  border: 1px solid var(--portfolio-border);
+  border-radius: 10px;
+  background: rgba(31, 32, 34, 0.62);
+}
+
+.resume-info-list dt {
+  color: #ffb18f;
+}
+
+.resume-info-list dd {
+  color: var(--portfolio-text-secondary);
+}
+
+.resume-skill-groups {
+  display: grid;
+  gap: 14px;
+}
+
+.resume-skill-group {
+  display: grid;
+  gap: 8px;
+}
+
+.resume-skill-group > span {
+  color: var(--portfolio-text-muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.resume-tag-list {
+  gap: 8px;
+}
+
+.resume-tag {
+  min-height: 32px;
+  padding: 0 12px;
+  border-color: rgba(217, 119, 87, 0.36);
+  background: rgba(217, 119, 87, 0.12);
+  color: #ffcfbb;
+}
+
+.resume-timeline {
+  gap: 20px;
+}
+
+.resume-timeline::before {
+  left: 6px;
+  background: linear-gradient(180deg, rgba(217, 119, 87, 0.86), rgba(70, 74, 80, 0.28));
+}
+
+.resume-timeline-item {
+  gap: 13px;
+}
+
+.resume-timeline-time {
+  color: #ffb18f;
+}
+
+.resume-timeline h4,
+.resume-education-list h4 {
+  color: var(--portfolio-text-primary);
+}
+
+.resume-timeline p,
+.resume-education-list p,
+.resume-education-list span,
+.resume-contact-list small {
+  color: var(--portfolio-text-secondary);
+}
+
+.resume-contact-list a {
+  border-color: var(--portfolio-border);
+  background: rgba(31, 32, 34, 0.66);
+}
+
+@media (min-width: 1280px) {
+  .mission-shell.claude-code-theme .doc-layout {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr) 260px;
+  }
+}
+
+@media (max-width: 1279px) and (min-width: 768px) {
+  .mission-shell.claude-code-theme .doc-layout {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr) !important;
+  }
+
+  .mission-shell.claude-code-theme .main-content {
+    max-width: 900px;
+  }
+
+  .mission-shell.claude-code-theme .resume-rail {
+    position: fixed !important;
+    top: 94px;
+    right: 20px;
+    bottom: auto;
+    z-index: 70;
+    width: 214px;
+    max-height: none;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-card {
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-summary {
+    display: none;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-face {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-face strong {
+    font-size: 18px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-name-row strong {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .mission-shell.claude-code-theme .doc-layout {
+    padding: 0 16px;
+  }
+
+  .mission-shell.claude-code-theme section[id="hero"] {
+    padding: 38px 0 20px !important;
+  }
+
+  .mission-shell.claude-code-theme section[id="hero"] h1 {
+    gap: 10px !important;
+    font-size: clamp(2.6rem, 13vw, 3.45rem) !important;
+    margin-bottom: 20px !important;
+  }
+
+  .mission-shell.claude-code-theme .hero-title-accent,
+  .mission-shell.claude-code-theme .hero-title-main {
+    border-radius: 10px;
+    padding: 0.1em 0.14em 0.12em;
+  }
+
+  .mission-shell.claude-code-theme section[id="hero"] p {
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+    margin-bottom: 18px !important;
+  }
+
+  .mission-shell.claude-code-theme .hero-actions .cta-primary,
+  .mission-shell.claude-code-theme .hero-actions .mission-button {
+    width: 100%;
+  }
+
+  .mission-shell.claude-code-theme .capability-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mission-shell.claude-code-theme .resume-rail {
+    top: 140px;
+    right: 12px;
+    bottom: auto;
+    width: min(176px, calc(100vw - 24px));
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: 3px 10px;
+    min-height: 54px;
+    padding: 8px 10px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-card-kicker,
+  .mission-shell.claude-code-theme .mini-resume-summary {
+    display: none;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-card-main {
+    display: contents;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-avatar,
+  .mission-shell.claude-code-theme .mini-resume-face {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-avatar {
+    padding: 3px;
+    border-radius: 12px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-face {
+    border-radius: 13px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-eye,
+  .mission-shell.claude-code-theme .mini-resume-smile {
+    display: none;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-face strong {
+    transform: none;
+    font-size: 17px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-name-row svg,
+  .mission-shell.claude-code-theme .mini-resume-name-row small {
+    display: none;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-name-row strong {
+    font-size: 18px;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-name-row strong::after {
+    content: " 档案";
+    color: #ffd3bf;
+    font-size: 12px;
+    font-weight: 760;
+  }
+
+  .mission-shell.claude-code-theme .mini-resume-signal {
+    display: none;
+  }
+
+  .resume-drawer-backdrop {
+    background: rgba(5, 6, 7, 0.42);
+  }
+
+  .resume-drawer-panel {
+    width: 100vw;
+    max-width: 100vw;
+  }
+
+  .resume-drawer-hero {
+    grid-template-columns: 1fr;
+    padding: 64px 18px 20px;
+  }
+
+  .resume-q-avatar {
+    width: 112px;
+    height: 112px;
+    padding: 6px;
+    border-radius: 22px;
+  }
+
+  .resume-drawer-body {
+    padding: 18px 16px 28px;
+  }
+}
+
+/* Claude Code CN spec alignment pass: typography, heading levels, pills, and sidebar states. */
+body,
+.mission-shell.claude-code-theme,
+.resume-drawer-root {
+  font-family: "Times New Roman", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif !important;
+}
+
+.mission-shell.claude-code-theme {
+  --bg: #101112;
+  --bg-soft: #141516;
+  --panel: #18191b;
+  --card: #1f2022;
+  --card-hover: #242629;
+  --border: #2a2c2f;
+  --border-strong: #3a3d41;
+  --text-primary: #f5f3ed;
+  --text-secondary: #a8a28f;
+  --text-muted: #777777;
+  --accent: #d97757;
+  --accent-hover: #e58a68;
+  --accent-soft: rgba(217, 119, 87, 0.14);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  background: var(--bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.mission-shell.claude-code-theme .main-content,
+.mission-shell.claude-code-theme .main-content h1,
+.mission-shell.claude-code-theme .main-content h2,
+.mission-shell.claude-code-theme .main-content h3,
+.mission-shell.claude-code-theme .main-content .hero-kicker,
+.mission-shell.claude-code-theme .main-content p,
+.mission-shell.claude-code-theme .main-content span,
+.mission-shell.claude-code-theme .main-content a,
+.mission-shell.claude-code-theme .main-content button,
+.mission-shell.claude-code-theme .main-content li,
+.mission-shell.claude-code-theme .main-content td,
+.mission-shell.claude-code-theme .main-content th {
+  font-family: "Times New Roman", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif !important;
+}
+
+.mission-shell.claude-code-theme .main-content code,
+.mission-shell.claude-code-theme .main-content pre,
+.mission-shell.claude-code-theme .code-block,
+.mission-shell.claude-code-theme .code-block pre,
+.mission-shell.claude-code-theme .code-block code {
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif !important;
+  font-weight: 800 !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] {
+  padding-top: 56px !important;
+  padding-bottom: 32px !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] > div:first-child {
+  max-width: 940px !important;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] h1 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(16px, 1.35vw, 26px) !important;
+  width: min(100%, 940px) !important;
+  max-width: 940px !important;
+  margin: 0 0 32px !important;
+  font-size: clamp(68px, 7.5vw, 112px) !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.045em !important;
+  text-wrap: balance;
+}
+
+.mission-shell.claude-code-theme .hero-title-accent,
+.mission-shell.claude-code-theme .hero-title-main {
+  width: fit-content !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  overflow-wrap: normal !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+.mission-shell.claude-code-theme .hero-title-accent {
+  color: var(--accent) !important;
+  line-height: 0.92 !important;
+  text-shadow: none !important;
+}
+
+.mission-shell.claude-code-theme .hero-title-main {
+  color: var(--text-primary) !important;
+  line-height: 1.05 !important;
+  text-wrap: balance;
+}
+
+.mission-shell.claude-code-theme section[id="hero"] p {
+  width: min(100%, 860px) !important;
+  max-width: 860px !important;
+  margin: 0 0 38px !important;
+  color: var(--text-secondary) !important;
+  font-size: 22px !important;
+  line-height: 1.72 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions {
+  gap: 18px !important;
+  margin-top: 36px !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions .cta-primary,
+.mission-shell.claude-code-theme .hero-actions .mission-button {
+  min-height: 54px !important;
+  padding: 0 32px !important;
+  border-radius: 999px !important;
+  font-size: 17px !important;
+  font-weight: 760 !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+  box-shadow: none !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions .cta-primary {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: #fff7ef !important;
+}
+
+.mission-shell.claude-code-theme .hero-actions .mission-button {
+  border-color: var(--border-strong) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--text-primary) !important;
+}
+
+.mission-shell.claude-code-theme .side-link {
+  min-height: 36px !important;
+  padding: 9px 0 !important;
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  line-height: 1.25 !important;
+}
+
+.mission-shell.claude-code-theme .side-link:hover {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+}
+
+.mission-shell.claude-code-theme .side-link.active {
+  color: var(--accent) !important;
+  background: transparent !important;
+}
+
+.mission-shell.claude-code-theme .main-content > section:not(#hero) > h2,
+.mission-shell.claude-code-theme .archive-duo section > h2 {
+  position: relative !important;
+  margin: 0 0 12px !important;
+  border-left: 0 !important;
+  padding-left: 0 !important;
+  color: var(--text-primary) !important;
+  font-size: clamp(28px, 2.3vw, 34px) !important;
+  line-height: 1.24 !important;
+  font-weight: 780 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.mission-shell.claude-code-theme .main-content > section:not(#hero) > h2::before,
+.mission-shell.claude-code-theme .archive-duo section > h2::before {
+  content: "#";
+  position: absolute;
+  left: -28px;
+  top: 0;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(4px);
+  font-weight: 700;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.mission-shell.claude-code-theme .main-content > section:not(#hero) > h2:hover::before,
+.mission-shell.claude-code-theme .main-content > section:not(#hero) > h2:focus-within::before,
+.mission-shell.claude-code-theme .archive-duo section > h2:hover::before,
+.mission-shell.claude-code-theme .archive-duo section > h2:focus-within::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mission-shell.claude-code-theme .capability-card h2,
+.mission-shell.claude-code-theme .capability-card h3,
+.mission-shell.claude-code-theme .project-card h3,
+.mission-shell.claude-code-theme .timeline-section h3,
+.mission-shell.claude-code-theme .dossier-section h3 {
+  color: var(--text-primary) !important;
+  font-size: clamp(18px, 1.45vw, 22px) !important;
+  line-height: 1.3 !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.mission-shell.claude-code-theme .capability-card,
+.mission-shell.claude-code-theme .project-card,
+.mission-shell.claude-code-theme .resume-panel,
+.mission-shell.claude-code-theme .contact-card,
+.mission-shell.claude-code-theme .contact-panel {
+  border-color: var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+
+.mission-shell.claude-code-theme .capability-card:hover,
+.mission-shell.claude-code-theme .project-card:hover,
+.mission-shell.claude-code-theme .contact-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(217, 119, 87, 0.38) !important;
+  background: var(--card-hover) !important;
+}
+
+@media (max-width: 767px) {
+  .mission-shell.claude-code-theme section[id="hero"] h1 {
+    gap: 14px !important;
+    font-size: clamp(36px, 11vw, 44px) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  .mission-shell.claude-code-theme section[id="hero"] p {
+    font-size: 16px !important;
+    line-height: 1.72 !important;
+    margin-bottom: 24px !important;
+  }
+
+  .mission-shell.claude-code-theme .hero-actions .cta-primary,
+  .mission-shell.claude-code-theme .hero-actions .mission-button {
+    min-height: 52px !important;
+    padding: 0 28px !important;
+    font-size: 16px !important;
+  }
+
+  .mission-shell.claude-code-theme .main-content > section:not(#hero) > h2::before,
+  .mission-shell.claude-code-theme .archive-duo section > h2::before {
+    display: none;
+  }
+}
+
+/* Final content trim + Claude Code CN section heading normalization. */
+.mission-shell.claude-code-theme .projects-section {
+  padding-top: clamp(48px, 6vw, 72px) !important;
+  padding-bottom: clamp(56px, 8vw, 96px) !important;
+}
+
+.mission-shell.claude-code-theme .projects-section-header {
+  margin: 0 0 34px !important;
+}
+
+.mission-shell.claude-code-theme .capability-section-header {
+  margin: 0 0 34px !important;
+}
+
+.mission-shell.claude-code-theme .projects-section-heading {
+  max-width: 760px;
+}
+
+.mission-shell.claude-code-theme .section-heading,
+.mission-shell.claude-code-theme .projects-section h2.section-heading {
+  position: relative !important;
+  width: fit-content !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  font-family: "Times New Roman", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif !important;
+  font-size: clamp(28px, 2.3vw, 34px) !important;
+  font-weight: 780 !important;
+  line-height: 1.24 !important;
+  letter-spacing: -0.02em !important;
+  box-shadow: none !important;
+}
+
+.mission-shell.claude-code-theme .section-heading::before,
+.mission-shell.claude-code-theme .projects-section h2.section-heading::before {
+  content: "#" !important;
+  position: absolute !important;
+  left: -28px !important;
+  top: 0 !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--accent) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  opacity: 0;
+  transform: translateX(4px);
+  font-weight: 700 !important;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.mission-shell.claude-code-theme .projects-section-header:hover .section-heading::before,
+.mission-shell.claude-code-theme .capability-section-header:hover .section-heading::before,
+.mission-shell.claude-code-theme .section-heading:focus-visible::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mission-shell.claude-code-theme .section-lead {
+  max-width: 720px !important;
+  margin: 12px 0 0 !important;
+  color: var(--text-secondary) !important;
+  font-family: "Times New Roman", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.72 !important;
+  letter-spacing: 0 !important;
+}
+
+.mission-shell.claude-code-theme .capability-summary-lead {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.mission-shell.claude-code-theme .projects-section-header .project-filters {
+  max-width: 520px;
+  justify-content: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .mission-shell.claude-code-theme .projects-section-header .project-filters {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 767px) {
+  .mission-shell.claude-code-theme .projects-section {
+    padding-top: 36px !important;
+    padding-bottom: 64px !important;
+  }
+
+  .mission-shell.claude-code-theme .section-heading,
+  .mission-shell.claude-code-theme .projects-section h2.section-heading {
+    font-size: clamp(26px, 8vw, 31px) !important;
+  }
+
+  .mission-shell.claude-code-theme .section-heading::before,
+  .mission-shell.claude-code-theme .projects-section h2.section-heading::before {
+    display: none !important;
+  }
+}
+
+/* Mini resume card motion: restrained Claude Code CN interaction. */
+.mission-shell.claude-code-theme .mini-resume-card {
+  background: var(--card) !important;
+  border-color: var(--border-strong) !important;
+  box-shadow: none !important;
+  transform: translateY(0) !important;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease !important;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:hover {
+  background: var(--card-hover) !important;
+  border-color: rgba(217, 119, 87, 0.48) !important;
+  box-shadow: none !important;
+  transform: translateY(-1px) !important;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:focus-visible {
+  background: var(--card-hover) !important;
+  border-color: rgba(217, 119, 87, 0.58) !important;
+  box-shadow: none !important;
+  outline: 2px solid rgba(217, 119, 87, 0.42) !important;
+  outline-offset: 3px;
+  transform: translateY(-1px) !important;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:active {
+  background: var(--panel) !important;
+  transform: translateY(0) !important;
+  transition-duration: 0.1s !important;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card-main {
+  justify-items: stretch;
+}
+
+.mission-shell.claude-code-theme .mini-resume-avatar {
+  justify-self: center !important;
+  margin: 0 auto 2px !important;
+  border-color: rgba(217, 119, 87, 0.34) !important;
+  background: rgba(31, 32, 34, 0.82) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: border-color 0.16s ease, background 0.16s ease !important;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:hover .mini-resume-avatar,
+.mission-shell.claude-code-theme .mini-resume-card:focus-visible .mini-resume-avatar {
+  border-color: rgba(217, 119, 87, 0.52) !important;
+  background: rgba(36, 38, 41, 0.92) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.mission-shell.claude-code-theme .mini-resume-card:hover .mini-resume-signal,
+.mission-shell.claude-code-theme .mini-resume-card:focus-visible .mini-resume-signal {
+  border-color: rgba(217, 119, 87, 0.52) !important;
+  background: rgba(217, 119, 87, 0.14) !important;
+}
+
+/* Resume drawer order polish: internships share education rhythm. */
+.resume-experience-list {
+  display: grid;
+  gap: 10px;
+}
+
+.resume-experience-list article {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  color: var(--portfolio-text-secondary, #a8a28f);
+}
+
+.resume-experience-list svg {
+  margin-top: 2px;
+  color: var(--portfolio-accent, #d97757);
+}
+
+.resume-experience-list span {
+  display: block;
+  color: #ffb18f;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.resume-experience-list h4 {
+  margin: 5px 0 0;
+  color: var(--portfolio-text-primary, #f5f3ed);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.resume-experience-list p,
+.resume-experience-list small {
+  display: block;
+  margin: 7px 0 0;
+  color: var(--portfolio-text-secondary, #a8a28f);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Resume drawer inline editor. */
+.resume-drawer-root.is-editing .resume-drawer-hero {
+  align-items: start;
+}
+
+.resume-drawer-root.is-editing .resume-drawer-hero h2 {
+  font-size: clamp(28px, 4vw, 38px);
+}
+
+.resume-edit-mode {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 28px;
+  align-items: center;
+  border: 1px solid rgba(217, 119, 87, 0.42);
+  border-radius: 999px;
+  padding: 0 10px;
+  background: rgba(217, 119, 87, 0.12);
+  color: #ffcfbb;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.resume-hero-editor,
+.resume-edit-list {
+  display: grid;
+  gap: 12px;
+}
+
+.resume-edit-card {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--portfolio-border, #2a2c2f);
+  border-radius: 12px;
+  background: rgba(31, 32, 34, 0.66);
+}
+
+.resume-edit-field {
+  display: grid;
+  gap: 6px;
+}
+
+.resume-edit-field span {
+  color: #ffb18f;
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.resume-edit-field input,
+.resume-edit-field textarea {
+  width: 100%;
+  border: 1px solid var(--portfolio-border, #2a2c2f);
+  border-radius: 9px;
+  background: rgba(16, 17, 18, 0.72);
+  color: var(--portfolio-text-primary, #f5f3ed);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  outline: none;
+  padding: 9px 10px;
+  transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.resume-edit-field textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+
+.resume-edit-field input:focus,
+.resume-edit-field textarea:focus {
+  border-color: rgba(217, 119, 87, 0.72);
+  background: rgba(20, 21, 22, 0.92);
+  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.12);
+}
+
+.resume-edit-add,
+.resume-edit-remove {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--portfolio-border-strong, #3a3d41);
+  border-radius: 999px;
+  background: rgba(31, 32, 34, 0.72);
+  color: var(--portfolio-text-secondary, #a8a28f);
+  font-size: 13px;
+  font-weight: 760;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.resume-edit-add {
+  width: fit-content;
+  padding: 0 13px;
+}
+
+.resume-edit-remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  padding: 0;
+}
+
+.resume-edit-card .resume-edit-field:first-of-type {
+  padding-right: 40px;
+}
+
+.resume-edit-add:hover,
+.resume-edit-add:focus-visible,
+.resume-edit-remove:hover,
+.resume-edit-remove:focus-visible {
+  border-color: rgba(217, 119, 87, 0.55);
+  background: rgba(217, 119, 87, 0.12);
+  color: #ffcfbb;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+/* Site bottom contact list moved out of the resume drawer. */
+.mission-shell.claude-code-theme .site-bottom-contact {
+  padding-top: clamp(48px, 6vw, 72px) !important;
+  padding-bottom: 34px !important;
+}
+
+.mission-shell.claude-code-theme .contact-section-header {
+  margin: 0 0 28px !important;
+}
+
+.mission-shell.claude-code-theme .contact-section-header:hover .section-heading::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mission-shell.claude-code-theme .site-contact-list {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .mission-shell.claude-code-theme .site-contact-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.mission-shell.claude-code-theme .site-contact-item {
+  display: grid;
+  min-height: 72px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+.mission-shell.claude-code-theme .site-contact-item:hover,
+.mission-shell.claude-code-theme .site-contact-item:focus-visible {
+  border-color: rgba(217, 119, 87, 0.42);
+  background: var(--card-hover);
+  color: var(--text-primary);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.mission-shell.claude-code-theme .site-contact-item svg {
+  color: var(--accent);
+}
+
+.mission-shell.claude-code-theme .site-contact-item strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.mission-shell.claude-code-theme .site-contact-item small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* Capability summary editor. */
+.mission-shell.claude-code-theme .capability-edit-heading,
+.mission-shell.claude-code-theme .capability-edit-card label {
+  display: grid;
+  gap: 7px;
+}
+
+.mission-shell.claude-code-theme .capability-edit-heading {
+  max-width: 720px;
+  gap: 13px;
+}
+
+.mission-shell.claude-code-theme .capability-edit-heading label {
+  display: grid;
+  gap: 7px;
+}
+
+.mission-shell.claude-code-theme .capability-edit-heading span,
+.mission-shell.claude-code-theme .capability-edit-card span {
+  color: #ffb18f;
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.mission-shell.claude-code-theme .capability-edit-heading input {
+  min-height: 52px;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 780;
+  line-height: 1.15;
+}
+
+.mission-shell.claude-code-theme .capability-edit-heading textarea {
+  min-height: 72px;
+  resize: vertical;
+  font-size: 16px;
+  line-height: 1.68;
+}
+
+.mission-shell.claude-code-theme .capability-edit-card {
+  display: grid;
+  gap: 13px;
+}
+
+.mission-shell.claude-code-theme .capability-card.is-editing {
+  padding: 18px !important;
+}
+
+.mission-shell.claude-code-theme .capability-edit-heading input,
+.mission-shell.claude-code-theme .capability-edit-heading textarea,
+.mission-shell.claude-code-theme .capability-edit-card input,
+.mission-shell.claude-code-theme .capability-edit-card textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(16, 17, 18, 0.72);
+  color: var(--text-primary);
+  font: inherit;
+  outline: none;
+  padding: 10px 12px;
+  transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.mission-shell.claude-code-theme .capability-edit-card input,
+.mission-shell.claude-code-theme .capability-edit-card textarea {
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.mission-shell.claude-code-theme .capability-edit-card textarea {
+  min-height: 74px;
+  resize: vertical;
+}
+
+.mission-shell.claude-code-theme .capability-edit-heading input:focus,
+.mission-shell.claude-code-theme .capability-edit-heading textarea:focus,
+.mission-shell.claude-code-theme .capability-edit-card input:focus,
+.mission-shell.claude-code-theme .capability-edit-card textarea:focus {
+  border-color: rgba(217, 119, 87, 0.72);
+  background: rgba(20, 21, 22, 0.94);
+  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.12);
+}
+
+/* Project card actions: primary detail + secondary GitHub, no tech badges in card body. */
+.mission-shell.claude-code-theme .project-card .detail-link,
+.mission-shell.claude-code-theme .project-card .github-link {
+  display: inline-flex !important;
+  min-height: 52px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border-radius: 999px !important;
+  padding: 0 24px !important;
+  font-size: 16px !important;
+  font-weight: 760 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-decoration: none !important;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease !important;
+}
+
+.mission-shell.claude-code-theme .project-card .detail-link {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: #fff7ef !important;
+}
+
+.mission-shell.claude-code-theme .project-card .github-link {
+  border-color: var(--border-strong) !important;
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: var(--text-primary) !important;
+}
+
+.mission-shell.claude-code-theme .project-card .detail-link:hover,
+.mission-shell.claude-code-theme .project-card .detail-link:focus-visible {
+  border-color: var(--accent-hover) !important;
+  background: var(--accent-hover) !important;
+  color: #fff7ef !important;
+  outline: none;
+  transform: translateY(-1px) !important;
+}
+
+.mission-shell.claude-code-theme .project-card .github-link:hover,
+.mission-shell.claude-code-theme .project-card .github-link:focus-visible {
+  border-color: rgba(217, 119, 87, 0.46) !important;
+  background: var(--card-hover) !important;
+  color: #fff7ef !important;
+  outline: none;
+  transform: translateY(-1px) !important;
+}
+
+.mission-shell.claude-code-theme .project-card .detail-icon,
+.mission-shell.claude-code-theme .project-card .github-link svg {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 480px) {
+  .mission-shell.claude-code-theme .project-card .detail-link,
+  .mission-shell.claude-code-theme .project-card .github-link {
+    flex: 1 1 0;
+    padding: 0 18px !important;
+  }
+}
+
+/* Project detail modal: fixed media rail + independently scrolling content. */
+.project-modal-root {
+  overflow: hidden !important;
+  padding: clamp(16px, 2vw, 28px) !important;
+}
+
+.project-modal-root .project-detail-shell {
+  width: min(96vw, 1440px) !important;
+  height: min(88dvh, 820px) !important;
+  max-height: min(88dvh, 820px) !important;
+  overflow: hidden !important;
+  padding: 30px !important;
+  border-radius: 18px !important;
+}
+
+.project-modal-root .project-detail-shell > button[aria-label] {
+  position: absolute !important;
+  top: 18px !important;
+  right: 18px !important;
+  z-index: 20 !important;
+}
+
+.project-modal-root .project-detail-layout {
+  height: 100% !important;
+  min-height: 0 !important;
+  align-items: start !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr) !important;
+  gap: 30px !important;
+}
+
+.project-modal-root .project-carousel {
+  position: relative !important;
+  align-self: center !important;
+  justify-self: center !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: min(52dvh, 460px) !important;
+  aspect-ratio: 16 / 9 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+}
+
+.project-modal-root .project-carousel > button:first-child {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  aspect-ratio: inherit !important;
+}
+
+.project-modal-root .project-carousel img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  transform: scale(1.02) !important;
+  transition: transform 0.5s ease !important;
+}
+
+.project-modal-root .project-carousel button:hover img {
+  transform: scale(1.04) !important;
+}
+
+.project-modal-root .project-detail-content {
+  display: block !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain;
+  padding-right: 30px !important;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 243, 237, 0.16) transparent;
+}
+
+.project-modal-root .project-detail-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.project-modal-root .project-detail-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.project-modal-root .project-detail-content::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(245, 243, 237, 0.16);
+  background-clip: padding-box;
+}
+
+.project-modal-root .project-detail-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 243, 237, 0.26);
+  background-clip: padding-box;
+}
+
+.project-modal-root .project-detail-content > div:first-child,
+.project-modal-root .project-story-grid,
+.project-modal-root .project-story-grid > div {
+  min-height: 0;
+}
+
+.project-modal-root .project-detail-content > div:last-child {
+  margin-top: 24px !important;
+}
+
+.project-modal-root .project-story-grid {
+  gap: 14px !important;
+}
+
+.project-modal-root .project-story-grid h4 {
+  margin: 0 !important;
+  line-height: 1.45 !important;
+}
+
+.project-modal-root .project-story-grid article,
+.project-modal-root .project-detail-copy {
+  display: block !important;
+  min-height: 0 !important;
+  padding: 18px 20px !important;
+  overflow: visible !important;
+}
+
+.project-modal-root .project-story-grid h5 {
+  margin: 0 !important;
+  line-height: 1.45 !important;
+}
+
+.project-modal-root .project-story-grid p {
+  margin-top: 10px !important;
+  line-height: 1.72 !important;
+}
+
+.project-modal-root .project-detail-copy p:first-child {
+  margin-top: 0 !important;
+}
+
+.project-modal-root .project-detail-copy p + p {
+  margin-top: 12px !important;
+}
+
+@media (max-width: 899px) {
+  .project-modal-root {
+    align-items: flex-start !important;
+    overflow-y: auto !important;
+    padding: 12px !important;
+  }
+
+  .project-modal-root .project-detail-shell {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .project-modal-root .project-detail-layout {
+    height: auto !important;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .project-modal-root .project-carousel {
+    align-self: start !important;
+    justify-self: stretch !important;
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+
+  .project-modal-root .project-detail-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-right: 0 !important;
+    scrollbar-gutter: auto;
+  }
+}
