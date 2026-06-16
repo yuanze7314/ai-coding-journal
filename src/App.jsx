@@ -1109,7 +1109,12 @@ function ProjectCard({ project, revealDelay, updateProject, handleImageUpload, d
             placeholder="输入项目介绍..."
           />
         ) : (
-          <p className="text-sm leading-relaxed text-white/45">{project.description ?? project.desc}</p>
+          <p
+            className="project-card-description text-sm leading-relaxed text-white/45"
+            title={project.description ?? project.desc}
+          >
+            {project.description ?? project.desc}
+          </p>
         )}
 
         <div className="mt-auto flex flex-wrap items-center gap-3 pt-1">

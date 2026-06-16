@@ -6633,6 +6633,17 @@ body,
 }
 
 /* Project card actions: primary detail + secondary GitHub, no tech badges in card body. */
+.mission-shell.claude-code-theme .project-card .project-card-description {
+  display: -webkit-box !important;
+  line-height: 1.72 !important;
+  max-height: calc(1.72em * 4) !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 4 !important;
+  line-clamp: 4 !important;
+  text-overflow: ellipsis !important;
+}
+
 .mission-shell.claude-code-theme .project-card .detail-link,
 .mission-shell.claude-code-theme .project-card .github-link {
   display: inline-flex !important;
