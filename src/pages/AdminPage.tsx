@@ -19,6 +19,8 @@ export function AdminPage({ authenticated = false, onExit }: AdminPageProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const [editingProject, setEditingProject] = useState<Project | undefined>()
   const [showForm, setShowForm] = useState(false)
+  const [formError, setFormError] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
 
   const sortedProjects = useMemo(
     () => [...projects].sort((a, b) => b.priority - a.priority || b.updatedAt.localeCompare(a.updatedAt)),
@@ -72,6 +74,7 @@ export function AdminPage({ authenticated = false, onExit }: AdminPageProps) {
               className="admin-button"
               type="button"
               onClick={() => {
+                setFormError('')
                 setEditingProject(undefined)
                 setShowForm(true)
               }}
@@ -83,21 +86,36 @@ export function AdminPage({ authenticated = false, onExit }: AdminPageProps) {
 
         {showForm && (
           <div className="mb-8">
+            {formError && (
+              <div className="mb-4 rounded-2xl border border-red-300/25 bg-red-500/10 px-5 py-4 text-sm text-red-100" role="alert">
+                Save failed: {formError}
+              </div>
+            )}
             <ProjectForm
               project={editingProject}
               onCancel={() => {
+                setFormError('')
                 setEditingProject(undefined)
                 setShowForm(false)
               }}
               onSubmit={async (input: ProjectInput) => {
-                if (editingProject) {
-                  await projectService.updateProject(editingProject.id, input)
-                } else {
-                  await projectService.createProject(input)
+                if (isSaving) return
+                setIsSaving(true)
+                setFormError('')
+                try {
+                  if (editingProject) {
+                    await projectService.updateProject(editingProject.id, input)
+                  } else {
+                    await projectService.createProject(input)
+                  }
+                  await refreshProjects()
+                  setEditingProject(undefined)
+                  setShowForm(false)
+                } catch (error) {
+                  setFormError(error instanceof Error ? error.message : 'Unknown error')
+                } finally {
+                  setIsSaving(false)
                 }
-                await refreshProjects()
-                setEditingProject(undefined)
-                setShowForm(false)
               }}
             />
           </div>
@@ -152,6 +170,7 @@ export function AdminPage({ authenticated = false, onExit }: AdminPageProps) {
                       className="admin-button admin-button-secondary"
                       type="button"
                       onClick={() => {
+                        setFormError('')
                         setEditingProject(project)
                         setShowForm(true)
                       }}

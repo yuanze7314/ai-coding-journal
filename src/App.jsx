@@ -29,6 +29,11 @@ import { resumeData } from './components/resume/ResumeData'
 const OWNER_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '123456'
 const PAGE_SECTION_IDS = ['hero', 'capabilities', 'missions', 'contact']
 
+function canUseLocalOwnerPassword() {
+  if (typeof window === 'undefined') return false
+  return ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)
+}
+
 function normalizeProjectImages(project) {
   if (Array.isArray(project.images)) {
     return project.images.filter(Boolean)
@@ -197,14 +202,14 @@ export default function App() {
 
   const handleUnlock = useCallback(async (password) => {
     const verifiedByServer = await adminAuth.verifyPassword(password)
-    if (verifiedByServer || password === OWNER_PASSWORD) {
+    if (verifiedByServer || (canUseLocalOwnerPassword() && password === OWNER_PASSWORD)) {
       adminAuth.setPassword(password)
       setIsOwner(true)
       setIsAdminMode(true)
       setShowUnlockModal(false)
       return { success: true }
     }
-    return { success: false, error: '密码错误，请重新输入' }
+    return { success: false, error: 'Password did not match the server admin password.' }
   }, [])
 
   const handleLock = useCallback(() => {

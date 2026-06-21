@@ -69,7 +69,7 @@ export function ResumeDrawer({ data, isOpen, isOwner = false, onUpdate, onClose,
   const [mounted, setMounted] = useState(isOpen)
   const [visible, setVisible] = useState(false)
   const [phase, setPhase] = useState(isOpen ? 'entered' : 'closed')
-  const closeButtonRef = useRef(null)
+  const panelRef = useRef(null)
 
   useEffect(() => {
     let timeoutId
@@ -122,8 +122,11 @@ export function ResumeDrawer({ data, isOpen, isOwner = false, onUpdate, onClose,
     if (!mounted || !isOpen) return undefined
 
     const focusTimeoutId = window.setTimeout(() => {
-      closeButtonRef.current?.focus({ preventScroll: true })
-    }, 360)
+      const activeElement = document.activeElement
+      if (!panelRef.current?.contains(activeElement)) {
+        panelRef.current?.focus({ preventScroll: true })
+      }
+    }, 80)
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -194,18 +197,19 @@ export function ResumeDrawer({ data, isOpen, isOwner = false, onUpdate, onClose,
     <div
       className={`resume-drawer-root ${visible ? 'is-open' : ''} is-${phase} ${isOwner ? 'is-editing' : ''}`}
       role="presentation"
-      onClick={onClose}
     >
-      <div className="resume-drawer-backdrop" aria-hidden="true" />
+      <div className="resume-drawer-backdrop" aria-hidden="true" onClick={onClose} />
       <aside
+        ref={panelRef}
         className="resume-drawer-panel"
         role="dialog"
         aria-modal="true"
         aria-labelledby="resume-drawer-title"
+        tabIndex={-1}
+        onPointerDown={(event) => event.stopPropagation()}
         onClick={(event) => event.stopPropagation()}
       >
         <button
-          ref={closeButtonRef}
           type="button"
           className="resume-drawer-close"
           onClick={onClose}

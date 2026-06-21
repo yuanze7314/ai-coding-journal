@@ -6,6 +6,20 @@ const ADMIN_PASSWORD_KEY = 'ai-coding-admin-password'
 const isBrowser = typeof window !== 'undefined'
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
 
+class ApiRequestError extends Error {
+  status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'ApiRequestError'
+    this.status = status
+  }
+}
+
+function isClientApiError(error: unknown): error is ApiRequestError {
+  return error instanceof ApiRequestError && error.status >= 400 && error.status < 500
+}
+
 function apiUrl(path: string): string {
   return `${API_BASE_URL}${path}`
 }
@@ -25,7 +39,7 @@ async function apiRequest<T>(path: string, init?: RequestInit & { admin?: boolea
   const response = await fetch(apiUrl(path), { ...init, headers })
   if (!response.ok) {
     const message = await response.json().catch(() => null)
-    throw new Error(message?.message || `API request failed: ${response.status}`)
+    throw new ApiRequestError(message?.message || message?.error || `API request failed: ${response.status}`, response.status)
   }
   if (response.status === 204) return undefined as T
   return response.json() as Promise<T>
@@ -163,6 +177,7 @@ export const projectService = {
         body: JSON.stringify(input),
       }))
     } catch (error) {
+      if (isClientApiError(error)) throw error
       console.warn('服务器创建项目失败，写入本地 fallback', error)
       const projects = await loadProjects()
       const now = new Date().toISOString().slice(0, 10)
@@ -185,6 +200,7 @@ export const projectService = {
         body: JSON.stringify(input),
       }))
     } catch (error) {
+      if (isClientApiError(error)) throw error
       console.warn('服务器更新项目失败，写入本地 fallback', error)
       const projects = await loadProjects()
       let updatedProject: Project | undefined
@@ -209,6 +225,7 @@ export const projectService = {
       await apiRequest(`/api/projects/${id}`, { method: 'DELETE', admin: true })
       return
     } catch (error) {
+      if (isClientApiError(error)) throw error
       console.warn('服务器删除项目失败，写入本地 fallback', error)
       const projects = await loadProjects()
       writeDraftProjects(projects.filter((project) => project.id !== id))
@@ -229,6 +246,7 @@ export const projectService = {
       })
       return result.urls
     } catch (error) {
+      if (isClientApiError(error)) throw error
       console.warn('服务器图片上传失败，使用 base64 本地 fallback', error)
       return Promise.all(imageFiles.map(readImageFile))
     }
